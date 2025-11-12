@@ -19,14 +19,31 @@ func _process(delta:float):
 func _unhandled_input(event):
 	if event is InputEventKey and event.is_pressed():
 		if event.keycode == KEY_SPACE:
+
 			if is_scrolling:
 				is_scrolling = false
-				var center_uv:float = fmod(scroll_offset + 0.5 , 1.0)
-				if center_uv < 0.0:
-					center_uv += 1.0
-				var current_index: int = int(floor(center_uv / pattern_per))
-				var pattern_number:int = current_index + 1
-				print(pattern_number)
+				
+				if active_tween:
+					active_tween.kill()
+					
+				var current_offset:float = fmod(abs(scroll_offset / pattern_per),1)
+				
+				if current_offset < 0.4:
+					return
+				
+				var target_offset: float = round(scroll_offset / pattern_per) * pattern_per
+				
+				active_tween = create_tween()
+				
+				active_tween.tween_property(self, "scroll_offset", target_offset, 0.1)
+				
+				await active_tween.finished
+				scroll_offset = fmod(scroll_offset, 1.0)
+				
+				if active_tween:
+					active_tween.kill
+				
+				#print(current_offset)
 			else: 
 				is_scrolling = true
 				
