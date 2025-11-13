@@ -1,0 +1,30 @@
+[gd_scene load_steps=6 format=3 uid="uid://cby8q3a2jgxwo"]
+
+[ext_resource type="Shader" uid="uid://dhbo786qttj2f" path="res://Icon.gdshader" id="1_0xm2m"]
+[ext_resource type="Texture2D" uid="uid://ckub3ynm0hp03" path="res://test_odd.svg" id="2_h2yge"]
+[ext_resource type="Script" uid="uid://dw817l3nn1rql" path="res://texture_rect.gd" id="3_h2yge"]
+[ext_resource type="Script" uid="uid://nat8qde1f54m" path="res://node_2d.gd" id="4_1bvp3"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1bvp3"]
+shader = ExtResource("1_0xm2m")
+shader_parameter/scroll_offset = 0.0
+
+[node name="main" type="Node"]
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="TextureRect" type="TextureRect" parent="Control"]
+material = SubResource("ShaderMaterial_1bvp3")
+layout_mode = 0
+offset_right = 128.0
+offset_bottom = 128.0
+texture = ExtResource("2_h2yge")
+stretch_mode = 1
+script = ExtResource("3_h2yge")
+
+[node name="Node2D" type="Node2D" parent="."]
+script = ExtResource("4_1bvp3")

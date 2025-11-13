@@ -1,0 +1,17 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://du0aq5bty2oan"
+
+[deps]
+
+files=["res://確率test.RT0.translation", "res://確率test.RT1.translation"]
+
+source_file="res://確率test.csv"
+dest_files=["res://確率test.RT0.translation", "res://確率test.RT1.translation"]
+
+[params]
+
+compress=true
+delimiter=0
