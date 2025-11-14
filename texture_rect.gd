@@ -30,18 +30,21 @@ func _unhandled_input(event):
 				pass
 				
 func stop_reel():
-	is_scrolling = false
+	#is_scrolling = false
 	if active_tween:
 		active_tween.kill()
 	var current_offset:float = fmod((abs(scroll_offset) / pattern_per), 1)
 	if current_offset < 0.3:
 		return
-	var target_offset:float = floor(scroll_offset / pattern_per) * pattern_per
+	var target_offset:float = (floor(scroll_offset / pattern_per) * pattern_per) - 0.2
+	var target_speed:float = abs(target_offset - scroll_offset) / scroll_speed * -1.0
 	active_tween = create_tween()
-	active_tween.tween_property(self, "scroll_offset", target_offset, 0.15)
+	active_tween.tween_callback(set.bind("is_scrolling", false))
+	active_tween.tween_property(self, "scroll_offset", target_offset, target_speed)
 	await active_tween.finished
 	scroll_offset = fmod(scroll_offset, 1.0)
 	if active_tween:
 		active_tween.kill
+	print(target_speed)
 	
 	
