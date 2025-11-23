@@ -10,10 +10,14 @@ config_version=5
 
 [application]
 
-config/name="sql-test (Copy)"
+config/name="slot"
 run/main_scene="uid://crig6x6kwjswk"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
+
+[display]
+
+window/size/viewport_width=1280
 
 [editor_plugins]
 

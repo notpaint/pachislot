@@ -7,6 +7,10 @@ var sql_file_path ="res://test.sql"
 
 var mother : Dictionary = {}
 
+var is_spinning = false
+var spin_speed : float = 500.0
+
+@onready var L_reel = $window/L_reel
 
 func _ready():
 	db = SQLite.new()
@@ -15,18 +19,37 @@ func _ready():
 
 	import_sql_from_file()
 
+
+#回転処理
+func _process(delta: float):
+	if is_spinning:
+		L_reel.position.y += spin_speed * delta
+		if L_reel.position.y >= 640:
+			L_reel.position.y -= 640
+	
+
+#入力処理
 func _unhandled_input(event):
 	if event is InputEventKey and event.is_pressed() and not event.is_echo():
 		if event.keycode == KEY_SPACE:
-			var rand_num :int = drawing()
-			var result_role = select_flags(rand_num)
-			print(rand_num)
-			print(result_role)
+			if not is_spinning:
+				var rand_num :int = drawing()
+				var result_role = select_flags(rand_num)
+				print(rand_num)
+				print(result_role)
 
-			if not result_role == "vac": 
-				print(mother[result_role]["target"])
+				if not result_role == "vac": 
+					print(mother[result_role]["target"])
+				
+				is_spinning = true
+
+		if event.keycode == KEY_ENTER:
+			if is_spinning:
+				is_spinning = false
 
 
+
+#フラグデータ読み込み
 func import_sql_from_file():
 	var file = FileAccess.open(sql_file_path, FileAccess.READ)
 	var sql_text = file.get_as_text()
@@ -72,6 +95,7 @@ func import_sql_from_file():
 		mother[f_name]["target"].append(target_info)
 
 
+#フラグ抽選
 func select_flags(value):
 	for flag_name in mother:
 		var weight: int = mother[flag_name]["weight"]
@@ -81,6 +105,7 @@ func select_flags(value):
 	return("vac")
 
 
+#乱数生成
 func drawing():
 	var loop_duration : int = 500000
 	var current_time = Time.get_ticks_usec()
