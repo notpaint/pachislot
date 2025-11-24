@@ -31,6 +31,7 @@ INSERT INTO flags (flag_name, state, weight) VALUES ('Replay','Normal' ,'8976');
 INSERT INTO flags (flag_name, state, weight) VALUES ('CherryA','Normal' ,'3277');
 INSERT INTO flags (flag_name, state, weight) VALUES ('Suica','Normal' ,'2185');
 
+
 CREATE TABLE mapping(
     flag_id INT,
     role_id INT,
