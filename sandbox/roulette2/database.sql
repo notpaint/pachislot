@@ -27,6 +27,7 @@ CREATE TABLE flags(
 INSERT INTO flags (flag_name, weight, state) VALUES ('BellA', 32769, 'Normal');
 INSERT INTO flags (flag_name, weight, state) VALUES ('BellB', 32769, 'Normal');
 
+
 CREATE TABLE mapping(
     flag_id INT,
     role_id INT,

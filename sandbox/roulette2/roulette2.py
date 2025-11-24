@@ -4,19 +4,21 @@ import sqlite3
 import os
 
 dir = os.path.dirname(__file__)
-path = os.path.join(dir, "test.sql")
+path1 = os.path.join(dir, "database.sql")
+path2 = os.path.join(dir, "database_d.db")
 
 loop = 0.5
 stop_key = "space"
 exit_key = "enter"
 pressed = False
 
-conn = sqlite3.connect("test_database.db") 
+conn = sqlite3.connect(path2) 
 cursor = conn.cursor()
-with open(path, "r", encoding="utf-8") as f:
+with open(path1, "r", encoding="utf-8") as f:
     conn.executescript(f.read())
 
-def drawing(value):
+def drawing(value):    
+    
     print(f"値は{value}")
 
     result_id = 0
