@@ -20,14 +20,14 @@ CREATE TABLE flags(
     state TEXT
 );
 
-INSERT INTO flags (flag_name, weight, state) VALUES ('BellA', 32769, 'Normal');
-INSERT INTO flags (flag_name, weight, state) VALUES ('BellB', 32769, 'Normal');
+INSERT INTO flags (flag_name, weight, state) VALUES ('middleBell', 32769, 'Normal');
+INSERT INTO flags (flag_name, weight, state) VALUES ('Replay', 32769, 'Normal');
 
 CREATE TABLE reel_poses(
-    reel_pos TEXT
+    reel_pos INT
 );
 
-INSERT INTO reel_poses (reel_pos) VALUES ('L'), ('C'), ('R');
+INSERT INTO reel_poses (reel_pos) VALUES (0), (1), (2);
 
 CREATE TABLE reel_IDs(
     reel_id INT
@@ -38,17 +38,17 @@ INSERT INTO reel_IDs (reel_id) VALUES (0), (1), (2), (3), (4);
 
 CREATE TABLE slides(
     role_id INT,
-    reel_pos TEXT,
+    reel_pos INT,
     reel_ID INT,
     slide INT,
     FOREIGN KEY (role_id) REFERENCES roles(id),
     PRIMARY KEY (role_id, reel_pos, reel_ID)
 );
 
-INSERT INTO slides (role_id, reel_pos, reel_ID, slide)
-SELECT r.id, p.reel_pos, i.reel_id, 0
-FROM roles AS r, reel_poses AS p, reel_IDs AS i
-WHERE r.name = 'upperBell';
+-- INSERT INTO slides (role_id, reel_pos, reel_ID, slide)
+-- SELECT r.id, p.reel_pos, i.reel_id, 0
+-- FROM roles AS r, reel_poses AS p, reel_IDs AS i
+-- WHERE r.name = 'upperBell';
 
 CREATE TABLE mapping(
     flag_id INT,

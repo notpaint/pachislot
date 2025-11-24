@@ -15,8 +15,6 @@ def auto_slide(cursor, role_ID, reel_pos, target_index):
 
         cursor.execute(sql, (slide_num, role_ID, reel_pos, stop_index))
 
-        conn.commit()
-
 
 # ('小役名', "払い出し枚数", '入賞系')
 role_data = [
@@ -57,9 +55,11 @@ cursor.execute("""
 
 cursor.execute("SELECT name, id FROM roles")
 role_dict = dict(cursor.fetchall())
-role_id = role_dict["middleBell"]
 
-auto_slide(cursor, role_id, "L", 1)
+role_id = role_dict["middleBell"]
+auto_slide(cursor, role_id, 0, 0)
+role_id = role_dict["Replay"]
+auto_slide(cursor, role_id, 0, 1)
 
 
 conn.commit()
