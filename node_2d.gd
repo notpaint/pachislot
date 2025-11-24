@@ -1,5 +1,8 @@
 extends Node2D
 
+const pattern_scale : float = 128.0
+const pattern_sum : int = 5
+const pattern_per : float = 1.0 / pattern_sum
 
 var db : SQLite
 var db_path = "res://test_slot.sql"
@@ -9,6 +12,11 @@ var mother : Dictionary = {}
 
 var is_spinning = false
 var spin_speed : float = 500.0
+
+var active_tween : Tween
+var current_pixel : float = 0.0
+var current_scale : float = 0.0
+
 
 @onready var L_reel = $window/L_reel
 
@@ -35,9 +43,8 @@ func _unhandled_input(event):
 			if not is_spinning:
 				var rand_num :int = drawing()
 				var result_role = select_flags(rand_num)
-				print(rand_num)
-				print(result_role)
-
+				# print(rand_num)
+				# print(result_role)
 				if not result_role == "vac": 
 					print(mother[result_role]["target"])
 				
@@ -45,6 +52,7 @@ func _unhandled_input(event):
 
 		if event.keycode == KEY_ENTER:
 			if is_spinning:
+				stop_reels()
 				is_spinning = false
 
 
@@ -113,3 +121,20 @@ func drawing():
 	var ratio: float = float(current_value) / float(loop_duration)
 	var result_value: int = int(ratio * 65536)
 	return(result_value)
+
+#リール停止処理
+func stop_reels():
+	if active_tween:
+		active_tween.kill()
+	current_pixel = L_reel.position.y
+	current_scale = fmod((current_pixel / pattern_scale) , 1)
+	if current_scale < 0.35:
+		return
+	var target_pixel : float = ceil(current_pixel / pattern_scale) * pattern_scale
+	var target_speed : float = abs(target_pixel - current_pixel) / spin_speed
+	active_tween = create_tween()
+	active_tween.tween_callback(set.bind("is_spinning", false))
+	active_tween.tween_property(L_reel, "position:y" , target_pixel, target_speed)
+	await active_tween.finished
+	if active_tween:
+		active_tween.kill
