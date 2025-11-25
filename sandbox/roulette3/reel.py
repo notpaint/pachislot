@@ -26,6 +26,45 @@ role_data = [
     ('Suica', 5, '[suica-suica-suica]')
 ]
 
+#%%
+# ('役名', '確率', '状態')
+flag_data = [
+    {"flag_name": 'Bell', "weight": 13107},
+    {"flag_name": 'Replay_A', "weight": 4000},
+    {"flag_name": 'vac', "weight": 10000},
+    {"flag_name": 'Replay_A', "weight": 4978},
+    {"flag_name": 'vac', "weight": 10000},
+    {"flag_name": 'Cherry', "weight": 3300},
+    {"flag_name": 'Suica', "weight": 2200},
+    {"flag_name": 'vac', "weight": 17951},
+]
+
+#%%
+
+def check():
+    total = sum(d["weight"] for d in flag_data if d["flag_name"])
+    print(f"現在の合計:{total}")
+    print(f"残り変数:{65536 - total}")
+    table = {}
+    for d in flag_data:
+        name = d["flag_name"]
+        w = d["weight"]
+
+        if name in table:
+            table[name] += w
+        else:
+            table[name] = w
+
+    for x, y in table.items():
+        if y > 0:
+            table[x] = round((65536 / y), 1)
+
+    print(table)
+
+#%%
+
+
+
 dir = os.path.dirname(__file__)
 sql_path = os.path.join(dir, "database_v2.sql")
 db_path = os.path.join(dir, "database_v2.db")
