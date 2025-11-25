@@ -1,3 +1,4 @@
+-- 小役テーブル
 CREATE TABLE roles(
     id INTEGER PRIMARY KEY,
     name TEXT,
@@ -5,15 +6,28 @@ CREATE TABLE roles(
     pattern TEXT
 );
 
-
+--　フラグ一覧
 CREATE TABLE flags(
-    id INTEGER PRIMARY KEY,
-    flag_name TEXT,
-    weight INT,
-    state TEXT
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    flag TEXT
 );
 
+-- 確率状態一覧
+CREATE TABLE weight_status (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    weight_state TEXT
+);
 
+CREATE TABLE flag_table (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    weight_status_id INT,
+    flag_id INT,
+    weight INT,
+    FOREIGN KEY(weight_status_id) REFERENCES weight_status(id)
+    FOREIGN KEY(flag_id) REFERENCES flags(id)
+);
+
+--　スベリテーブル
 CREATE TABLE slides(
     role_id INT,
     reel_pos INT,
@@ -23,12 +37,7 @@ CREATE TABLE slides(
     PRIMARY KEY (role_id, reel_pos, reel_ID)
 );
 
-
-CREATE TABLE bonus_status (
-    weight_status TEXT
-);
-
-
+-- リールの位置(左:0 中:1 右:2)
 CREATE TABLE reel_poses(
     reel_pos INT
 );
@@ -36,12 +45,18 @@ CREATE TABLE reel_poses(
 INSERT INTO reel_poses (reel_pos) VALUES (0), (1), (2);
 
 
+-- コマ数
 CREATE TABLE reel_IDs(
     reel_id INT
 );
 
 INSERT INTO reel_IDs (reel_id) VALUES (0), (1), (2), (3), (4);
 -- INSERT INTO reel_IDs (reel_id) VALUES (0), (1), (2), (3), (4), (5), (6), (7), (8), (9), (10), (11), (12), (13), (14), (15), (16), (17), (18), (19), (20);
+
+
+
+
+
 
 
 
