@@ -1,7 +1,8 @@
 -- 小役テーブル
 CREATE TABLE roles(
     id INTEGER PRIMARY KEY,
-    name TEXT,
+    role TEXT,
+    kind TEXT,
     payout INTEGER,
     pattern TEXT
 );
@@ -28,7 +29,7 @@ CREATE TABLE flag_table (
 );
 
 --　スベリテーブル
-CREATE TABLE slides(
+CREATE TABLE slide_table(
     role_id INT,
     reel_pos INT,
     reel_ID INT,
@@ -54,30 +55,10 @@ INSERT INTO reel_IDs (reel_id) VALUES (0), (1), (2), (3), (4);
 -- INSERT INTO reel_IDs (reel_id) VALUES (0), (1), (2), (3), (4), (5), (6), (7), (8), (9), (10), (11), (12), (13), (14), (15), (16), (17), (18), (19), (20);
 
 
-
-
-
-
-
-
-CREATE TABLE mapping(
+CREATE TABLE flag_role_map(
     flag_id INT,
     role_id INT,
     FOREIGN KEY (flag_id) REFERENCES flags(id),
     FOREIGN KEY (role_id) REFERENCES roles(id)
 );
 
--- INSERT INTO mapping (flag_id, role_id) 
--- SELECT f.id, r.id
--- FROM flags AS f, roles AS r
--- WHERE f.flag_name = 'BellA' 
--- AND r.name IN ('upperBell', 'middleBell');
-
--- INSERT INTO mapping (flag_id, role_id)
--- SELECT f.id, r.id
--- FROM flags AS f, roles AS r
--- WHERE f.flag_name = 'BellB' 
--- AND r.name IN ('upperBell', 'lowerBell');
-
--- INSERT INTO mapping (flag_id, role_id) VALUES (2,1);
--- INSERT INTO mapping (flag_id, role_id) VALUES (2,3);
