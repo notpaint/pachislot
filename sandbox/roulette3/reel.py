@@ -3,7 +3,7 @@ import os
 import csv
 
 #%%
-# ('小役名', "払い出し枚数", '入賞系')
+# ('小役名', "払い出し枚数",'小役(N)orリプレイ(R)orボーナス(B),' '入賞系')
 role_data = [
     ('upperBell', 3, "N", '[rep-cherry-rep]'),
     ('middleBell', 8, "N", '[bell-bell-bell]'),
@@ -121,11 +121,17 @@ def load_slide_csv(csv_path, reel_pos):
     print(slide_list)
     return(slide_list)
 
-def apply_slide_table(cursor, role_ID, reel_pos, slides):
+def apply_control_table(cursor, role_ID, reel_pos, slides):
     for reel_ID, slide in enumerate(slides):
-        cursor.execute("""INSERT INTO slide_table (role_id, reel_pos, reel_ID, slide)
+        cursor.execute("""INSERT INTO control_table (role_id, reel_pos, reel_ID, slide)
                        VALUES (?, ?, ?, ?)
                        """, (role_ID, reel_pos, reel_ID, slide))
+
+def apply_vac_control(cursor, reel_pos, slides):
+    for reel_ID, slide in enumerate(slides):
+        cursor.execute("""INSERT INTO vac_control (reel_pos, reel_ID, slide)
+                       VALUES (?, ?, ?)
+                       """, (reel_pos, reel_ID, slide))
 
 
 #%%
@@ -160,7 +166,7 @@ def generate_flag_table(cursor):
 
 
 
-def generate_slide_table(cursor):
+def generate_control_table(cursor):
     cursor.executemany("""
                        INSERT INTO roles (role, payout, kind, pattern)
                        VALUES (?, ?, ?, ?)
@@ -179,9 +185,11 @@ def generate_slide_table(cursor):
             target = item["target"]
             if name in role_dict:
                 role_id = role_dict[name]
-                apply_slide_table(cursor, role_id, reel_pos, target)
+                apply_control_table(cursor, role_id, reel_pos, target)
+            elif name =="vac":
+                apply_vac_control(cursor, reel_pos, target)
             else:
-                print(f"ERROR ON generate_slide_table() : {name} IS NOT EXIST")
+                print(f"ERROR ON generate_control_table() : {name} IS NOT EXIST")
 
 
 def generate_flag_role_map(cursor):
@@ -229,7 +237,7 @@ if __name__=="__main__":
     cursor = conn.cursor()
     with open(sql_path, "r", encoding="UTF-8") as f:
         conn.executescript(f.read())
-    generate_slide_table(cursor)
+    generate_control_table(cursor)
     generate_flag_table(cursor)
     generate_flag_role_map(cursor)
     

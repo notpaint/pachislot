@@ -117,14 +117,27 @@ func load_data_from_db():
 		var data = {"role": role, "payout":payout, "kind": kind}
 		flag_table[flag].append(data)
 
+	#control_table(制御表)作成
 
-	#control_table(小役の制御表)作成
+	db.query("SELECT reel_pos, reel_ID, slide FROM vac_control")
+	results = db.query_result
+
+	for item in results:
+		var reel_pos = int(item["reel_pos"])
+		var reel_ID = int(item["reel_ID"])
+		var slide = int(item["slide"])
+		if not control_table.has("vac"):
+			control_table["vac"] = [[],[],[]]
+			for i in range(3):
+				control_table["vac"][i].resize(pattern_sum)
+		control_table["vac"][reel_pos][reel_ID] = slide
+
 	order = """
 	SELECT
 	r.role,
 	s.reel_pos, s.reel_ID, s.slide
 	FROM
-	slide_table AS s
+	control_table AS s
 	JOIN
 	roles AS r ON s.role_ID = r.id
 	"""
@@ -143,7 +156,7 @@ func load_data_from_db():
 				control_table[role][i].resize(pattern_sum)
 		control_table[role][reel_pos][reel_ID] = slide
 
-	print(weight_table)
+	print(control_table)
 		
 
 

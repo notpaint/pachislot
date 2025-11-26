@@ -28,14 +28,20 @@ CREATE TABLE flag_table (
     FOREIGN KEY(flag_id) REFERENCES flags(id)
 );
 
---　スベリテーブル
-CREATE TABLE slide_table(
+--　制御テーブル
+CREATE TABLE control_table(
     role_id INT,
     reel_pos INT,
     reel_ID INT,
     slide INT,
     FOREIGN KEY (role_id) REFERENCES roles(id),
     PRIMARY KEY (role_id, reel_pos, reel_ID)
+);
+
+CREATE TABLE vac_control(
+    reel_pos INT,
+    reel_ID INT,
+    slide INT
 );
 
 -- リールの位置(左:0 中:1 右:2)
