@@ -15,9 +15,6 @@ var is_spinning = false
 var spin_speed : float = 500.0
 
 var active_tween : Tween
-var current_pixel : float = 0.0
-var current_scale : float = 0.0
-var current_ID : int = 0
 
 var result_flag = null
 
@@ -46,15 +43,12 @@ func _unhandled_input(event):
 			if not is_spinning:
 				var rand_num :int = drawing()
 				result_flag = select_flags(rand_num)
-				print(result_flag)
-				if not result_flag == "vac": 
-					pass
-				
+				create_control_data(result_flag)
 				is_spinning = true
 
 		if event.keycode == KEY_ENTER:
 			if is_spinning:
-				stop_reels(result_flag)
+				stop_reels(create_control_data(result_flag), 0)
 				is_spinning = false
 
 
@@ -156,6 +150,8 @@ func load_data_from_db():
 				control_table[role][i].resize(pattern_sum)
 		control_table[role][reel_pos][reel_ID] = slide
 
+	print(weight_table)
+	print(flag_table)
 	print(control_table)
 		
 
@@ -181,27 +177,55 @@ func drawing():
 	return(result_value)
 
 
-#リール停止処理
-func stop_reels(flag):
+#当選役の制御テーブル作成
+func create_control_data(flag):
+	var control_data = []
+	var i = 0
+	print(flag)
+
 	if active_tween:
 		active_tween.kill()
-	
-	if flag == "vac":
-		return
-	
-	var role = flag_table[flag][0]["role"]
-	current_pixel = L_reel.position.y
-	current_scale = fmod((current_pixel / pattern_scale) , 1.0)
 
-	# if current_scale < 0.35:
-	# 	return
+	if not flag == "vac":
+		var roles = flag_table[flag]
+		for row in roles: 
+			i += 1
+			var role = row["role"]
+			var payout = row["payout"]
+			var slide = control_table[role]
+			var role_data : Dictionary
+			role_data["slide"] = slide
+			role_data["payout"] = payout
+			role_data["priority"] = i
+			control_data.append(role_data)
+	else:
+		var vac_data : Dictionary
+		vac_data["slide"] = control_table["vac"]
+		vac_data["payout"] = 0
+		control_data.append(vac_data)
+
 	
-	var target_pixel : float = ceil(current_pixel / pattern_scale) * pattern_scale
-	current_ID = int(floor(fmod((target_pixel /pattern_scale), pattern_sum)))
-	var slide = control_table[role][0][current_ID]
-	target_pixel += (pattern_scale * slide)
+	return(control_data)
+
+#リール停止処理
+func stop_reels(control_data, reel_pos):
+	print(control_data)
+	var current_pixel = L_reel.position.y
+	var raw_current_scale = current_pixel / pattern_scale
+	var base_ID = int(ceil(raw_current_scale))
+	var current_scale = fmod(raw_current_scale, 1)
+	var slide = 0
+
+	var search_ID = posmod(base_ID,5)
+
+	var target_pixel = base_ID * pattern_scale
+	
+	for row in control_data:
+		slide = row["slide"][reel_pos][search_ID]
+		break
+
+	target_pixel += (slide * pattern_scale)
 	var target_speed : float = abs(target_pixel - current_pixel) / spin_speed
-
 	active_tween = create_tween()
 	active_tween.tween_property(L_reel, "position:y" , target_pixel, target_speed)
 	active_tween.tween_callback(set.bind("is_spinning", false))
@@ -211,4 +235,28 @@ func stop_reels(flag):
 
 	if active_tween:
 		active_tween.kill()
-	print(current_ID)
+
+
+	# var role = flag_table[flag][0]["role"]
+	# current_pixel = L_reel.position.y
+	# current_scale = fmod((current_pixel / pattern_scale) , 1.0)
+
+	# if current_scale < 0.35:
+	# 	return
+	
+	# var target_pixel : float = ceil(current_pixel / pattern_scale) * pattern_scale
+	# current_ID = int(floor(fmod((target_pixel /pattern_scale), pattern_sum)))
+	# var slide = control_table[role][0][current_ID]
+	# target_pixel += (pattern_scale * slide)
+	# var target_speed : float = abs(target_pixel - current_pixel) / spin_speed
+
+	# active_tween = create_tween()
+	# active_tween.tween_property(L_reel, "position:y" , target_pixel, target_speed)
+	# active_tween.tween_callback(set.bind("is_spinning", false))
+	# await active_tween.finished
+
+	# L_reel.position.y = fmod(L_reel.position.y, 640.0)
+
+	# if active_tween:
+	# 	active_tween.kill()
+	# print(current_ID)
