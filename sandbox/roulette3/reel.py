@@ -35,7 +35,7 @@ flag_data_JAC = {
 flag_role_map = [
     {
         "flag": "Bell",
-        "roles": ["middleBell"]
+        "roles": ["middleBell","upperBell"]
      },
     {
         "flag": "Replay_A",
@@ -212,8 +212,6 @@ def generate_flag_role_map(cursor):
             cursor.execute("""
                            INSERT OR IGNORE INTO flag_role_map (flag_ID, role_ID)
                            VALUES (?, ?)""", (flag_ID, role_ID))   
-
-
 
 
 

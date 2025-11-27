@@ -10,15 +10,20 @@ var db_path = "database_v2.db"
 var weight_table : Dictionary = {}
 var flag_table : Dictionary = {}
 var control_table : Dictionary = {}
+var current_control_table : Array
 
-var is_spinning = false
-var spin_speed : float = 500.0
+var is_spinning = [false, false, false]
+var spin_speed : float = 400.0
 
-var active_tween : Tween
+var active_tweens = [[],[],[]]
 
 var result_flag = null
 
 @onready var L_reel = $window/L_reel
+@onready var C_reel = $window/C_reel
+@onready var R_reel = $window/R_reel
+
+@onready var reels = [L_reel, C_reel, R_reel]
 
 func _ready():
 	db = SQLite.new()
@@ -30,26 +35,45 @@ func _ready():
 
 #回転処理
 func _process(delta: float):
-	if is_spinning:
-		L_reel.position.y += spin_speed * delta
-		if L_reel.position.y >= 640:
-			L_reel.position.y -= 640
+	for i in range(3):
+		if is_spinning[i]:
+			reels[i].position.y += spin_speed * delta
+			if reels[i].position.y >= 640:
+				reels[i].position.y -= 640
 	
 
 #入力処理
 func _unhandled_input(event):
-	if event is InputEventKey and event.is_pressed() and not event.is_echo():
-		if event.keycode == KEY_SPACE:
-			if not is_spinning:
+	if not event.is_pressed() or event.is_echo():
+		return
+
+	if event.is_action_pressed("lever"):
+		if not is_spinning[0] and not is_spinning[1] and not is_spinning[2]:
 				var rand_num :int = drawing()
 				result_flag = select_flags(rand_num)
-				create_control_data(result_flag)
-				is_spinning = true
+				current_control_table = create_control_data(result_flag)
+				for i in range (3):
+					is_spinning[i] = true
+	
+	if event.is_action_pressed("stop_left"):
+		try_stop_reel(0)
+	if event.is_action_pressed("stop_center"):
+		try_stop_reel(1)
+	if event.is_action_pressed("stop_right"):
+		try_stop_reel(2)
+		
 
-		if event.keycode == KEY_ENTER:
-			if is_spinning:
-				stop_reels(create_control_data(result_flag), 0)
-				is_spinning = false
+
+func try_stop_reel(reel_pos):
+	if is_spinning[reel_pos]:
+		stop_reels(current_control_table, reel_pos)
+		# is_spinning[reel_pos] = false
+
+
+	# 	if event.keycode == KEY_ENTER:
+	# 		if is_spinning[0]:
+	# 			stop_reels(create_control_data(result_flag), 0)
+	# 			is_spinning[0] = false
 
 
 
@@ -183,9 +207,6 @@ func create_control_data(flag):
 	var i = 0
 	print(flag)
 
-	if active_tween:
-		active_tween.kill()
-
 	if not flag == "vac":
 		var roles = flag_table[flag]
 		for row in roles: 
@@ -209,11 +230,11 @@ func create_control_data(flag):
 
 #リール停止処理
 func stop_reels(control_data, reel_pos):
-	print(control_data)
-	var current_pixel = L_reel.position.y
+	is_spinning[reel_pos] = false
+	var reel = reels[reel_pos]
+	var current_pixel = reel.position.y
 	var raw_current_scale = current_pixel / pattern_scale
 	var base_ID = int(ceil(raw_current_scale))
-	var current_scale = fmod(raw_current_scale, 1)
 	var slide = 0
 
 	var search_ID = posmod(base_ID,5)
@@ -226,15 +247,15 @@ func stop_reels(control_data, reel_pos):
 
 	target_pixel += (slide * pattern_scale)
 	var target_speed : float = abs(target_pixel - current_pixel) / spin_speed
-	active_tween = create_tween()
-	active_tween.tween_property(L_reel, "position:y" , target_pixel, target_speed)
-	active_tween.tween_callback(set.bind("is_spinning", false))
-	await active_tween.finished
+	active_tweens[reel_pos] = create_tween()
+	active_tweens[reel_pos].tween_property(reel, "position:y" , target_pixel, target_speed)
+	active_tweens[reel_pos].tween_callback(func(): is_spinning[reel_pos] = false)
+	await active_tweens[reel_pos].finished
 
-	L_reel.position.y = fmod(L_reel.position.y, 640.0)
+	reel.position.y = fmod(reel.position.y, 640.0)
 
-	if active_tween:
-		active_tween.kill()
+	if active_tweens[reel_pos]:
+		active_tweens[reel_pos].kill()
 
 
 	# var role = flag_table[flag][0]["role"]
