@@ -3,14 +3,14 @@ import os
 import csv
 
 #%%
-# ('小役名', "払い出し枚数",'小役(N)orリプレイ(R)orボーナス(B),' '入賞系')
+# ('小役名', "払い出し枚数",'小役(1)orリプレイ(0)orボーナス(2),' '入賞系')
 role_data = [
-    ('upperBell', 3, "N", '[rep-cherry-rep]'),
-    ('middleBell', 8, "N", '[bell-bell-bell]'),
-    ('downBell', 3, "N", '[rep-bell-suica]'),
-    ('Replay', 0, "R", '[rep-rep-rep]'),
-    ('Cherry', 2, "N", '[bar-rep-rep]'),
-    ('Suica', 5, "N", '[suica-suica-suica]')
+    ('upperBell', 3, 1, '["rep", "cherry", "rep"]'),
+    ('middleBell', 8, 1, '["bell", "bell", "bell"]'),
+    ('downBell', 3, 1, '["rep", "bell", "suica"]'),
+    ('Replay', 0, 0, '["rep", "rep", "rep"]'),
+    ('Cherry', 2, 1, '["bar", "rep", "rep"]'),
+    ('Suica', 5, 1, '["suica", "suica", "suica"]')
 ]
 
 # [{'フラグ名', '確率'}]
@@ -88,7 +88,23 @@ def generate_flag_list(seq):
         weight = item["weight"]
         flag_list.append({"name": name, "weight": weight})
     return flag_list
+
+def load_reel_csv(csv_path):
+
+    reel_table = [[],[],[]]
+
+    with open(csv_path, "r", encoding="UTF-8-SIG") as f:
+        reader = csv.DictReader(f)
+
+        for row in reader:
+            for val, name in row.items():
+                if val == "reel_ID": continue
+                reel_pos = int(val)
+                flag = name
+                reel_table[reel_pos].append(flag)
     
+    return(reel_table)
+
 
 def load_slide_csv(csv_path, reel_pos):
 
@@ -118,7 +134,7 @@ def load_slide_csv(csv_path, reel_pos):
                  "target" : val
                  }
             )
-    print(slide_list)
+
     return(slide_list)
 
 def apply_control_table(cursor, role_ID, reel_pos, slides):
@@ -163,7 +179,6 @@ def generate_flag_table(cursor):
             cursor.execute("""
                            INSERT OR IGNORE INTO flag_table (weight_status_id, flag_id, weight)
                            VALUES (?, ?, ?)""", (state_id, flag_id, weight))
-
 
 
 def generate_control_table(cursor):
@@ -213,7 +228,15 @@ def generate_flag_role_map(cursor):
                            INSERT OR IGNORE INTO flag_role_map (flag_ID, role_ID)
                            VALUES (?, ?)""", (flag_ID, role_ID))   
 
-
+def generate_reel_table(cursor):
+    dir = os.path.dirname(__file__)
+    csv_path = os.path.join(dir, "reel_table.csv")
+    reel_table = load_reel_csv(csv_path)
+    for reel_pos, item in enumerate(reel_table):
+        for reel_ID, design in enumerate(item):
+            cursor.execute("""INSERT OR IGNORE INTO reel_table (reel_pos, reel_id, reel_design)
+                           VALUES (?, ?, ?)""", (reel_pos, reel_ID, design))
+            
 
 #%%
 
@@ -238,6 +261,7 @@ if __name__=="__main__":
     generate_control_table(cursor)
     generate_flag_table(cursor)
     generate_flag_role_map(cursor)
+    generate_reel_table(cursor)
     
     conn.commit()
     conn.close()

@@ -2,7 +2,7 @@
 CREATE TABLE roles(
     id INTEGER PRIMARY KEY,
     role TEXT,
-    kind TEXT,
+    kind INT,
     payout INTEGER,
     pattern TEXT
 );
@@ -38,10 +38,20 @@ CREATE TABLE control_table(
     PRIMARY KEY (role_id, reel_pos, reel_ID)
 );
 
+-- 外れ制御テーブル
 CREATE TABLE vac_control(
     reel_pos INT,
     reel_ID INT,
     slide INT
+);
+
+CREATE TABLE reel_table(
+    reel_pos INT,
+    reel_id INT,
+    reel_design TEXT,
+    FOREIGN KEY (reel_pos) REFERENCES reel_poses(reel_pos),
+    FOREIGN KEY (reel_id) REFERENCES reel_IDs(reel_id),
+    PRIMARY KEY (reel_pos, reel_id)
 );
 
 -- リールの位置(左:0 中:1 右:2)
@@ -59,6 +69,7 @@ CREATE TABLE reel_IDs(
 
 INSERT INTO reel_IDs (reel_id) VALUES (0), (1), (2), (3), (4);
 -- INSERT INTO reel_IDs (reel_id) VALUES (0), (1), (2), (3), (4), (5), (6), (7), (8), (9), (10), (11), (12), (13), (14), (15), (16), (17), (18), (19), (20);
+
 
 
 CREATE TABLE flag_role_map(
