@@ -14,7 +14,7 @@ custom_minimum_size = Vector2(384, 384)
 layout_mode = 3
 anchors_preset = 0
 offset_top = 128.0
-offset_right = 128.0
+offset_right = 384.0
 offset_bottom = 512.0
 
 [node name="L_reel" type="Node2D" parent="window"]

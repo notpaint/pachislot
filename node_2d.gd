@@ -10,12 +10,14 @@ var db_path = "database_v2.db"
 var weight_table : Dictionary = {}
 var flag_table : Dictionary = {}
 var control_table : Dictionary = {}
+var reel_table : Array = [[],[],[]]
 var current_control_table : Array
+var current_patterns = []
 
 var is_spinning = [false, false, false]
-var spin_speed : float = 400.0
+var spin_speed : float = 800.0
 
-var active_tweens = [[],[],[]]
+var active_tweens : Array[Tween] = [null, null, null]
 
 var result_flag = null
 
@@ -52,6 +54,7 @@ func _unhandled_input(event):
 				var rand_num :int = drawing()
 				result_flag = select_flags(rand_num)
 				current_control_table = create_control_data(result_flag)
+				print(current_control_table)
 				for i in range (3):
 					is_spinning[i] = true
 	
@@ -61,6 +64,9 @@ func _unhandled_input(event):
 		try_stop_reel(1)
 	if event.is_action_pressed("stop_right"):
 		try_stop_reel(2)
+
+	if event.is_action_pressed("debug"):
+		print(flag_table)
 		
 
 
@@ -79,11 +85,18 @@ func try_stop_reel(reel_pos):
 
 #フラグデータ読み込み
 func load_data_from_db():
-	var results
-	var order
 
-	#weight_table(フラグの確率表)作成
-	order = """
+	load_weight_table()
+	load_flag_table()
+	load_control_table()
+	load_reel_table()
+
+
+
+#weight_table(フラグの確率表)作成
+#{"weight_state":[{"flag", "weight"}]}
+func load_weight_table():
+	var order = """
 	SELECT 
 	f.flag,
 	ws.weight_state,
@@ -97,20 +110,21 @@ func load_data_from_db():
 	"""
 
 	db.query(order)
-	results = db.query_result
+	var results = db.query_result
 
-	for item in results:
-		var flag = item["flag"]
-		var weight_state = item["weight_state"]
-		var weight = int(item["weight"])
+	for row in results:
+		var flag = row["flag"]
+		var weight_state = row["weight_state"]
+		var weight = int(row["weight"])
 		if not weight_table.has(weight_state):
 			weight_table[weight_state] = []
-		var data = {"flag": flag,"weight" : weight}
+		var data = {"flag": flag, "weight": weight}
 		weight_table[weight_state].append(data)
 
-
-	#flag_table(フラグの重複役一覧)作成
-	order = """
+#flag_table(フラグの重複役一覧)作成
+#{"flag" : [{"role", "kind", "payout", pattern}]}
+func load_flag_table():
+	var order = """
 	SELECT
 	f.flag,
 	r.role, r.kind, r.payout, r.pattern
@@ -123,34 +137,39 @@ func load_data_from_db():
 	"""
 
 	db.query(order)
-	results = db.query_result
+	var results = db.query_result
 
-	for item in results:
-		var flag = item["flag"]
-		var role = item["role"]
-		var kind = item["kind"]
-		var payout = int(item["payout"])
+	for row in results:
+		var flag = row["flag"]
+		var role = row["role"]
+		var kind = row["kind"]
+		var payout = int(row["payout"])
+		var pattern_json = row["pattern"]
+		var pattern_array = JSON.parse_string(pattern_json)
 		if not flag_table.has(flag):
 			flag_table[flag] = []
-		var data = {"role": role, "payout":payout, "kind": kind}
+		var data = {"role" : role, "kind": kind, "payout": payout, "pattern": pattern_array}
 		flag_table[flag].append(data)
 
-	#control_table(制御表)作成
+#control_table(制御表)作成
+#{"role" : [[L],[C],[R]]}
+func load_control_table():
 
+	#はずれ(vac)制御読み込み
 	db.query("SELECT reel_pos, reel_ID, slide FROM vac_control")
-	results = db.query_result
+	var results = db.query_result
 
-	for item in results:
-		var reel_pos = int(item["reel_pos"])
-		var reel_ID = int(item["reel_ID"])
-		var slide = int(item["slide"])
+	for row in results:
+		var reel_pos = int(row["reel_pos"])
+		var reel_ID = int(row["reel_ID"])
+		var slide = int(row["slide"])
 		if not control_table.has("vac"):
 			control_table["vac"] = [[],[],[]]
 			for i in range(3):
 				control_table["vac"][i].resize(pattern_sum)
 		control_table["vac"][reel_pos][reel_ID] = slide
-
-	order = """
+	
+	var order = """
 	SELECT
 	r.role,
 	s.reel_pos, s.reel_ID, s.slide
@@ -163,21 +182,34 @@ func load_data_from_db():
 	db.query(order)
 	results = db.query_result
 
-	for item in results:
-		var role = item["role"]
-		var reel_pos = int(item["reel_pos"])
-		var reel_ID = int(item["reel_ID"])
-		var slide = int(item["slide"])
+	for row in results:
+		var role = row["role"]
+		var reel_pos = int(row["reel_pos"])
+		var reel_ID = int(row["reel_ID"])
+		var slide = int(row["slide"])
 		if not control_table.has(role):
 			control_table[role] = [[],[],[]]
-			for i in range (3):
+			for i in range(3):
 				control_table[role][i].resize(pattern_sum)
 		control_table[role][reel_pos][reel_ID] = slide
 
-	print(weight_table)
-	print(flag_table)
-	print(control_table)
-		
+#reel_table(リールテーブル)作成
+#[[L],[C],[R]]
+func load_reel_table():
+	db.query("SELECT reel_pos, reel_id, reel_design FROM reel_table")
+	var results = db.query_result
+
+	for i in range(3):
+		reel_table[i].resize(pattern_sum)
+
+	for row in results:
+		# print(row)
+		var reel_pos =  int(row["reel_pos"])
+		var reel_id = int(row["reel_id"])
+		var design = row["reel_design"]
+		reel_table[reel_pos][reel_id] = design
+
+
 
 
 #フラグ抽選
@@ -205,18 +237,20 @@ func drawing():
 func create_control_data(flag):
 	var control_data = []
 	var i = 0
-	print(flag)
 
 	if not flag == "vac":
 		var roles = flag_table[flag]
+		print(roles)
 		for row in roles: 
 			i += 1
 			var role = row["role"]
 			var payout = row["payout"]
+			var pattern = row["pattern"]
 			var slide = control_table[role]
 			var role_data : Dictionary
 			role_data["slide"] = slide
 			role_data["payout"] = payout
+			role_data["pattern"] = pattern
 			role_data["priority"] = i
 			control_data.append(role_data)
 	else:
@@ -228,22 +262,49 @@ func create_control_data(flag):
 	
 	return(control_data)
 
+
+func get_raw_ID(pixel):
+	var raw_current_scale = pixel / pattern_scale
+	var raw_ID = int(ceil(raw_current_scale))
+	return (raw_ID)
+
+
+func culc_target(control_data, reel_pos, raw_ID):
+	# var reel = reels[reel_pos]
+	var slide = 0
+	var base_ID = posmod(raw_ID,pattern_sum)
+	for row in control_data:
+		slide = row["slide"][reel_pos][base_ID]
+		break
+	var target_ID_raw = -(raw_ID + slide)
+	var target_ID = posmod(target_ID_raw, pattern_sum)
+	var target_design = reel_table[reel_pos][target_ID]
+	for row in control_data:
+		if row.has("pattern"):
+			var role_design = row["pattern"][reel_pos]
+			if target_design != role_design:
+				print(target_design)
+				print(role_design)
+				return(slide)
+			else:
+				return(slide)
+		else:
+			print("当選役無し")
+			return(slide)
+
+
 #リール停止処理
 func stop_reels(control_data, reel_pos):
+
 	is_spinning[reel_pos] = false
+
 	var reel = reels[reel_pos]
 	var current_pixel = reel.position.y
-	var raw_current_scale = current_pixel / pattern_scale
-	var base_ID = int(ceil(raw_current_scale))
-	var slide = 0
 
-	var search_ID = posmod(base_ID,5)
+	var raw_ID = get_raw_ID(current_pixel)
+	var slide = culc_target(control_data, reel_pos, raw_ID)
 
-	var target_pixel = base_ID * pattern_scale
-	
-	for row in control_data:
-		slide = row["slide"][reel_pos][search_ID]
-		break
+	var target_pixel = raw_ID * pattern_scale
 
 	target_pixel += (slide * pattern_scale)
 	var target_speed : float = abs(target_pixel - current_pixel) / spin_speed
@@ -257,27 +318,5 @@ func stop_reels(control_data, reel_pos):
 	if active_tweens[reel_pos]:
 		active_tweens[reel_pos].kill()
 
-
-	# var role = flag_table[flag][0]["role"]
-	# current_pixel = L_reel.position.y
-	# current_scale = fmod((current_pixel / pattern_scale) , 1.0)
-
-	# if current_scale < 0.35:
-	# 	return
-	
-	# var target_pixel : float = ceil(current_pixel / pattern_scale) * pattern_scale
-	# current_ID = int(floor(fmod((target_pixel /pattern_scale), pattern_sum)))
-	# var slide = control_table[role][0][current_ID]
-	# target_pixel += (pattern_scale * slide)
-	# var target_speed : float = abs(target_pixel - current_pixel) / spin_speed
-
-	# active_tween = create_tween()
-	# active_tween.tween_property(L_reel, "position:y" , target_pixel, target_speed)
-	# active_tween.tween_callback(set.bind("is_spinning", false))
-	# await active_tween.finished
-
-	# L_reel.position.y = fmod(L_reel.position.y, 640.0)
-
-	# if active_tween:
-	# 	active_tween.kill()
-	# print(current_ID)
+func check_prize():
+	pass
