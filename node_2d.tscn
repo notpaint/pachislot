@@ -24,12 +24,12 @@ texture = ExtResource("2_0e48y")
 centered = false
 
 [node name="L_image_2" type="Sprite2D" parent="window/L_reel"]
-position = Vector2(0, -640)
+position = Vector2(0, -2688)
 texture = ExtResource("2_0e48y")
 centered = false
 
 [node name="L_image_3" type="Sprite2D" parent="window/L_reel"]
-position = Vector2(0, -1280)
+position = Vector2(0, -5376)
 texture = ExtResource("2_0e48y")
 centered = false
 
@@ -43,12 +43,13 @@ centered = false
 [node name="C_image_2" type="Sprite2D" parent="window/C_reel"]
 texture = ExtResource("3_epypp")
 centered = false
-offset = Vector2(128, -640)
+offset = Vector2(128, -2688)
 
 [node name="C_image_3" type="Sprite2D" parent="window/C_reel"]
 position = Vector2(128, -1280)
 texture = ExtResource("3_epypp")
 centered = false
+offset = Vector2(0, -5376)
 
 [node name="R_reel" type="Node2D" parent="window"]
 
@@ -58,11 +59,11 @@ texture = ExtResource("4_0hol4")
 centered = false
 
 [node name="R_image_2" type="Sprite2D" parent="window/R_reel"]
-position = Vector2(256, -640)
+position = Vector2(256, -2688)
 texture = ExtResource("4_0hol4")
 centered = false
 
 [node name="R_image_3" type="Sprite2D" parent="window/R_reel"]
-position = Vector2(256, -1280)
+position = Vector2(256, -5376)
 texture = ExtResource("4_0hol4")
 centered = false

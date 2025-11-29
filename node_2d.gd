@@ -1,7 +1,7 @@
 extends Node2D
 
 const pattern_scale : float = 128.0
-const pattern_sum : int = 5
+const pattern_sum : int = 21
 const pattern_per : float = 1.0 / pattern_sum
 
 var db : SQLite
@@ -15,7 +15,7 @@ var current_control_table : Array
 var current_patterns = []
 
 var is_spinning = [false, false, false]
-var spin_speed : float = 800.0
+var spin_speed : float = 3584.0
 
 var active_tweens : Array[Tween] = [null, null, null]
 
@@ -40,8 +40,8 @@ func _process(delta: float):
 	for i in range(3):
 		if is_spinning[i]:
 			reels[i].position.y += spin_speed * delta
-			if reels[i].position.y >= 640:
-				reels[i].position.y -= 640
+			if reels[i].position.y >= 2688:
+				reels[i].position.y -= 2688
 	
 
 #入力処理
@@ -54,7 +54,7 @@ func _unhandled_input(event):
 				var rand_num :int = drawing()
 				result_flag = select_flags(rand_num)
 				current_control_table = create_control_data(result_flag)
-				print(current_control_table)
+				print(result_flag)
 				for i in range (3):
 					is_spinning[i] = true
 	
@@ -240,7 +240,7 @@ func create_control_data(flag):
 
 	if not flag == "vac":
 		var roles = flag_table[flag]
-		print(roles)
+		# print(roles)
 		for row in roles: 
 			i += 1
 			var role = row["role"]
@@ -282,12 +282,14 @@ func culc_target(control_data, reel_pos, raw_ID):
 	for row in control_data:
 		if row.has("pattern"):
 			var role_design = row["pattern"][reel_pos]
-			if target_design != role_design:
-				print(target_design)
-				print(role_design)
-				return(slide)
-			else:
-				return(slide)
+			print(target_design)
+			return(slide)
+			# if target_design != role_design:
+			# 	print(target_design)
+			# 	print(role_design)
+			# 	return(slide)
+			# else:
+			# 	return(slide)
 		else:
 			print("当選役無し")
 			return(slide)
@@ -313,7 +315,7 @@ func stop_reels(control_data, reel_pos):
 	active_tweens[reel_pos].tween_callback(func(): is_spinning[reel_pos] = false)
 	await active_tweens[reel_pos].finished
 
-	reel.position.y = fmod(reel.position.y, 640.0)
+	reel.position.y = fmod(reel.position.y, 2688.0)
 
 	if active_tweens[reel_pos]:
 		active_tweens[reel_pos].kill()
