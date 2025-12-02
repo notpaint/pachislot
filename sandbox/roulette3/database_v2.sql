@@ -4,7 +4,8 @@ CREATE TABLE roles(
     role TEXT,
     kind INT,
     payout INTEGER,
-    pattern TEXT
+    pattern TEXT,
+    miss_pattern TEXT
 );
 
 --　フラグ一覧

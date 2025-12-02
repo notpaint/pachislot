@@ -3,32 +3,50 @@ import os
 import csv
 
 #%%
-# ('小役名', "払い出し枚数",'小役(1)orリプレイ(0)orボーナス(2),' '入賞系')
+# ('小役名', "払い出し枚数",'小役(1)orリプレイ(0)orボーナス(2),', '入賞系', 'こぼし目')
 role_data = [
-    ('upperBell', 3, 1, '["rep", "cherry", "rep"]'),
-    ('middleBell', 8, 1, '["bell", "bell", "bell"]'),
-    ('downBell', 3, 1, '["rep", "bell", "suica"]'),
-    ('Replay', 0, 0, '["rep", "rep", "rep"]'),
-    ('Cherry', 2, 1, '["bar", "rep", "rep"]'),
-    ('Suica', 5, 1, '["suica", "suica", "suica"]')
+    ('upperBell', 3, 1, '["rep", "cherry", "rep"]',
+     '[]'),
+    ('middleBell', 8, 1, '["bell", "bell", "bell"]',
+     '[]'),
+    ('lowerBell', 3, 1, '["rep", "bell", "suica"]',
+     '[]'),
+    ('Replay', 0, 0, '["rep", "rep", "rep"]',
+     '[]'),
+    ('Cherry', 2, 1, '["bar", "rep", "rep"]',
+    '[["r7", "rep", "rep"],["b7", "rep", "rep"],["blank","rep","rep"],["suica","rep","rep"]]'
+    ),
+    ('middleSuica', 5, 1, '["suica", "suica", "suica"]',
+     '[["suica", "cherry", "bar"], ["suica", "r7", "b7"], ["suica", "cherry", "b7"], ["suica", "r7", "bar"]]'),
+    ('downSuica', 5,1, '["bell", "suica", "cherry"]',
+     '[["bell", "cherry", "bar"], ["bell", "r7", "b7"], ["bell", "cherry", "b7"], ["bell", "r7", "bar"]]'),
+    ('BB1', 0,2, '["r7", "r7", "r7"]',
+     '[["rep", "suica", "bell"], ["rep", "r7", "r7"], ["rep", "rep", "suica"], ["rep", "rep", "bar"], ["rep", "rep", "r7"], ["bell", "suica", "bell"], ["bell", "cherry", "bell"], ["bell", "r7", "bell"]]'),
+    ('RB1', 0,2, '["r7", "r7", "bar"]',
+     '[["rep", "bar", "r7"], ["rep", "r7", "r7"], ["rep", "rep", "suica"], ["rep", "rep", "bar"], ["rep", "rep", "r7"], ["bell", "suica", "bell"], ["bell", "cherry", "bell"], ["bell", "r7", "bell"]]')
 ]
 
-# [{'フラグ名', '確率'}]
+# [{'フラグ名', '確率', 'RT状態'}]
 flag_data_normal = [
     {"name": 'Bell', "weight": 13107},
-    {"name": 'Replay_A', "weight": 4000},
-    {"name": 'vac', "weight": 10000},
-    {"name": 'Replay_A', "weight": 4978},
-    {"name": 'vac', "weight": 10000},
+    {"name": 'Replay_A', "weight": 4000, 'RT': 'BB1'},
+    {"name": 'BB1', "weight": 10000},
+    {"name": 'Replay_A', "weight": 4978, 'RT': 'BB1'},
+    {"name": 'RB1', "weight": 10000},
     {"name": 'Cherry', "weight": 3300},
     {"name": 'Suica', "weight": 2200},
-    {"name": 'vac', "weight": 17951}
+    {"name": 'vac', "weight": 13107},
+    {"name": 'vac', "weight": 4844}
 ]
 
 flag_data_JAC = {
     "RB1" : [
         {"name": "Bell", "weight": 65536}
     ]
+}
+
+RT_map = {
+    'BB1' : 'vac'
 }
 
 # [{"フラグ名", "重複役"}]
@@ -47,7 +65,16 @@ flag_role_map = [
     },
     {
         "flag": "Suica",
-        "roles": ["Suica"]
+        "roles": ["downSuica"]
+    },
+    {
+        "flag": "BB1",
+        "roles": ["BB1"]
+
+    },
+    {
+        "flag": "RB1",
+        "roles": ["RB1"]
     }
 ]
 
@@ -81,11 +108,14 @@ def check():
     print(table)
 
 #タグ付け
-def generate_flag_list(seq):
+def generate_flag_list(seq, RT_mode = None):
     flag_list = []
     for item in seq:
         name = item["name"]
         weight = item["weight"]
+        tag = item.get("RT")
+        if tag in RT_map:
+            name = RT_map[tag]
         flag_list.append({"name": name, "weight": weight})
     return flag_list
 
@@ -96,7 +126,9 @@ def load_reel_csv(csv_path):
     with open(csv_path, "r", encoding="UTF-8-SIG") as f:
         reader = csv.DictReader(f)
 
-        for row in reader:
+        rows = list(reader)
+
+        for row in reversed(rows):
             for val, name in row.items():
                 if val == "reel_ID": continue
                 reel_pos = int(val)
@@ -105,7 +137,6 @@ def load_reel_csv(csv_path):
     
     return(reel_table)
 
-
 def load_slide_csv(csv_path, reel_pos):
 
     slide_list = []
@@ -113,11 +144,14 @@ def load_slide_csv(csv_path, reel_pos):
     with open(csv_path, "r", encoding="UTF-8-SIG") as f:
         reader = csv.DictReader(f)
 
+        rows = list(reader)
+
         slide_data = {}
 
-        for row in reader:
+        for row in reversed(rows):
             for name, val in row.items():
-                if name == "reel_ID": continue 
+                if name == "reel_ID": continue
+                if name.startswith("#"): continue
 
                 if name not in slide_data:
                     slide_data[name] = []
@@ -154,7 +188,8 @@ def apply_vac_control(cursor, reel_pos, slides):
 
 def generate_flag_table(cursor):
     flag_data = {}
-    flag_data["Normal"] = generate_flag_list(flag_data_normal)
+    flag_data["Normal"] = generate_flag_list(flag_data_normal, RT_mode = None)
+    flag_data["BB1"] = generate_flag_list(flag_data_normal, RT_mode = "BB1")
     for x,y in flag_data_JAC.items():
         flag_data[x] = y
     for status, weights in flag_data.items():
@@ -183,8 +218,8 @@ def generate_flag_table(cursor):
 
 def generate_control_table(cursor):
     cursor.executemany("""
-                       INSERT INTO roles (role, payout, kind, pattern)
-                       VALUES (?, ?, ?, ?)
+                       INSERT INTO roles (role, payout, kind, pattern, miss_pattern)
+                       VALUES (?, ?, ?, ?, ?)
                        """, role_data)
     
     cursor.execute("SELECT role,id FROM roles")
