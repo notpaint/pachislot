@@ -48,8 +48,8 @@ func _process(delta: float):
 			reels[i].position.y += current_spin_speed[i] * delta
 			if reels[i].position.y >= 2688:
 				reels[i].position.y -= 2688
-		# else:
-		# 	current_spin_speed[i] = 0.0
+		else:
+			current_spin_speed[i] = 0.0
 	
 
 #入力処理
@@ -300,18 +300,12 @@ func table_logic(control_data, reel_pos, raw_ID):
 	var base_ID = posmod(raw_ID,pattern_sum)
 	
 	for row in control_data:
-		print(row)
 		var slide = row["slide"][reel_pos][base_ID]
 		if not row.has("pattern"):
 			return(slide)
 		var target_ID_raw = (raw_ID + slide)
 		var target_ID = posmod(target_ID_raw, pattern_sum)
 		var target_design = reel_table[reel_pos][target_ID]
-		print(base_ID)
-		print(reel_table[reel_pos][base_ID])
-		print(slide)
-		print(target_design)
-		return(slide)
 
 		var is_hit = false
 		var role_design = row["pattern"][reel_pos]

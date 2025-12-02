@@ -1,9 +1,35 @@
 import sqlite3
 import os
 import csv
+import itertools
+import json
+
+def get_combo(L, C, R):
+    return [list(x) for x in itertools.product(L, C, R)]
+
+def create_multi_pattern(*patterns):
+    
+    all_combo = []
+
+    for pattern in patterns:
+        reel = []
+        for design in pattern:
+            if isinstance(design, str):
+                reel.append([design])
+            else:
+                reel.append(design)
+        combos = get_combo(reel[0], reel[1], reel[2])
+        all_combo.append(combos)
+    
+    return json.dumps(all_combo)
 
 #%%
 # ('小役名', "払い出し枚数",'小役(1)orリプレイ(0)orボーナス(2),', '入賞系', 'こぼし目')
+
+rep_any = ["rep_1", "rep_2"]
+bell_any = ["bell_1", "bell_2"]
+bonus_any = ["r7", "b7", "bar", "blank"]
+
 role_data = [
     ('upperBell', 3, 1, '["rep", "cherry", "rep"]',
      '[]'),
@@ -14,16 +40,41 @@ role_data = [
     ('Replay', 0, 0, '["rep", "rep", "rep"]',
      '[]'),
     ('Cherry', 2, 1, '["bar", "rep", "rep"]',
-    '[["r7", "rep", "rep"],["b7", "rep", "rep"],["blank","rep","rep"],["suica","rep","rep"]]'
+     create_multi_pattern(
+         (bonus_any, rep_any, rep_any),
+         ("suica", rep_any, rep_any)
+     )
     ),
     ('middleSuica', 5, 1, '["suica", "suica", "suica"]',
-     '[["suica", "cherry", "bar"], ["suica", "r7", "b7"], ["suica", "cherry", "b7"], ["suica", "r7", "bar"]]'),
+     create_multi_pattern(
+         ("suica", "r7", bonus_any),
+         ("suica", "cherry", bonus_any)
+     )),
     ('downSuica', 5,1, '["bell", "suica", "cherry"]',
-     '[["bell", "cherry", "bar"], ["bell", "r7", "b7"], ["bell", "cherry", "b7"], ["bell", "r7", "bar"]]'),
+     create_multi_pattern(
+        (bell_any, "r7", bonus_any),
+        (bell_any, "cherry", bonus_any)
+     )),
     ('BB1', 0,2, '["r7", "r7", "r7"]',
-     '[["rep", "suica", "bell"], ["rep", "r7", "r7"], ["rep", "rep", "suica"], ["rep", "rep", "bar"], ["rep", "rep", "r7"], ["bell", "suica", "bell"], ["bell", "cherry", "bell"], ["bell", "r7", "bell"]]'),
+     create_multi_pattern(
+        ("rep_2", "suica", "bell_2"),
+        ("rep_2", rep_any, bonus_any),
+        ("rep_2", rep_any, "suica"),
+        ("rep_2", bonus_any, bell_any),
+        (bell_any, "suica", bell_any),
+        (bell_any, "cherry", bell_any),
+        (bell_any, "r7", bell_any),
+     )),
     ('RB1', 0,2, '["r7", "r7", "bar"]',
-     '[["rep", "bar", "r7"], ["rep", "r7", "r7"], ["rep", "rep", "suica"], ["rep", "rep", "bar"], ["rep", "rep", "r7"], ["bell", "suica", "bell"], ["bell", "cherry", "bell"], ["bell", "r7", "bell"]]')
+     create_multi_pattern(
+        ("rep_2", rep_any, bonus_any),
+        ("rep_2", rep_any, "suica"),
+        ("rep_2", bonus_any, bell_any),
+        (bell_any, "suica", bell_any),
+        (bell_any, "cherry", bell_any),
+        (bell_any, "r7", bell_any),
+     )
+     )
 ]
 
 # [{'フラグ名', '確率', 'RT状態'}]
@@ -106,6 +157,7 @@ def check():
             table[x] = round((65536 / y), 1)
 
     print(table)
+
 
 #タグ付け
 def generate_flag_list(seq, RT_mode = None):
