@@ -12,7 +12,7 @@ var flag_table : Dictionary = {}
 var control_table : Dictionary = {}
 var reel_table : Array = [[],[],[]]
 var current_control_table : Array
-var current_patterns = []
+var valid_roles = []
 
 var is_spinning = [false, false, false]
 
@@ -59,21 +59,22 @@ func _unhandled_input(event):
 
 	if event.is_action_pressed("lever"):
 		if not is_spinning[0] and not is_spinning[1] and not is_spinning[2]:
-				var rand_num :int = drawing()
-				result_flag = select_flags(rand_num)
+			valid_roles = []
+			var rand_num :int = drawing()
+			result_flag = select_flags(rand_num)
 
-				var current_roles = []
 
-				# if current_state == "Normal":
-				# 	current_roles = flag_table[result_flag]
-				# else:
-				# 	current_roles = flag_table[result_flag].duplicate(true)
+			# if current_state == "Normal":
+			# 	current_roles = flag_table[result_flag]
+			# else:
+			# 	current_roles = flag_table[result_flag].duplicate(true)
 
-				current_control_table = create_control_data(result_flag)
-				print(result_flag)
-				for i in range (3):
-					is_spinning[i] = true
-	
+			current_control_table = create_control_data(result_flag)
+			valid_roles = current_control_table
+			print(result_flag)
+			for i in range (3):
+				is_spinning[i] = true
+
 
 	if event.is_action_pressed("stop_left"):
 		try_stop_reel(0)
@@ -88,15 +89,15 @@ func _unhandled_input(event):
 
 
 func try_stop_reel(reel_pos):
-	if is_spinning[reel_pos]:
-		stop_reels(current_control_table, reel_pos)
-		# is_spinning[reel_pos] = false
-
-
-	# 	if event.keycode == KEY_ENTER:
-	# 		if is_spinning[0]:
-	# 			stop_reels(create_control_data(result_flag), 0)
-	# 			is_spinning[0] = false
+	var reel = reels[reel_pos]
+	var current_pixel = reel.position.y
+	var raw_ID = get_raw_ID(current_pixel)
+	if is_spinning[0] and is_spinning[1] and is_spinning[2]:
+		var slide = table_logic(current_control_table, reel_pos, raw_ID)
+		stop_reels(slide,current_pixel ,raw_ID ,reel_pos)
+	else:
+		var slide = control_logic(valid_roles, reel_pos, raw_ID)#ここがcontrol_logicになる
+		stop_reels(slide,current_pixel ,raw_ID ,reel_pos)
 
 
 
@@ -107,7 +108,6 @@ func load_data_from_db():
 	load_flag_table()
 	load_control_table()
 	load_reel_table()
-
 
 
 #weight_table(フラグの確率表)作成
@@ -237,6 +237,7 @@ func select_flags(value):
 	var current_weight_table = weight_table["Normal"]
 	for data in current_weight_table:
 		var weight: int = data["weight"]
+		value = 10000 #bell固定
 		value -= weight
 		if value < 0:
 			return(data["flag"])
@@ -298,9 +299,10 @@ func get_raw_ID(pixel):
 func table_logic(control_data, reel_pos, raw_ID):
 	var now_pattern : Array
 	var base_ID = posmod(raw_ID,pattern_sum)
+	var slide = 0
 	
 	for row in control_data:
-		var slide = row["slide"][reel_pos][base_ID]
+		slide = row["slide"][reel_pos][base_ID]
 		if not row.has("pattern"):
 			return(slide)
 		var target_ID_raw = (raw_ID + slide)
@@ -310,32 +312,76 @@ func table_logic(control_data, reel_pos, raw_ID):
 		var is_hit = false
 		var role_design = row["pattern"][reel_pos]
 		if target_design == role_design:
+			now_pattern.append(row)
 			is_hit = true
-		
-		if is_hit:
-			return(slide)
-		else:
-			return(slide)
-	
-	if now_pattern.size() < 0:
-		return 
 
-func control_logic():
-	pass
+
+	if valid_roles:
+		# for row in now_pattern:
+			# print(row["role"])
+			# print(row["kind"])
+			# print(row["payout"])
+			# print(row["pattern"])
+		valid_roles = now_pattern
+		return(slide)
+
+		
+	# 	if is_hit:
+	# 		print(target_design)
+	# 		for row2 in control_data:
+	# 			if target_design == row2["pattern"][reel_pos]:
+	# 				now_pattern.append(row2)
+	# 		for row3 in now_pattern:
+	# 			print(row3["pattern"])
+	# 		return(slide)
+	# 	else:
+	# 		print(role_design)
+	# 		print(target_design)
+	# 		print("miss")
+	# 		return(slide)
+
+
 	
+	# if now_pattern.size() < 0:
+	# 	return 
+
+func control_logic(survivor, reel_pos, raw_ID):
+	var base_ID = posmod(raw_ID,pattern_sum)
+	var slide = 0
+	var possible_designs : Array
+	var now_pattern : Array
+
+	for i in range (5):
+		var target_ID = posmod(base_ID + i, pattern_sum)
+		possible_designs.append(reel_table[reel_pos][target_ID])
+	for possible_design in possible_designs:
+		for row in survivor:
+			slide = row["slide"][reel_pos][base_ID]
+			var target_design = row["pattern"][reel_pos]
+			if possible_design == target_design:
+				now_pattern.append(row)
+
+	if now_pattern:
+		valid_roles = now_pattern
+		for row in valid_roles:
+			print(row["role"])
+			print(row["pattern"])
+		return(slide)
+
+	
+func scoring_target(now_pattern):
+	for i in now_pattern:
+		var kind = now_pattern[i]["kind"]
+		print(kind)
+
 
 
 #リール停止処理
-func stop_reels(control_data, reel_pos):
+func stop_reels(slide, current_pixel, raw_ID, reel_pos):
 
-	# is_spinning[reel_pos] = false
+	is_spinning[reel_pos] = false
 
 	var reel = reels[reel_pos]
-	var current_pixel = reel.position.y
-
-	var raw_ID = get_raw_ID(current_pixel)
-	var slide = table_logic(control_data, reel_pos, raw_ID)
-
 	var target_pixel = raw_ID * pattern_scale
 
 	target_pixel += (slide * pattern_scale)
