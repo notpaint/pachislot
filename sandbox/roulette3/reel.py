@@ -87,6 +87,14 @@ Cherry = create_multi_pattern(
     miss_pattern = [("r7", rep_any, rep_any), ("suica", rep_any, rep_any)]
 )
 
+downSuica = create_multi_pattern(
+    name = "downSuica",
+    payout = 5,
+    kind = 1,
+    patterns = [(bell_any, "suica", "cherry")],
+    miss_pattern=[(bell_any, "r7", bonus_any), (bell_any, "cherry", bonus_any)]
+)
+
 role_data = [
     ('upperBell', 3, 1, '["rep", "cherry", "rep"]',
      '[]'),
@@ -96,11 +104,6 @@ role_data = [
      create_multi_miss(
          ("suica", "r7", bonus_any),
          ("suica", "cherry", bonus_any)
-     )),
-    ('downSuica', 5,1, '["bell", "suica", "cherry"]',
-     create_multi_miss(
-        (bell_any, "r7", bonus_any),
-        (bell_any, "cherry", bonus_any)
      )),
     ('BB1', 0,2, '["r7", "r7", "r7"]',
      create_multi_miss(
@@ -124,7 +127,7 @@ role_data = [
      )
 ]
 
-role_data = role_data + middleBell + Replay + Cherry
+role_data = role_data + middleBell + Replay + Cherry + downSuica
 
 # [{'フラグ名', '確率', 'RT状態'}]
 flag_data_normal = [
@@ -169,7 +172,7 @@ flag_role_map = [
     },
     {
         "flag": "Suica",
-        "roles": ["downSuica"]
+        "roles": ["downSuica-0", "downSuica-1"]
     },
     {
         "flag": "BB1",

@@ -11,6 +11,8 @@ var weight_table : Dictionary = {}
 var flag_table : Dictionary = {}
 var control_table : Dictionary = {}
 var reel_table : Array = [[],[],[]]
+var current_reel : Array = [[],[],[]]
+var ghost_patterns: Array
 var current_control_table : Array
 var valid_roles = []
 
@@ -59,6 +61,7 @@ func _unhandled_input(event):
 
 	if event.is_action_pressed("lever"):
 		if not is_spinning[0] and not is_spinning[1] and not is_spinning[2]:
+			current_reel = [[],[],[]]
 			valid_roles = []
 			var rand_num :int = drawing()
 			result_flag = select_flags(rand_num)
@@ -124,6 +127,7 @@ func load_weight_table():
 	flag_table AS ft ON ft.flag_id = f.id
 	JOIN
 	weight_status AS ws ON ft.weight_status_id = ws.id
+
 	"""
 
 	db.query(order)
@@ -234,10 +238,11 @@ func load_reel_table():
 
 #フラグ抽選
 func select_flags(value):
+	value = 46000 # suica固定
 	var current_weight_table = weight_table["Normal"]
+	print(current_weight_table)
 	for data in current_weight_table:
 		var weight: int = data["weight"]
-		value = 10000 #bell固定
 		value -= weight
 		if value < 0:
 			return(data["flag"])
@@ -297,53 +302,33 @@ func get_raw_ID(pixel):
 
 
 func table_logic(control_data, reel_pos, raw_ID):
-	var now_pattern : Array
+	var now_patterns : Array
+	var supposed_slide : Array
 	var base_ID = posmod(raw_ID,pattern_sum)
 	var slide = 0
 	
 	for row in control_data:
 		slide = row["slide"][reel_pos][base_ID]
+		supposed_slide.append(slide)
 		if not row.has("pattern"):
 			return(slide)
 		var target_ID_raw = (raw_ID + slide)
 		var target_ID = posmod(target_ID_raw, pattern_sum)
 		var target_design = reel_table[reel_pos][target_ID]
 
-		var is_hit = false
 		var role_design = row["pattern"][reel_pos]
 		if target_design == role_design:
-			now_pattern.append(row)
-			is_hit = true
+			current_reel[reel_pos] = target_design
+			now_patterns.append(row)
 
-
-	if valid_roles:
-		# for row in now_pattern:
-			# print(row["role"])
-			# print(row["kind"])
-			# print(row["payout"])
-			# print(row["pattern"])
-		valid_roles = now_pattern
+	if now_patterns:
+		valid_roles = now_patterns
+		print(current_reel)
 		return(slide)
 
-		
-	# 	if is_hit:
-	# 		print(target_design)
-	# 		for row2 in control_data:
-	# 			if target_design == row2["pattern"][reel_pos]:
-	# 				now_pattern.append(row2)
-	# 		for row3 in now_pattern:
-	# 			print(row3["pattern"])
-	# 		return(slide)
-	# 	else:
-	# 		print(role_design)
-	# 		print(target_design)
-	# 		print("miss")
-	# 		return(slide)
+	else:
+		pass
 
-
-	
-	# if now_pattern.size() < 0:
-	# 	return 
 
 func control_logic(survivor, reel_pos, raw_ID):
 	var base_ID = posmod(raw_ID,pattern_sum)
@@ -359,14 +344,28 @@ func control_logic(survivor, reel_pos, raw_ID):
 			slide = row["slide"][reel_pos][base_ID]
 			var target_design = row["pattern"][reel_pos]
 			if possible_design == target_design:
+				current_reel[reel_pos] = target_design
 				now_pattern.append(row)
 
 	if now_pattern:
 		valid_roles = now_pattern
-		for row in valid_roles:
-			print(row["role"])
-			print(row["pattern"])
 		return(slide)
+	else:
+		for row in survivor:
+			var miss_patterns = row["miss_pattern"]
+			for miss_pattern in miss_patterns:
+				for i in range(3):
+					if not current_reel[i].is_empty():
+						if current_reel[i] != miss_pattern[i]:
+							break
+				
+				ghost_patterns.append(miss_pattern)
+
+		for i in range(possible_designs.size()):
+			var possible_design = possible_designs[i]
+			for miss_pattern in ghost_patterns:
+				if miss_pattern[reel_pos] == possible_design:
+					return(i)
 
 	
 func scoring_target(now_pattern):
