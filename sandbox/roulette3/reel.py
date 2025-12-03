@@ -356,7 +356,7 @@ def generate_control_table(cursor):
             elif name =="vac":
                 apply_vac_control(cursor, reel_pos, target)
             else:
-                print(f"ERROR ON generate_control_table() : {name} IS NOT EXIST")
+                print(f"ERROR ON generate_control_table() : {name} DOES EXIST")
 
 def generate_flag_role_map(cursor):
     for data in flag_role_map:
@@ -365,14 +365,14 @@ def generate_flag_role_map(cursor):
         cursor.execute("SELECT id FROM flags WHERE flag = (?)", (flag,))
         flag_row = cursor.fetchone()
         if flag_row is None:
-            print(f"ERROR ON generate_flag_role_map() : {flag} IS DO NOT EXIST")
+            print(f"ERROR ON generate_flag_role_map() : {flag} DOES NOT EXIST")
             continue
         flag_ID = flag_row[0]
         for role in roles:
             cursor.execute("SELECT id FROM roles WHERE role = (?)", (role,))
             role_row = cursor.fetchone()
             if role_row is None:
-                print(f"ERROR ON generate_flag_role_map() : {role} IS DO NOT EXIST")
+                print(f"ERROR ON generate_flag_role_map() : {role} DOES NOT EXIST")
                 continue
             role_ID = role_row[0]
             cursor.execute("""
