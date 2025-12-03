@@ -4,10 +4,41 @@ import csv
 import itertools
 import json
 
+#%%
+
 def get_combo(L, C, R):
     return [list(x) for x in itertools.product(L, C, R)]
 
-def create_multi_pattern(*patterns):
+def create_multi_pattern(name, payout, kind, patterns, miss_pattern = None):
+
+    all_combo = []
+    i = 0
+    miss_pattern_str = None
+
+    if miss_pattern is not None:
+        miss_pattern_str = create_multi_miss(*miss_pattern)
+    
+    for pattern in patterns:
+        reel = []
+        for design in pattern:
+            if isinstance(design, str):
+                reel.append([design])
+            else:
+                reel.append(design)
+        combos = get_combo(reel[0], reel[1], reel[2])
+
+
+        for combo in combos:
+            role_name = f"{name}-{i}"
+            pattern = json.dumps(list(combo))
+            role = (role_name, payout, kind, pattern, miss_pattern_str)
+            all_combo.append(role)
+            i += 1
+
+    return(all_combo)
+
+
+def create_multi_miss(*patterns):
     
     all_combo = []
 
@@ -19,44 +50,60 @@ def create_multi_pattern(*patterns):
             else:
                 reel.append(design)
         combos = get_combo(reel[0], reel[1], reel[2])
-        all_combo.append(combos)
+        all_combo.extend(combos)
     
     return json.dumps(all_combo)
+
+
 
 #%%
 # ('小役名', "払い出し枚数",'小役(1)orリプレイ(0)orボーナス(2),', '入賞系', 'こぼし目')
 
 rep_any = ["rep_1", "rep_2"]
 bell_any = ["bell_1", "bell_2"]
-bonus_any = ["r7", "b7", "bar", "blank"]
+bonus_any = ["r7", "b7", "bar"]
+
+middleBell = create_multi_pattern(
+    name = "middleBell",
+    payout = 8,
+    kind = 1,
+    patterns = [(bell_any, bell_any, bell_any)],
+    miss_pattern = []
+)
+
+Replay = create_multi_pattern(
+    name = "Replay",
+    payout = 0,
+    kind = 0,
+    patterns = [(rep_any, rep_any, rep_any)],
+    miss_pattern = []
+)
+
+Cherry = create_multi_pattern(
+    name = "Cherry",
+    payout = 2,
+    kind = 1,
+    patterns = [("bar", rep_any, rep_any), ("blank", rep_any, rep_any)],
+    miss_pattern = [("r7", rep_any, rep_any), ("suica", rep_any, rep_any)]
+)
 
 role_data = [
     ('upperBell', 3, 1, '["rep", "cherry", "rep"]',
      '[]'),
-    ('middleBell', 8, 1, '["bell", "bell", "bell"]',
-     '[]'),
     ('lowerBell', 3, 1, '["rep", "bell", "suica"]',
      '[]'),
-    ('Replay', 0, 0, '["rep", "rep", "rep"]',
-     '[]'),
-    ('Cherry', 2, 1, '["bar", "rep", "rep"]',
-     create_multi_pattern(
-         (bonus_any, rep_any, rep_any),
-         ("suica", rep_any, rep_any)
-     )
-    ),
     ('middleSuica', 5, 1, '["suica", "suica", "suica"]',
-     create_multi_pattern(
+     create_multi_miss(
          ("suica", "r7", bonus_any),
          ("suica", "cherry", bonus_any)
      )),
     ('downSuica', 5,1, '["bell", "suica", "cherry"]',
-     create_multi_pattern(
+     create_multi_miss(
         (bell_any, "r7", bonus_any),
         (bell_any, "cherry", bonus_any)
      )),
     ('BB1', 0,2, '["r7", "r7", "r7"]',
-     create_multi_pattern(
+     create_multi_miss(
         ("rep_2", "suica", "bell_2"),
         ("rep_2", rep_any, bonus_any),
         ("rep_2", rep_any, "suica"),
@@ -66,7 +113,7 @@ role_data = [
         (bell_any, "r7", bell_any),
      )),
     ('RB1', 0,2, '["r7", "r7", "bar"]',
-     create_multi_pattern(
+     create_multi_miss(
         ("rep_2", rep_any, bonus_any),
         ("rep_2", rep_any, "suica"),
         ("rep_2", bonus_any, bell_any),
@@ -76,6 +123,8 @@ role_data = [
      )
      )
 ]
+
+role_data = role_data + middleBell + Replay + Cherry
 
 # [{'フラグ名', '確率', 'RT状態'}]
 flag_data_normal = [
@@ -97,22 +146,26 @@ flag_data_JAC = {
 }
 
 RT_map = {
-    'BB1' : 'vac'
+    'BB1' : {
+        "Replay_A": "vac"
+    }
 }
 
 # [{"フラグ名", "重複役"}]
 flag_role_map = [
     {
         "flag": "Bell",
-        "roles": ["middleBell","upperBell"]
+        "roles": ["middleBell-0", "middleBell-1", "middleBell-2", "middleBell-3",
+                   "middleBell-4", "middleBell-5", "middleBell-6", "middleBell-7"]
      },
     {
         "flag": "Replay_A",
-        "roles": ["Replay"]
+        "roles": ["Replay-0", "Replay-1", "Replay-2", "Replay-3",
+                   "Replay-4", "Replay-5", "Replay-6", "Replay-7"]
     },
     {
         "flag": "Cherry",
-        "roles": ["Cherry"]
+        "roles": ["Cherry-0", "Cherry-1"]
     },
     {
         "flag": "Suica",
@@ -166,8 +219,10 @@ def generate_flag_list(seq, RT_mode = None):
         name = item["name"]
         weight = item["weight"]
         tag = item.get("RT")
-        if tag in RT_map:
-            name = RT_map[tag]
+        if RT_mode is not None and tag in RT_map:
+            mode = RT_map[tag]
+            if name in mode:
+                name = mode[name]
         flag_list.append({"name": name, "weight": weight})
     return flag_list
 
@@ -267,7 +322,6 @@ def generate_flag_table(cursor):
                            INSERT OR IGNORE INTO flag_table (weight_status_id, flag_id, weight)
                            VALUES (?, ?, ?)""", (state_id, flag_id, weight))
 
-
 def generate_control_table(cursor):
     cursor.executemany("""
                        INSERT INTO roles (role, payout, kind, pattern, miss_pattern)
@@ -275,6 +329,7 @@ def generate_control_table(cursor):
                        """, role_data)
     
     cursor.execute("SELECT role,id FROM roles")
+
     role_dict = dict(cursor.fetchall())
 
     for reel_pos, csv_file in reel_csv.items():
@@ -282,17 +337,23 @@ def generate_control_table(cursor):
         csv_path = os.path.join(dir, csv_file)
         slide_list = load_slide_csv(csv_path, reel_pos)
         for item in slide_list:
+            role_id_list = []
             name = item["name"]
             reel_pos = item["reel_pos"]
             target = item["target"]
             if name in role_dict:
-                role_id = role_dict[name]
-                apply_control_table(cursor, role_id, reel_pos, target)
+                role_id_list.append(role_dict[name])
+            prefix = name + "-"
+            for db_name in role_dict:
+                if db_name.startswith(prefix):
+                    role_id_list.append(role_dict[db_name])
+            if role_id_list:
+                for role_id in role_id_list:
+                   apply_control_table(cursor, role_id, reel_pos, target) 
             elif name =="vac":
                 apply_vac_control(cursor, reel_pos, target)
             else:
                 print(f"ERROR ON generate_control_table() : {name} IS NOT EXIST")
-
 
 def generate_flag_role_map(cursor):
     for data in flag_role_map:
