@@ -62,6 +62,7 @@ def create_multi_miss(*patterns):
 rep_any = ["rep_1", "rep_2"]
 bell_any = ["bell_1", "bell_2"]
 bonus_any = ["r7", "b7", "bar"]
+suica_group = ["suica", "r7", "cherry"]
 
 middleBell = create_multi_pattern(
     name = "middleBell",
@@ -92,7 +93,7 @@ downSuica = create_multi_pattern(
     payout = 5,
     kind = 1,
     patterns = [(bell_any, "suica", "cherry")],
-    miss_pattern=[(bell_any, "r7", bonus_any), (bell_any, "cherry", bonus_any)]
+    miss_pattern=[(bell_any, suica_group, rep_any), (bell_any, suica_group, "b7"),]
 )
 
 role_data = [
@@ -111,6 +112,7 @@ role_data = [
         ("rep_2", rep_any, bonus_any),
         ("rep_2", rep_any, "suica"),
         ("rep_2", bonus_any, bell_any),
+        (bonus_any, rep_any,rep_any),
         (bell_any, "suica", bell_any),
         (bell_any, "cherry", bell_any),
         (bell_any, "r7", bell_any),
@@ -123,6 +125,7 @@ role_data = [
         (bell_any, "suica", bell_any),
         (bell_any, "cherry", bell_any),
         (bell_any, "r7", bell_any),
+        (bonus_any, rep_any,rep_any)
      )
      )
 ]

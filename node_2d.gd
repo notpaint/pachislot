@@ -9,12 +9,13 @@ var db_path = "database_v2.db"
 
 var weight_table : Dictionary = {}
 var flag_table : Dictionary = {}
+var all_roles : Dictionary = {}
 var control_table : Dictionary = {}
 var reel_table : Array = [[],[],[]]
 var current_reel : Array = [[],[],[]]
-var ghost_patterns: Array
-var current_control_table : Array
-var valid_roles = []
+var ghost_patterns: Array = []
+var current_control_table : Array = []
+var valid_roles : Array = []
 
 var is_spinning = [false, false, false]
 
@@ -63,8 +64,10 @@ func _unhandled_input(event):
 		if not is_spinning[0] and not is_spinning[1] and not is_spinning[2]:
 			current_reel = [[],[],[]]
 			valid_roles = []
+			ghost_patterns = []
 			var rand_num :int = drawing()
 			result_flag = select_flags(rand_num)
+			print(result_flag)
 
 
 			# if current_state == "Normal":
@@ -74,7 +77,6 @@ func _unhandled_input(event):
 
 			current_control_table = create_control_data(result_flag)
 			valid_roles = current_control_table
-			print(result_flag)
 			for i in range (3):
 				is_spinning[i] = true
 
@@ -87,7 +89,9 @@ func _unhandled_input(event):
 		try_stop_reel(2)
 
 	if event.is_action_pressed("debug"):
-		print(flag_table)
+		for role in all_roles:
+			print(all_roles[role]["pattern"][1])
+		
 		
 
 
@@ -101,6 +105,8 @@ func try_stop_reel(reel_pos):
 	else:
 		var slide = control_logic(valid_roles, reel_pos, raw_ID)#ここがcontrol_logicになる
 		stop_reels(slide,current_pixel ,raw_ID ,reel_pos)
+	if not is_spinning[0] and not is_spinning[1] and not is_spinning[2]:
+		check_prize()
 
 
 
@@ -110,6 +116,7 @@ func load_data_from_db():
 	load_weight_table()
 	load_flag_table()
 	load_control_table()
+	load_all_roles()
 	load_reel_table()
 
 
@@ -127,7 +134,6 @@ func load_weight_table():
 	flag_table AS ft ON ft.flag_id = f.id
 	JOIN
 	weight_status AS ws ON ft.weight_status_id = ws.id
-
 	"""
 
 	db.query(order)
@@ -172,8 +178,27 @@ func load_flag_table():
 		if not flag_table.has(flag):
 			flag_table[flag] = []
 		var data = {"role" : role, "kind": kind, "payout": payout, "pattern": pattern_array, "miss_pattern": miss_pattern_array}
-		print(data)
 		flag_table[flag].append(data)
+
+#全小役データ作成
+func load_all_roles():
+	db.query("SELECT role, payout, kind, pattern FROM roles")
+	var results = db.query_result
+
+	for row in results:
+		var role = row["role"]
+		var payout = int(row["payout"])
+		var kind = int(row["kind"])
+		var pattern = JSON.parse_string(row["pattern"])
+		all_roles[role] = []
+		# var data = {"payout": payout, "kind": kind, "pattern":pattern}
+		# all_roles[role].append(data)
+		all_roles[role] = {
+			"payout": payout,
+			"kind": kind,
+			"pattern": pattern
+		}
+
 
 #control_table(制御表)作成
 #{"role" : [[L],[C],[R]]}
@@ -238,9 +263,8 @@ func load_reel_table():
 
 #フラグ抽選
 func select_flags(value):
-	value = 46000 # suica固定
+	value = 35000 # suica固定
 	var current_weight_table = weight_table["Normal"]
-	print(current_weight_table)
 	for data in current_weight_table:
 		var weight: int = data["weight"]
 		value -= weight
@@ -283,7 +307,6 @@ func create_control_data(flag):
 			role_data["miss_pattern"] = miss_pattern
 			role_data["pattern"] = pattern
 			role_data["priority"] = i
-			print(role_data)
 			control_data.append(role_data)
 	else:
 		var vac_data : Dictionary
@@ -308,6 +331,7 @@ func table_logic(control_data, reel_pos, raw_ID):
 	var slide = 0
 	
 	for row in control_data:
+		print(row)
 		slide = row["slide"][reel_pos][base_ID]
 		supposed_slide.append(slide)
 		if not row.has("pattern"):
@@ -323,11 +347,24 @@ func table_logic(control_data, reel_pos, raw_ID):
 
 	if now_patterns:
 		valid_roles = now_patterns
-		print(current_reel)
 		return(slide)
 
 	else:
-		pass
+		valid_roles = []
+		var target_ID_raw = (raw_ID + slide)
+		var target_ID = posmod(target_ID_raw, pattern_sum)
+		var target_design = reel_table[reel_pos][target_ID]
+		for row in control_data:
+			var miss_patterns = row["miss_pattern"]
+			for miss_pattern in miss_patterns:
+				if miss_pattern[reel_pos] == target_design:
+					ghost_patterns.append(miss_pattern)
+		if ghost_patterns.is_empty():
+			print("error:ghost_patternが空です")
+		print("ghost", now_patterns)
+		print("ghost", valid_roles)
+		print("ghost", ghost_patterns)
+		return(slide)
 
 
 func control_logic(survivor, reel_pos, raw_ID):
@@ -339,40 +376,85 @@ func control_logic(survivor, reel_pos, raw_ID):
 	for i in range (5):
 		var target_ID = posmod(base_ID + i, pattern_sum)
 		possible_designs.append(reel_table[reel_pos][target_ID])
-	for possible_design in possible_designs:
-		for row in survivor:
-			slide = row["slide"][reel_pos][base_ID]
-			var target_design = row["pattern"][reel_pos]
-			if possible_design == target_design:
-				current_reel[reel_pos] = target_design
-				now_pattern.append(row)
 
-	if now_pattern:
-		valid_roles = now_pattern
-		return(slide)
+
+	if survivor.is_empty():
+		slide = ghost_route(possible_designs, reel_pos)
+		return (slide)
 	else:
-		for row in survivor:
-			var miss_patterns = row["miss_pattern"]
-			for miss_pattern in miss_patterns:
-				for i in range(3):
-					if not current_reel[i].is_empty():
-						if current_reel[i] != miss_pattern[i]:
-							break
+		for possible_design in possible_designs:
+			for row in survivor:
+				slide = row["slide"][reel_pos][base_ID]
+				var target_design = row["pattern"][reel_pos]
+				if possible_design == target_design:
+					current_reel[reel_pos] = target_design
+					now_pattern.append(row)
+		if now_pattern:
+			valid_roles = now_pattern
+			print(slide)
+			return(slide)
+		else:
+			valid_roles = []
+			for row in survivor:
+				var miss_patterns = row["miss_pattern"]
+				for miss_pattern in miss_patterns:
+					var matched = true
+					for i in range(3):
+						if not current_reel[i].is_empty():
+							if current_reel[i] != miss_pattern[i]:
+								matched = false
+								break
 				
-				ghost_patterns.append(miss_pattern)
+					if matched:
+						ghost_patterns.append(miss_pattern)
 
-		for i in range(possible_designs.size()):
-			var possible_design = possible_designs[i]
-			for miss_pattern in ghost_patterns:
+			for i in range(possible_designs.size()):
+				var possible_design = possible_designs[i]
+				for miss_pattern in ghost_patterns:
+					if miss_pattern[reel_pos] == possible_design:
+						return(i)
+			return(doege_unvalid_role(possible_designs, reel_pos))
+
+
+func doege_unvalid_role(possible_designs, reel_pos):
+	print("doege")
+	for i in range(possible_designs.size()):
+		var safe = true
+		var possible_design = possible_designs[i]
+		for role in all_roles:
+			var role_pattern = all_roles[role]["pattern"]
+			if possible_design != role_pattern[reel_pos]:
+				continue
+			var matched = true
+			for j in range(3):
+				if j != reel_pos and not current_reel[j].is_empty():
+					if role_pattern[j] != current_reel[j]:
+						matched = false
+						break
+			if matched:
+				safe = false
+				break
+		if safe:
+			return(i)
+
+func ghost_route(possible_designs, reel_pos):
+	if ghost_patterns.is_empty():
+		return(doege_unvalid_role(possible_designs, reel_pos))
+	else:
+		for miss_pattern in ghost_patterns:
+			for i in range(possible_designs.size()):
+				var possible_design = possible_designs[i]
 				if miss_pattern[reel_pos] == possible_design:
 					return(i)
+		doege_unvalid_role(possible_designs, reel_pos)
+
+
 
 	
 func scoring_target(now_pattern):
 	for i in now_pattern:
 		var kind = now_pattern[i]["kind"]
 		print(kind)
-
 
 
 #リール停止処理
@@ -382,6 +464,8 @@ func stop_reels(slide, current_pixel, raw_ID, reel_pos):
 
 	var reel = reels[reel_pos]
 	var target_pixel = raw_ID * pattern_scale
+
+	print(slide)
 
 	target_pixel += (slide * pattern_scale)
 	var target_speed : float = abs(target_pixel - current_pixel) / current_spin_speed[reel_pos]
@@ -396,7 +480,11 @@ func stop_reels(slide, current_pixel, raw_ID, reel_pos):
 		active_tweens[reel_pos].kill()
 
 func check_prize():
+	var reel_result : Array = [[],[],[]]
 	for i in range(3):
-		print()
-
-		pass
+		var reel = reels[i]
+		var current_pixel = reel.position.y
+		var raw_ID = get_raw_ID(current_pixel)
+		var base_ID = posmod(raw_ID, pattern_sum)
+		reel_result[i] = reel_table[i][base_ID]
+	print(reel_result)
