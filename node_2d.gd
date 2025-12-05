@@ -2,6 +2,7 @@ extends Node2D
 
 const pattern_scale : float = 128.0
 const pattern_sum : int = 21
+const reel_length : float = pattern_scale * pattern_sum
 const pattern_per : float = 1.0 / pattern_sum
 
 var db : SQLite
@@ -13,7 +14,7 @@ var all_roles : Dictionary = {}
 var control_table : Dictionary = {}
 var reel_table : Array = [[],[],[]]
 var current_reel : Array = [[],[],[]]
-var ghost_patterns: Array = []
+var miss_patterns: Array = []
 var current_control_table : Array = []
 var valid_roles : Array = []
 
@@ -49,8 +50,8 @@ func _process(delta: float):
 		if is_spinning[i] and (active_tweens[i] == null or not active_tweens[i].is_running()):
 			current_spin_speed[i] = move_toward(current_spin_speed[i], max_spin_speed, acceralation * delta)
 			reels[i].position.y += current_spin_speed[i] * delta
-			if reels[i].position.y >= 2688:
-				reels[i].position.y -= 2688
+			if reels[i].position.y >= reel_length:
+				reels[i].position.y -= reel_length
 		else:
 			current_spin_speed[i] = 0.0
 	
@@ -64,19 +65,12 @@ func _unhandled_input(event):
 		if not is_spinning[0] and not is_spinning[1] and not is_spinning[2]:
 			current_reel = [[],[],[]]
 			valid_roles = []
-			ghost_patterns = []
+			miss_patterns = []
 			var rand_num :int = drawing()
 			result_flag = select_flags(rand_num)
 			print(result_flag)
 
-
-			# if current_state == "Normal":
-			# 	current_roles = flag_table[result_flag]
-			# else:
-			# 	current_roles = flag_table[result_flag].duplicate(true)
-
 			current_control_table = create_control_data(result_flag)
-			valid_roles = current_control_table
 			for i in range (3):
 				is_spinning[i] = true
 
@@ -99,15 +93,178 @@ func try_stop_reel(reel_pos):
 	var reel = reels[reel_pos]
 	var current_pixel = reel.position.y
 	var raw_ID = get_raw_ID(current_pixel)
-	if is_spinning[0] and is_spinning[1] and is_spinning[2]:
-		var slide = table_logic(current_control_table, reel_pos, raw_ID)
-		stop_reels(slide,current_pixel ,raw_ID ,reel_pos)
-	else:
-		var slide = control_logic(valid_roles, reel_pos, raw_ID)#ここがcontrol_logicになる
-		stop_reels(slide,current_pixel ,raw_ID ,reel_pos)
-	if not is_spinning[0] and not is_spinning[1] and not is_spinning[2]:
-		check_prize()
+	var base_ID = posmod(raw_ID, pattern_sum)
+	var supposed_symbols : Array = get_supposed_symbols(base_ID, reel_pos)
 
+	if is_spinning[0] and is_spinning[1] and is_spinning[2]:
+		if result_flag == "vac":
+			var slide = current_control_table[0]["slide"][reel_pos][base_ID]
+			stop_reels(slide,current_pixel ,raw_ID ,reel_pos)
+		else:
+			var slide = table_logic(
+				supposed_symbols, current_control_table, reel_pos, base_ID
+				)
+			var target_ID = posmod(raw_ID + slide, pattern_sum)
+			current_reel[reel_pos] = reel_table[reel_pos][target_ID]
+			stop_reels(slide,current_pixel ,raw_ID ,reel_pos)
+	else:
+		if result_flag == "vac":
+			var slide = current_control_table[0]["slide"][reel_pos][base_ID]
+			print(slide)
+			stop_reels(slide,current_pixel ,raw_ID ,reel_pos)
+		else:
+			var slide = control_logic(
+				supposed_symbols, valid_roles, reel_pos
+				)
+			var target_ID = posmod(raw_ID + slide, pattern_sum)
+			current_reel[reel_pos] = reel_table[reel_pos][target_ID]
+			stop_reels(slide,current_pixel ,raw_ID ,reel_pos)
+
+
+func get_supposed_symbols(base_ID, reel_pos):
+	var supposed_symbols : Array = []
+	for i in range(5):
+		var target_ID = (base_ID + i) % pattern_sum
+		var supposed_symbol = reel_table[reel_pos][target_ID]
+		var data = {
+			"slide" : i,
+			"symbol" : supposed_symbol,
+			"kind" : 0,
+			"combo" : 0,
+			"payout" : 0 
+		}
+		supposed_symbols.append(data)
+	return(supposed_symbols)
+
+func table_logic(supposed_symbols, control_data, reel_pos, base_ID):
+	for row in control_data:
+		var slide = row["slide"][reel_pos][base_ID]
+		var kind = row["kind"]
+		var payout = row["payout"]
+		var target_symbol = row["pattern"][reel_pos]
+		for i in (supposed_symbols.size()):
+			var supposed_data = supposed_symbols[i]
+			if i == slide and supposed_data["symbol"] == target_symbol:
+				supposed_data["kind"] = kind
+				supposed_data["combo"] += 1
+				if supposed_data["payout"] > payout:
+					supposed_data["payout"] = payout
+				var pattern = row["pattern"]
+				var data = {
+					"pattern" : pattern,
+					"kind" : kind,
+					"payout": payout
+				}
+				valid_roles.append(data)
+		
+	if not valid_roles.is_empty():
+		supposed_symbols.sort_custom(sorting_symbols)
+		return(supposed_symbols[0]["slide"])
+	
+	var miss_slides : Array = []
+	for row in control_data:
+		var ghost_patterns = row["miss_pattern"]
+		for miss_pattern in ghost_patterns:
+			for i in (supposed_symbols.size()):
+				var supposed_data = supposed_symbols[i]
+				if supposed_data["symbol"] == miss_pattern[reel_pos]:
+					miss_slides.append(i)
+					miss_patterns.append(miss_pattern)
+
+	if not miss_slides.is_empty():
+		miss_slides.sort()
+		return(miss_slides[0])
+
+	return(4)
+
+
+func control_logic(supposed_symbols, valid_role, reel_pos):
+	if not valid_role.is_empty():
+		var current_valid_roles : Array = []
+		for row in valid_role:
+			var kind = row["kind"]
+			var payout = row["payout"]
+			var valid_pattern = row["pattern"]
+			var valid_symbol = valid_pattern[reel_pos]
+			for i in (supposed_symbols.size()):
+				var supposed_data = supposed_symbols[i]
+				if supposed_data["symbol"] == valid_symbol:
+					supposed_data["kind"] = kind
+					supposed_data["combo"] += 1
+					if supposed_data["payout"] > payout:
+						supposed_data["payout"] = payout
+					var data = {
+						"pattern": valid_pattern,
+						"kind": kind,
+						"payout": payout
+					}
+					current_valid_roles.append(data)
+
+		if not current_valid_roles.is_empty():
+			valid_roles = current_valid_roles
+			supposed_symbols.sort_custom(sorting_symbols)
+			return(supposed_symbols[0]["slide"])
+
+		valid_roles = []
+		return(miss_route(supposed_symbols, miss_patterns, reel_pos))
+	
+	if not miss_patterns.is_empty():
+		return(miss_route(supposed_symbols, miss_patterns, reel_pos))
+
+	return(dodge_invalid_role(supposed_symbols, reel_pos))
+	
+
+	
+func miss_route(supposed_symbols, ghosts, reel_pos):
+	var miss_slides : Array = []
+	var current_miss_patterns : Array = []
+	print(ghosts)
+	for miss_pattern in ghosts:
+		var miss_symbol = miss_pattern[reel_pos]
+		for i in (supposed_symbols.size()):
+			var supposed_data = supposed_symbols[i]
+			if supposed_data["symbol"] == miss_symbol:
+				miss_slides.append(i)
+				current_miss_patterns.append(miss_pattern)
+	if not current_miss_patterns.is_empty():
+		miss_patterns = current_miss_patterns
+		return(miss_slides[0])
+	
+	return(dodge_invalid_role(supposed_symbols, reel_pos))
+
+
+func dodge_invalid_role(supposed_symbols, reel_pos):
+	print("dodge")
+	for i in range(supposed_symbols.size()):
+		var safe = true
+		var supposed_symbol = supposed_symbols[i]["symbol"]
+		for role in all_roles:
+			var role_pattern = all_roles[role]["pattern"]
+			if supposed_symbol != role_pattern[reel_pos]:
+				continue
+			var matched = true
+			for j in range(3):
+				if j != reel_pos and not current_reel[j].is_empty():
+					if role_pattern[j] != current_reel[j]:
+						matched = false
+						break
+			if matched:
+				safe = false
+				break
+		if safe:
+			return(i)
+	return(4)
+
+
+
+func sorting_symbols(x, y):
+	if x["kind"] != y["kind"]:
+		return x["kind"] > y["kind"]
+	if x["combo"] != y["combo"]:
+		return x["combo"] > y["combo"]
+	if x["payout"] != y ["payout"]:
+		return x["payout"] > y["payout"]
+	return x["slide"] < y["slide"]
 
 
 #フラグデータ読み込み
@@ -259,11 +416,9 @@ func load_reel_table():
 		reel_table[reel_pos][reel_id] = design
 
 
-
-
 #フラグ抽選
 func select_flags(value):
-	value = 35000 # suica固定
+	value = 65535
 	var current_weight_table = weight_table["Normal"]
 	for data in current_weight_table:
 		var weight: int = data["weight"]
@@ -314,7 +469,7 @@ func create_control_data(flag):
 		vac_data["payout"] = 0
 		control_data.append(vac_data)
 
-	
+	print(control_data)
 	return(control_data)
 
 
@@ -322,139 +477,6 @@ func get_raw_ID(pixel):
 	var raw_current_scale = pixel / pattern_scale
 	var raw_ID = int(ceil(raw_current_scale))
 	return (raw_ID)
-
-
-func table_logic(control_data, reel_pos, raw_ID):
-	var now_patterns : Array
-	var supposed_slide : Array
-	var base_ID = posmod(raw_ID,pattern_sum)
-	var slide = 0
-	
-	for row in control_data:
-		print(row)
-		slide = row["slide"][reel_pos][base_ID]
-		supposed_slide.append(slide)
-		if not row.has("pattern"):
-			return(slide)
-		var target_ID_raw = (raw_ID + slide)
-		var target_ID = posmod(target_ID_raw, pattern_sum)
-		var target_design = reel_table[reel_pos][target_ID]
-
-		var role_design = row["pattern"][reel_pos]
-		if target_design == role_design:
-			current_reel[reel_pos] = target_design
-			now_patterns.append(row)
-
-	if now_patterns:
-		valid_roles = now_patterns
-		return(slide)
-
-	else:
-		valid_roles = []
-		var target_ID_raw = (raw_ID + slide)
-		var target_ID = posmod(target_ID_raw, pattern_sum)
-		var target_design = reel_table[reel_pos][target_ID]
-		for row in control_data:
-			var miss_patterns = row["miss_pattern"]
-			for miss_pattern in miss_patterns:
-				if miss_pattern[reel_pos] == target_design:
-					ghost_patterns.append(miss_pattern)
-		if ghost_patterns.is_empty():
-			print("error:ghost_patternが空です")
-		print("ghost", now_patterns)
-		print("ghost", valid_roles)
-		print("ghost", ghost_patterns)
-		return(slide)
-
-
-func control_logic(survivor, reel_pos, raw_ID):
-	var base_ID = posmod(raw_ID,pattern_sum)
-	var slide = 0
-	var possible_designs : Array
-	var now_pattern : Array
-
-	for i in range (5):
-		var target_ID = posmod(base_ID + i, pattern_sum)
-		possible_designs.append(reel_table[reel_pos][target_ID])
-
-
-	if survivor.is_empty():
-		slide = ghost_route(possible_designs, reel_pos)
-		return (slide)
-	else:
-		for possible_design in possible_designs:
-			for row in survivor:
-				slide = row["slide"][reel_pos][base_ID]
-				var target_design = row["pattern"][reel_pos]
-				if possible_design == target_design:
-					current_reel[reel_pos] = target_design
-					now_pattern.append(row)
-		if now_pattern:
-			valid_roles = now_pattern
-			print(slide)
-			return(slide)
-		else:
-			valid_roles = []
-			for row in survivor:
-				var miss_patterns = row["miss_pattern"]
-				for miss_pattern in miss_patterns:
-					var matched = true
-					for i in range(3):
-						if not current_reel[i].is_empty():
-							if current_reel[i] != miss_pattern[i]:
-								matched = false
-								break
-				
-					if matched:
-						ghost_patterns.append(miss_pattern)
-
-			for i in range(possible_designs.size()):
-				var possible_design = possible_designs[i]
-				for miss_pattern in ghost_patterns:
-					if miss_pattern[reel_pos] == possible_design:
-						return(i)
-			return(doege_unvalid_role(possible_designs, reel_pos))
-
-
-func doege_unvalid_role(possible_designs, reel_pos):
-	print("doege")
-	for i in range(possible_designs.size()):
-		var safe = true
-		var possible_design = possible_designs[i]
-		for role in all_roles:
-			var role_pattern = all_roles[role]["pattern"]
-			if possible_design != role_pattern[reel_pos]:
-				continue
-			var matched = true
-			for j in range(3):
-				if j != reel_pos and not current_reel[j].is_empty():
-					if role_pattern[j] != current_reel[j]:
-						matched = false
-						break
-			if matched:
-				safe = false
-				break
-		if safe:
-			return(i)
-
-func ghost_route(possible_designs, reel_pos):
-	if ghost_patterns.is_empty():
-		return(doege_unvalid_role(possible_designs, reel_pos))
-	else:
-		for miss_pattern in ghost_patterns:
-			for i in range(possible_designs.size()):
-				var possible_design = possible_designs[i]
-				if miss_pattern[reel_pos] == possible_design:
-					return(i)
-		doege_unvalid_role(possible_designs, reel_pos)
-
-
-
-	
-func scoring_target(now_pattern):
-	for i in now_pattern:
-		var kind = now_pattern[i]["kind"]
-		print(kind)
 
 
 #リール停止処理
@@ -474,7 +496,7 @@ func stop_reels(slide, current_pixel, raw_ID, reel_pos):
 	active_tweens[reel_pos].tween_callback(func(): is_spinning[reel_pos] = false)
 	await active_tweens[reel_pos].finished
 
-	reel.position.y = fmod(reel.position.y, 2688.0)
+	reel.position.y = fmod(reel.position.y, reel_length)
 
 	if active_tweens[reel_pos]:
 		active_tweens[reel_pos].kill()
