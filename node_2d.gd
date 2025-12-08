@@ -4,9 +4,11 @@ const pattern_scale : float = 128.0
 const pattern_sum : int = 21
 const reel_length : float = pattern_scale * pattern_sum
 const pattern_per : float = 1.0 / pattern_sum
+const reel_rpm : float = 80.0
 
 var db : SQLite
 var db_path = "database_v2.db"
+
 
 var weight_table : Dictionary = {}
 var flag_table : Dictionary = {}
@@ -18,15 +20,17 @@ var miss_patterns: Array = []
 var current_control_table : Array = []
 var valid_roles : Array = []
 
+var MY = 0
+var bet_medals = 0
 var is_spinning = [false, false, false]
 
-var max_spin_speed : float = 1000
+var max_spin_speed : float = (reel_rpm / 120.0) * reel_length
 var acceralation : float = 1000
 var current_spin_speed : Array = [0.0, 0.0, 0.0]
 
 var active_tweens : Array[Tween] = [null, null, null]
 
-var result_flag = null
+var result_flag
 
 var current_state = "Normal"
 
@@ -62,7 +66,7 @@ func _unhandled_input(event):
 		return
 
 	if event.is_action_pressed("lever"):
-		if not is_spinning[0] and not is_spinning[1] and not is_spinning[2]:
+		if not is_spinning[0] and not is_spinning[1] and not is_spinning[2] and not bet_medals == 0:
 			current_reel = [[],[],[]]
 			valid_roles = []
 			miss_patterns = []
@@ -70,23 +74,36 @@ func _unhandled_input(event):
 			result_flag = select_flags(rand_num)
 			print(result_flag)
 
-			current_control_table = create_control_data(result_flag)
-			for i in range (3):
-				is_spinning[i] = true
+			if result_flag:
+				current_control_table = create_control_data(result_flag)
+				for i in range (3):
+					is_spinning[i] = true
+				bet_medals = 0
 
-
+	if event.is_action_pressed("maxbet"):
+		maxbet()
 	if event.is_action_pressed("stop_left"):
-		try_stop_reel(0)
+		if result_flag:
+			try_stop_reel(0)
 	if event.is_action_pressed("stop_center"):
-		try_stop_reel(1)
+		if result_flag:	
+			try_stop_reel(1)
 	if event.is_action_pressed("stop_right"):
-		try_stop_reel(2)
+		if result_flag:	
+			try_stop_reel(2)
 
 	if event.is_action_pressed("debug"):
-		for role in all_roles:
-			print(all_roles[role]["pattern"][1])
+		print(flag_table)
 		
-		
+
+func maxbet():
+	if not is_spinning[0] and not is_spinning[1] and not is_spinning[2]:
+		if bet_medals == 3:
+			return
+		MY = MY + bet_medals
+		bet_medals = 0
+		MY = MY - 3
+		bet_medals = 3
 
 
 func try_stop_reel(reel_pos):
@@ -110,7 +127,6 @@ func try_stop_reel(reel_pos):
 	else:
 		if result_flag == "vac":
 			var slide = current_control_table[0]["slide"][reel_pos][base_ID]
-			print(slide)
 			stop_reels(slide,current_pixel ,raw_ID ,reel_pos)
 		else:
 			var slide = control_logic(
@@ -136,11 +152,13 @@ func get_supposed_symbols(base_ID, reel_pos):
 		supposed_symbols.append(data)
 	return(supposed_symbols)
 
+
 func table_logic(supposed_symbols, control_data, reel_pos, base_ID):
 	for row in control_data:
 		var slide = row["slide"][reel_pos][base_ID]
 		var kind = row["kind"]
 		var payout = row["payout"]
+		print(row["pattern"])
 		var target_symbol = row["pattern"][reel_pos]
 		for i in (supposed_symbols.size()):
 			var supposed_data = supposed_symbols[i]
@@ -179,6 +197,7 @@ func table_logic(supposed_symbols, control_data, reel_pos, base_ID):
 
 
 func control_logic(supposed_symbols, valid_role, reel_pos):
+	print(valid_role)
 	if not valid_role.is_empty():
 		var current_valid_roles : Array = []
 		for row in valid_role:
@@ -218,7 +237,6 @@ func control_logic(supposed_symbols, valid_role, reel_pos):
 func miss_route(supposed_symbols, ghosts, reel_pos):
 	var miss_slides : Array = []
 	var current_miss_patterns : Array = []
-	print(ghosts)
 	for miss_pattern in ghosts:
 		var miss_symbol = miss_pattern[reel_pos]
 		for i in (supposed_symbols.size()):
@@ -418,14 +436,16 @@ func load_reel_table():
 
 #フラグ抽選
 func select_flags(value):
-	value = 65535
-	var current_weight_table = weight_table["Normal"]
-	for data in current_weight_table:
-		var weight: int = data["weight"]
-		value -= weight
-		if value < 0:
-			return(data["flag"])
-	return("vac")
+	if bet_medals == 3:
+		var current_weight_table = weight_table["Normal"]
+		for data in current_weight_table:
+			var weight: int = data["weight"]
+			value -= weight
+			if value < 0:
+				return(data["flag"])
+		return("vac")
+	else:
+		return
 
 
 #乱数生成
@@ -469,7 +489,6 @@ func create_control_data(flag):
 		vac_data["payout"] = 0
 		control_data.append(vac_data)
 
-	print(control_data)
 	return(control_data)
 
 
@@ -482,12 +501,11 @@ func get_raw_ID(pixel):
 #リール停止処理
 func stop_reels(slide, current_pixel, raw_ID, reel_pos):
 
-	is_spinning[reel_pos] = false
+	# is_spinning[reel_pos] = false
 
 	var reel = reels[reel_pos]
 	var target_pixel = raw_ID * pattern_scale
 
-	print(slide)
 
 	target_pixel += (slide * pattern_scale)
 	var target_speed : float = abs(target_pixel - current_pixel) / current_spin_speed[reel_pos]
@@ -500,6 +518,12 @@ func stop_reels(slide, current_pixel, raw_ID, reel_pos):
 
 	if active_tweens[reel_pos]:
 		active_tweens[reel_pos].kill()
+	
+	if not is_spinning[0] and not is_spinning[1] and not is_spinning[2]:
+		while Input.is_anything_pressed():
+			await get_tree().process_frame
+	
+		check_prize()
 
 func check_prize():
 	var reel_result : Array = [[],[],[]]
@@ -509,4 +533,10 @@ func check_prize():
 		var raw_ID = get_raw_ID(current_pixel)
 		var base_ID = posmod(raw_ID, pattern_sum)
 		reel_result[i] = reel_table[i][base_ID]
-	print(reel_result)
+	for role in all_roles:
+		if all_roles[role]["pattern"] == reel_result:
+			var payout = all_roles[role]["payout"]
+			print(role)
+			MY += payout
+	result_flag = null
+	print(MY)
