@@ -64,6 +64,14 @@ bell_any = ["bell_1", "bell_2"]
 bonus_any = ["r7", "b7", "bar"]
 suica_group = ["suica", "r7", "cherry"]
 
+upperBell = create_multi_pattern(
+    name = "upperBell",
+    payout = 3,
+    kind = 1,
+    patterns = [(rep_any, "cherry", rep_any), (rep_any, "bar", rep_any),(rep_any, "blank", rep_any)],
+    miss_pattern = []
+)
+
 middleBell = create_multi_pattern(
     name = "middleBell",
     payout = 8,
@@ -112,29 +120,30 @@ role_data = [
         ("rep_2", rep_any, bonus_any),
         ("rep_2", rep_any, "suica"),
         ("rep_2", bonus_any, bell_any),
-        (bonus_any, rep_any,rep_any),
+        ("r7", rep_any,rep_any),
         (bell_any, "suica", bell_any),
         (bell_any, "cherry", bell_any),
         (bell_any, "r7", bell_any),
      )),
     ('RB1', 0,2, '["r7", "r7", "bar"]',
      create_multi_miss(
-        ("rep_2", rep_any, bonus_any),
+        ("rep_2", rep_any, bell_any),
         ("rep_2", rep_any, "suica"),
-        ("rep_2", bonus_any, bell_any),
+        ("rep_2", bonus_any, bonus_any),
         (bell_any, "suica", bell_any),
         (bell_any, "cherry", bell_any),
         (bell_any, "r7", bell_any),
-        (bonus_any, rep_any,rep_any)
+        ("r7", rep_any,rep_any)
      )
      )
 ]
 
-role_data = role_data + middleBell + Replay + Cherry + downSuica
+role_data = role_data + middleBell + upperBell +  Replay + Cherry + downSuica
 
 # [{'フラグ名', '確率', 'RT状態'}]
 flag_data_normal = [
-    {"name": 'Bell', "weight": 13107},
+    {"name": 'middleBell', "weight": 6554},
+    {"name": 'upperBell', "weight": 6553},
     {"name": 'Replay_A', "weight": 4000, 'RT': 'BB1'},
     {"name": 'BB1', "weight": 10000},
     {"name": 'Replay_A', "weight": 4978, 'RT': 'BB1'},
@@ -160,18 +169,20 @@ RT_map = {
 # [{"フラグ名", "重複役"}]
 flag_role_map = [
     {
-        "flag": "Bell",
-        "roles": ["middleBell-0", "middleBell-1", "middleBell-2", "middleBell-3",
-                   "middleBell-4", "middleBell-5", "middleBell-6", "middleBell-7"]
+        "flag": "middleBell",
+        "roles": [f"middleBell-{i}" for i in range(8)]
      },
     {
+        "flag": "upperBell",
+        "roles": [f"upperBell-{i}" for i in range(12)]
+    },
+    {
         "flag": "Replay_A",
-        "roles": ["Replay-0", "Replay-1", "Replay-2", "Replay-3",
-                   "Replay-4", "Replay-5", "Replay-6", "Replay-7"]
+        "roles": [f"Replay-{i}" for i in range(8)]
     },
     {
         "flag": "Cherry",
-        "roles": ["Cherry-0", "Cherry-1"]
+        "roles": [f"Cherry-{i}" for i in range(8)]
     },
     {
         "flag": "Suica",
