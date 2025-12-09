@@ -9,36 +9,7 @@ import json
 def get_combo(L, C, R):
     return [list(x) for x in itertools.product(L, C, R)]
 
-def create_multi_pattern(name, payout, kind, patterns, miss_pattern = None):
-
-    all_combo = []
-    i = 0
-    miss_pattern_str = None
-
-    if miss_pattern is not None:
-        miss_pattern_str = create_multi_miss(*miss_pattern)
-    
-    for pattern in patterns:
-        reel = []
-        for design in pattern:
-            if isinstance(design, str):
-                reel.append([design])
-            else:
-                reel.append(design)
-        combos = get_combo(reel[0], reel[1], reel[2])
-
-
-        for combo in combos:
-            role_name = f"{name}-{i}"
-            pattern = json.dumps(list(combo))
-            role = (role_name, payout, kind, pattern, miss_pattern_str)
-            all_combo.append(role)
-            i += 1
-
-    return(all_combo)
-
-
-def create_multi_miss(*patterns):
+def create_multi_pattern(*patterns):
     
     all_combo = []
 
@@ -64,81 +35,88 @@ bell_any = ["bell_1", "bell_2"]
 bonus_any = ["r7", "b7", "bar"]
 suica_group = ["suica", "r7", "cherry"]
 
-upperBell = create_multi_pattern(
-    name = "upperBell",
-    payout = 3,
-    kind = 1,
-    patterns = [(rep_any, "cherry", rep_any), (rep_any, "bar", rep_any),(rep_any, "blank", rep_any)],
-    miss_pattern = []
-)
-
-middleBell = create_multi_pattern(
-    name = "middleBell",
-    payout = 8,
-    kind = 1,
-    patterns = [(bell_any, bell_any, bell_any)],
-    miss_pattern = []
-)
-
-Replay = create_multi_pattern(
-    name = "Replay",
-    payout = 0,
-    kind = 0,
-    patterns = [(rep_any, rep_any, rep_any)],
-    miss_pattern = []
-)
-
-Cherry = create_multi_pattern(
-    name = "Cherry",
-    payout = 2,
-    kind = 1,
-    patterns = [("bar", rep_any, rep_any), ("blank", rep_any, rep_any)],
-    miss_pattern = [("r7", rep_any, rep_any), ("suica", rep_any, rep_any)]
-)
-
-downSuica = create_multi_pattern(
-    name = "downSuica",
-    payout = 5,
-    kind = 1,
-    patterns = [(bell_any, "suica", "cherry")],
-    miss_pattern=[(bell_any, suica_group, rep_any), (bell_any, suica_group, "b7"),]
-)
 
 role_data = [
-    ('upperBell', 3, 1, '["rep", "cherry", "rep"]',
-     '[]'),
-    ('lowerBell', 3, 1, '["rep", "bell", "suica"]',
-     '[]'),
-    ('middleSuica', 5, 1, '["suica", "suica", "suica"]',
-     create_multi_miss(
-         ("suica", "r7", bonus_any),
-         ("suica", "cherry", bonus_any)
-     )),
-    ('BB1', 0,2, '["r7", "r7", "r7"]',
-     create_multi_miss(
+    ('upperBell', 3, 1,
+     create_multi_pattern(
+         (rep_any, "cherry", rep_any),
+         (rep_any, "blank", rep_any),
+         (rep_any, "bar", rep_any)
+         ),
+     '[]'
+     ),
+
+    ('middleBell', 8, 1,
+      create_multi_pattern(
+          (bell_any, bell_any, bell_any)
+      ),
+     '[]'
+     ),
+
+     ('Replay', 0, 0, 
+      create_multi_pattern(
+          (rep_any, rep_any, rep_any)
+      ),
+      '[]'
+      ),
+
+      ('Cherry', 2, 1,
+       create_multi_pattern(
+           ("bar", bell_any, bell_any),
+           ("blank", bell_any, bell_any),
+           ("bar", "suica", bell_any),
+           ("blank", "suica", bell_any)
+       ),
+       create_multi_pattern(
+           (bonus_any, bell_any, bell_any),
+           ("suica", bell_any, bell_any)
+       )
+       ),
+
+    ('downSuica', 5, 1,
+     create_multi_pattern(
+         (bell_any, "suica", "cherry")
+     ),
+     create_multi_pattern(
+         (bell_any, suica_group, rep_any)
+     )
+     ),
+
+    ('middleSuica', 5, 1,
+    '["suica", "suica", "suica"]',
+     create_multi_pattern(
+         ("suica", suica_group, rep_any)
+     ),
+    ),
+
+    ('BB1', 0, 2,
+    '["r7", "r7", "r7"]',
+     create_multi_pattern(
         ("rep_2", "suica", "bell_2"),
+        ("rep_2", bonus_any, bell_any),
         ("rep_2", rep_any, bonus_any),
         ("rep_2", rep_any, "suica"),
-        ("rep_2", bonus_any, bell_any),
-        ("r7", rep_any,rep_any),
         (bell_any, "suica", bell_any),
         (bell_any, "cherry", bell_any),
         (bell_any, "r7", bell_any),
-     )),
-    ('RB1', 0,2, '["r7", "r7", "bar"]',
-     create_multi_miss(
+        ("r7", rep_any, rep_any)
+     )
+     ),
+
+    ('RB1', 0, 2, 
+    '["r7", "r7", "bar"]',
+     create_multi_pattern(
+        ("rep_2", bonus_any, bonus_any),
         ("rep_2", rep_any, bell_any),
         ("rep_2", rep_any, "suica"),
-        ("rep_2", bonus_any, bonus_any),
         (bell_any, "suica", bell_any),
         (bell_any, "cherry", bell_any),
         (bell_any, "r7", bell_any),
-        ("r7", rep_any,rep_any)
+        ("r7", rep_any, rep_any)
      )
      )
 ]
 
-role_data = role_data + middleBell + upperBell +  Replay + Cherry + downSuica
 
 # [{'フラグ名', '確率', 'RT状態'}]
 flag_data_normal = [
@@ -170,23 +148,23 @@ RT_map = {
 flag_role_map = [
     {
         "flag": "middleBell",
-        "roles": [f"middleBell-{i}" for i in range(8)]
+        "roles": ["middleBell"]
      },
     {
         "flag": "upperBell",
-        "roles": [f"upperBell-{i}" for i in range(12)]
+        "roles": ["upperBell"]
     },
     {
         "flag": "Replay_A",
-        "roles": [f"Replay-{i}" for i in range(8)]
+        "roles": ["Replay"]
     },
     {
         "flag": "Cherry",
-        "roles": [f"Cherry-{i}" for i in range(8)]
+        "roles": ["Cherry"]
     },
     {
         "flag": "Suica",
-        "roles": ["downSuica-0", "downSuica-1"]
+        "roles": ["downSuica"]
     },
     {
         "flag": "BB1",
