@@ -83,14 +83,14 @@ role_data = [
      ),
 
     ('middleSuica', 5, 1,
-    '["suica", "suica", "suica"]',
+    '[["suica", "suica", "suica"]]',
      create_multi_pattern(
          ("suica", suica_group, rep_any)
      ),
     ),
 
     ('BB1', 0, 2,
-    '["r7", "r7", "r7"]',
+    '[["r7", "r7", "r7"]]',
      create_multi_pattern(
         ("rep_2", "suica", "bell_2"),
         ("rep_2", bonus_any, bell_any),
@@ -104,7 +104,7 @@ role_data = [
      ),
 
     ('RB1', 0, 2, 
-    '["r7", "r7", "bar"]',
+    '[["r7", "r7", "bar"]]',
      create_multi_pattern(
         ("rep_2", bonus_any, bonus_any),
         ("rep_2", rep_any, bell_any),

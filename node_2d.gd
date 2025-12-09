@@ -116,7 +116,6 @@ func _unhandled_input(event):
 			try_stop_reel(2)
 
 	if event.is_action_pressed("debug"):
-		print("all_roles")
 		print(all_roles)
 		
 
@@ -202,7 +201,6 @@ func table_logic(supposed_symbols, control_data, reel_pos, base_ID):
 					"kind" : kind,
 					"payout": payout
 				}
-				print(pattern)
 				valid_roles.append(data)
 		
 	if not valid_roles.is_empty():
@@ -227,7 +225,6 @@ func table_logic(supposed_symbols, control_data, reel_pos, base_ID):
 
 
 func control_logic(supposed_symbols, valid_role, reel_pos):
-	print(valid_role)
 	if not valid_role.is_empty():
 		var current_valid_roles : Array = []
 		for row in valid_role:
@@ -287,17 +284,20 @@ func dodge_invalid_role(supposed_symbols, reel_pos):
 		var safe = true
 		var supposed_symbol = supposed_symbols[i]["symbol"]
 		for role in all_roles:
-			var role_pattern = all_roles[role]["pattern"]
-			if supposed_symbol != role_pattern[reel_pos]:
-				continue
-			var matched = true
-			for j in range(3):
-				if j != reel_pos and not current_reel[j].is_empty():
-					if role_pattern[j] != current_reel[j]:
-						matched = false
-						break
-			if matched:
-				safe = false
+			var role_patterns = all_roles[role]["pattern"]
+			for role_pattern in role_patterns:
+				if supposed_symbol != role_pattern[reel_pos]:
+					continue
+				var matched = true
+				for j in range(3):
+					if j != reel_pos and not current_reel[j].is_empty():
+						if role_pattern[j] != current_reel[j]:
+							matched = false
+							break
+				if matched:
+					safe = false
+					break
+			if not safe:
 				break
 		if safe:
 			return(i)
@@ -312,7 +312,7 @@ func sorting_symbols(x, y):
 		return x["combo"] > y["combo"]
 	if x["payout"] != y ["payout"]:
 		return x["payout"] > y["payout"]
-	return x["slide"] < y["slide"]
+	return x["slide"] > y["slide"]
 
 
 #フラグデータ読み込み
@@ -540,6 +540,7 @@ func stop_reels(slide, current_pixel, raw_ID, reel_pos):
 	var reel = reels[reel_pos]
 	var target_pixel = raw_ID * pattern_scale
 
+	print(slide)
 
 	target_pixel += (slide * pattern_scale)
 	var target_speed : float = abs(target_pixel - current_pixel) / current_spin_speed[reel_pos]
