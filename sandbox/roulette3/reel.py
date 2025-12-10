@@ -28,7 +28,7 @@ def create_multi_pattern(*patterns):
 
 
 #%%
-# ('小役名', "払い出し枚数",'小役(1)orリプレイ(0)orボーナス(2),', '入賞系', 'こぼし目')
+# ('小役名', "払い出し枚数",'リプレイ(3)or小役(2)orボーナス(1),', '入賞系', 'こぼし目')
 
 rep_any = ["rep_1", "rep_2"]
 bell_any = ["bell_1", "bell_2"]
@@ -37,7 +37,7 @@ suica_group = ["suica", "r7", "cherry"]
 
 
 role_data = [
-    ('upperBell', 3, 1,
+    ('upperBell', 3, 2,
      create_multi_pattern(
          (rep_any, "cherry", rep_any),
          (rep_any, "blank", rep_any),
@@ -46,26 +46,24 @@ role_data = [
      '[]'
      ),
 
-    ('middleBell', 8, 1,
+    ('middleBell', 8, 2,
       create_multi_pattern(
           (bell_any, bell_any, bell_any)
       ),
      '[]'
      ),
 
-     ('Replay', 0, 0, 
+     ('Replay', 0, 3, 
       create_multi_pattern(
           (rep_any, rep_any, rep_any)
       ),
       '[]'
       ),
 
-      ('Cherry', 2, 1,
+      ('Cherry', 2, 2,
        create_multi_pattern(
            ("bar", bell_any, bell_any),
-           ("blank", bell_any, bell_any),
-           ("bar", "suica", bell_any),
-           ("blank", "suica", bell_any)
+           ("blank", bell_any, bell_any)
        ),
        create_multi_pattern(
            (bonus_any, bell_any, bell_any),
@@ -73,7 +71,7 @@ role_data = [
        )
        ),
 
-    ('downSuica', 5, 1,
+    ('downSuica', 5, 2,
      create_multi_pattern(
          (bell_any, "suica", "cherry")
      ),
@@ -82,14 +80,14 @@ role_data = [
      )
      ),
 
-    ('middleSuica', 5, 1,
+    ('middleSuica', 5, 2,
     '[["suica", "suica", "suica"]]',
      create_multi_pattern(
          ("suica", suica_group, rep_any)
      ),
     ),
 
-    ('BB1', 0, 2,
+    ('BB1', 0, 1,
     '[["r7", "r7", "r7"]]',
      create_multi_pattern(
         ("rep_2", "suica", "bell_2"),
@@ -99,11 +97,11 @@ role_data = [
         (bell_any, "suica", bell_any),
         (bell_any, "cherry", bell_any),
         (bell_any, "r7", bell_any),
-        ("r7", rep_any, rep_any)
+        ("r7", rep_any, bell_any)
      )
      ),
 
-    ('RB1', 0, 2, 
+    ('RB1', 0, 1, 
     '[["r7", "r7", "bar"]]',
      create_multi_pattern(
         ("rep_2", bonus_any, bonus_any),
@@ -123,7 +121,7 @@ flag_data_normal = [
     {"name": 'middleBell', "weight": 6554},
     {"name": 'upperBell', "weight": 6553},
     {"name": 'Replay_A', "weight": 4000, 'RT': 'BB1'},
-    {"name": 'BB1', "weight": 10000},
+    {"name": 'RB1', "weight": 10000},
     {"name": 'Replay_A', "weight": 4978, 'RT': 'BB1'},
     {"name": 'RB1', "weight": 10000},
     {"name": 'Cherry', "weight": 3300},
@@ -134,7 +132,7 @@ flag_data_normal = [
 
 flag_data_JAC = {
     "RB1" : [
-        {"name": "Bell", "weight": 65536}
+        {"name": "middleBell", "weight": 65536}
     ]
 }
 
@@ -338,10 +336,6 @@ def generate_control_table(cursor):
             target = item["target"]
             if name in role_dict:
                 role_id_list.append(role_dict[name])
-            prefix = name + "-"
-            for db_name in role_dict:
-                if db_name.startswith(prefix):
-                    role_id_list.append(role_dict[db_name])
             if role_id_list:
                 for role_id in role_id_list:
                    apply_control_table(cursor, role_id, reel_pos, target) 

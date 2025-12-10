@@ -46,10 +46,9 @@ centered = false
 offset = Vector2(128, -2688)
 
 [node name="C_image_3" type="Sprite2D" parent="window/C_reel"]
-position = Vector2(128, -1280)
 texture = ExtResource("3_epypp")
 centered = false
-offset = Vector2(0, -5376)
+offset = Vector2(128, -5376)
 
 [node name="R_reel" type="Node2D" parent="window"]
 

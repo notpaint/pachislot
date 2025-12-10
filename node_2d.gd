@@ -4,7 +4,7 @@ const pattern_scale : float = 128.0
 const pattern_sum : int = 21
 const reel_length : float = pattern_scale * pattern_sum
 const pattern_per : float = 1.0 / pattern_sum
-const reel_rpm : float = 80.0
+const reel_rpm : float = 30.0
 
 var db : SQLite
 var db_path = "database_v2.db"
@@ -36,6 +36,8 @@ var result_flag
 var result_roles : Array = []
 var bonus_state = null
 var current_state = "Normal"
+
+var JAC_game = false
 
 @onready var L_reel = $window/L_reel
 @onready var C_reel = $window/C_reel
@@ -93,12 +95,15 @@ func _unhandled_input(event):
 				result_roles.append(current_bonus)
 
 
-			if not result_roles.is_empty():
-				for role in result_roles:
-					print(role["role"])
+			# if not result_roles.is_empty():
+			# 	for role in result_roles:
+			# 		print(role["role"])
 
 			if result_flag:
+				print(result_roles)
 				current_control_table = create_control_data(result_roles)
+				# print(current_control_table)
+
 				for i in range (3):
 					is_spinning[i] = true
 				bet_medals = 0
@@ -116,7 +121,7 @@ func _unhandled_input(event):
 			try_stop_reel(2)
 
 	if event.is_action_pressed("debug"):
-		print(all_roles)
+		print(weight_table)
 		
 
 func maxbet():
@@ -161,6 +166,7 @@ func try_stop_reel(reel_pos):
 			stop_reels(slide,current_pixel ,raw_ID ,reel_pos)
 
 
+
 func get_supposed_symbols(base_ID, reel_pos):
 	var supposed_symbols : Array = []
 	for i in range(5):
@@ -193,7 +199,7 @@ func table_logic(supposed_symbols, control_data, reel_pos, base_ID):
 				print(target_symbol)
 				supposed_data["kind"] = kind
 				supposed_data["combo"] += 1
-				if supposed_data["payout"] > payout:
+				if supposed_data["payout"] < payout:
 					supposed_data["payout"] = payout
 				var pattern = valid_pattern
 				var data = {
@@ -205,6 +211,7 @@ func table_logic(supposed_symbols, control_data, reel_pos, base_ID):
 		
 	if not valid_roles.is_empty():
 		supposed_symbols.sort_custom(sorting_symbols)
+		print(supposed_symbols)
 		return(supposed_symbols[0]["slide"])
 	
 	var miss_slides : Array = []
@@ -570,9 +577,22 @@ func check_prize():
 		var base_ID = posmod(raw_ID, pattern_sum)
 		reel_result[i] = reel_table[i][base_ID]
 	for role in all_roles:
-		if all_roles[role]["pattern"] == reel_result:
-			var payout = all_roles[role]["payout"]
-			print(role)
-			MY += payout
+		var patterns = all_roles[role]["pattern"]
+		var kind = all_roles[role]["kind"]
+		for pattern in patterns:
+			if reel_result == pattern:
+				var payout = all_roles[role]["payout"]
+				print(role)
+				MY += payout
+				print(kind)
+				if kind == 3:
+					bet_medals = 3
+				if kind == 1:
+					pass
 	result_flag = null
 	print(MY)
+
+func bonus_game(bonus):
+	if bonus == "RB1":
+		
+		pass
