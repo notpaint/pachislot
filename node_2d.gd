@@ -4,7 +4,7 @@ const pattern_scale : float = 128.0
 const pattern_sum : int = 21
 const reel_length : float = pattern_scale * pattern_sum
 const pattern_per : float = 1.0 / pattern_sum
-const reel_rpm : float = 30.0
+const reel_rpm : float = 80.0
 
 var db : SQLite
 var db_path = "database_v2.db"
@@ -14,6 +14,8 @@ var weight_table : Dictionary = {}
 var flag_table : Dictionary = {}
 var all_roles : Dictionary = {}
 var control_table : Dictionary = {}
+var JAC_data : Dictionary = {}
+var bonus_data : Dictionary = {}
 var bonus_variety : Array = ["RB1", "BB1"]
 
 var reel_table : Array = [[],[],[]]
@@ -27,17 +29,24 @@ var bet_medals = 0
 var is_spinning = [false, false, false]
 
 var max_spin_speed : float = (reel_rpm / 60.0) * reel_length
-var acceleration : float = 1000
+var acceleration : float = 2500
 var current_spin_speed : Array = [0.0, 0.0, 0.0]
 
 var active_tweens : Array[Tween] = [null, null, null]
+
 
 var result_flag
 var result_roles : Array = []
 var bonus_state = null
 var current_state = "Normal"
 
+
 var JAC_game = false
+var JAC_counter : Array
+var current_bonus
+var max_bonus_payout : int = 0
+var current_bonus_payout : int = 0
+
 
 @onready var L_reel = $window/L_reel
 @onready var C_reel = $window/C_reel
@@ -102,7 +111,6 @@ func _unhandled_input(event):
 			if result_flag:
 				print(result_roles)
 				current_control_table = create_control_data(result_roles)
-				# print(current_control_table)
 
 				for i in range (3):
 					is_spinning[i] = true
@@ -121,7 +129,9 @@ func _unhandled_input(event):
 			try_stop_reel(2)
 
 	if event.is_action_pressed("debug"):
-		print(weight_table)
+		# print(bonus_data)
+		# print(JAC_data)
+		print(current_state)
 		
 
 func maxbet():
@@ -329,6 +339,8 @@ func load_data_from_db():
 	load_flag_table()
 	load_control_table()
 	load_all_roles()
+	load_JAC_data()
+	load_bonus_data()
 	load_reel_table()
 
 
@@ -460,6 +472,41 @@ func load_control_table():
 		control_table[role][reel_pos][reel_ID] = slide
 
 
+func load_JAC_data():
+	db.query("SELECT name, prize_count, play_count FROM JAC_data")
+	var results = db.query_result
+
+	for row in results:
+		var JAC_name = row["name"]
+		var prize_count = int(row["prize_count"])
+		var play_count = int(row["play_count"])
+		JAC_data[JAC_name] = [prize_count, play_count]
+
+
+#ボーナスデータ読み込み
+func load_bonus_data():
+	db.query("SELECT name, max_payout, JACIN_type, JAC_nums FROM bonus_data")
+	var results = db.query_result
+	
+	for row in results:
+		var bonus_name = row["name"]
+		var max_payout = row["max_payout"]
+		if max_payout:
+			max_payout = int(max_payout)
+		var JACIN_type = row["JACIN_type"]
+		var JAC_nums = row["JAC_nums"]
+		if JAC_nums:
+			JAC_nums = JSON.parse_string(JAC_nums)
+		if not bonus_data.has(bonus_name):
+			var data = {
+				"name" : bonus_name,
+				"max_payout" : max_payout,
+				"JACIN_type" : JACIN_type,
+				"JAC_nums" : JAC_nums
+			}
+			bonus_data[bonus_name] = data
+
+
 #reel_table(リールテーブル)作成
 #[[L],[C],[R]]
 func load_reel_table():
@@ -480,15 +527,30 @@ func load_reel_table():
 #フラグ抽選
 func select_flags(value):
 	if bet_medals == 3:
-		var current_weight_table = weight_table["Normal"]
-		for data in current_weight_table:
-			var weight: int = data["weight"]
-			value -= weight
-			if value < 0:
-				return(data["flag"])
-		return("vac")
+		if weight_table.has(current_state):
+			var current_weight_table = weight_table[current_state]
+			for data in current_weight_table:
+				var weight = int(data["weight"])
+				value -= weight
+				if value < 0:
+					return(data["flag"])
+			return("vac")
+		else:
+			print("error : current_state is %s" % [current_state])
+			return
 	else:
 		return
+
+	# if bet_medals == 3:
+	# 	var current_weight_table = weight_table["Normal"]
+	# 	for data in current_weight_table:
+	# 		var weight: int = data["weight"]
+	# 		value -= weight
+	# 		if value < 0:
+	# 			return(data["flag"])
+	# 	return("vac")
+	# else:
+	# 	return
 
 
 #乱数生成
@@ -547,7 +609,7 @@ func stop_reels(slide, current_pixel, raw_ID, reel_pos):
 	var reel = reels[reel_pos]
 	var target_pixel = raw_ID * pattern_scale
 
-	print(slide)
+	# print(slide)
 
 	target_pixel += (slide * pattern_scale)
 	var target_speed : float = abs(target_pixel - current_pixel) / current_spin_speed[reel_pos]
@@ -582,17 +644,83 @@ func check_prize():
 		for pattern in patterns:
 			if reel_result == pattern:
 				var payout = all_roles[role]["payout"]
-				print(role)
 				MY += payout
-				print(kind)
+				if current_bonus:
+					current_bonus_payout += payout
 				if kind == 3:
 					bet_medals = 3
-				if kind == 1:
-					pass
-	result_flag = null
-	print(MY)
+					result_flag = null
 
-func bonus_game(bonus):
-	if bonus == "RB1":
+				if kind == 1:
+					if bonus_data.has(role):
+						start_bonus(role)
+					else:
+						pass
+
+				if JAC_game:
+					JAC_counter[0] -= 1
+					print(JAC_counter)
+					if JAC_counter[0] == 0:
+						end_JAC()
+
+	if JAC_game:
+		JAC_counter[1] -= 1
+		print(JAC_counter)
+		if JAC_counter[1] == 0:
+			end_JAC()
+
+	if not max_bonus_payout == 0:
+		if max_bonus_payout < current_bonus_payout:
+			end_BB()
 		
-		pass
+
+func start_bonus(role):
+	var data = bonus_data[role]
+	var JACIN_type = data["JACIN_type"]
+	var max_payout = data["max_payout"]
+	current_bonus = role
+
+	if not max_payout:
+		if current_state == "Normal":
+			start_JAC(JACIN_type)
+			return
+		else:
+			start_JAC(JACIN_type)
+			return
+	
+	if JACIN_type:
+		max_bonus_payout = max_payout
+		current_bonus_payout = 0
+		start_JAC(JACIN_type)
+	else:
+		max_bonus_payout = max_payout
+		current_bonus_payout = 0
+		current_state = role
+
+
+func start_JAC(JAC):
+	print("JAC_IN")
+	JAC_game = true
+	JAC_counter = JAC_data[JAC].duplicate()
+	current_state = JAC
+
+
+func end_JAC():
+	JAC_game = false
+	JAC_counter = [0,0]
+	current_state = "Normal"
+
+	if not max_bonus_payout == 0:
+		current_state = current_bonus
+		var JACIN_type = bonus_data[current_bonus]["JACIN_type"]
+		if JACIN_type:
+			start_JAC(JACIN_type)
+		else:
+			pass
+
+
+func end_BB():
+	JAC_game = false
+	JAC_counter = [0,0]
+	current_state = "Normal"
+	current_bonus = null

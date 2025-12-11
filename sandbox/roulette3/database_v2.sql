@@ -20,6 +20,19 @@ CREATE TABLE weight_status (
     weight_state TEXT
 );
 
+CREATE TABLE JAC_data(
+    name TEXT,
+    prize_count INT,
+    play_count INT
+);
+
+CREATE TABLE bonus_data(
+    name TEXT,
+    max_payout INT,
+    JACIN_type TEXT,
+    JAC_nums TEXT
+);
+
 CREATE TABLE flag_table (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     weight_status_id INT,
@@ -54,6 +67,7 @@ CREATE TABLE reel_table(
     FOREIGN KEY (reel_id) REFERENCES reel_IDs(reel_id),
     PRIMARY KEY (reel_pos, reel_id)
 );
+
 
 -- リールの位置(左:0 中:1 右:2)
 CREATE TABLE reel_poses(

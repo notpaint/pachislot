@@ -131,7 +131,7 @@ flag_data_normal = [
 ]
 
 flag_data_JAC = {
-    "RB1" : [
+    "JAC1" : [
         {"name": "middleBell", "weight": 65536}
     ]
 }
@@ -139,6 +139,28 @@ flag_data_JAC = {
 RT_map = {
     'BB1' : {
         "Replay_A": "vac"
+    }
+}
+
+JAC_BB1 = [{"weight": 65535, "JAC_type" : "JAC1"}]
+
+JAC_data = {
+    'JAC1' : {
+        "prize_count" : 8,
+        "play_count": 12
+    }
+}
+
+bonus_data = {
+    'RB1' : {
+        "max_payout" : None,
+        "JACIN_type" : "JAC1",
+        "JAC_nums" : None
+    },
+    'BB1' : {
+        "max_payout" : 300,
+        "JACIN_type" : "JAC1",
+        "JAC_nums" : json.dumps(JAC_BB1)
     }
 }
 
@@ -373,7 +395,23 @@ def generate_reel_table(cursor):
         for reel_ID, design in enumerate(item):
             cursor.execute("""INSERT OR IGNORE INTO reel_table (reel_pos, reel_id, reel_design)
                            VALUES (?, ?, ?)""", (reel_pos, reel_ID, design))
-            
+
+def generate_JAC_data(cursor):
+    for name, data in JAC_data.items():
+        prize_count = data["prize_count"]
+        play_count = data["play_count"]
+        cursor.execute("""INSERT OR IGNORE INTO JAC_data (name, prize_count, play_count)
+                       VALUES (?, ?, ?)""", (name, prize_count, play_count))
+
+
+def generate_bonus_data(cursor):
+    for name, data in bonus_data.items():
+        max_payout = data["max_payout"]
+        JACIN_type = data["JACIN_type"]
+        JAC_nums = data["JAC_nums"]
+        cursor.execute("""INSERT OR IGNORE INTO bonus_data (name, max_payout, JACIN_type, JAC_nums)
+                       VALUES (?, ?, ?, ?)""", (name, max_payout, JACIN_type, JAC_nums))
+
 
 #%%
 
@@ -399,6 +437,8 @@ if __name__=="__main__":
     generate_flag_table(cursor)
     generate_flag_role_map(cursor)
     generate_reel_table(cursor)
+    generate_JAC_data(cursor)
+    generate_bonus_data(cursor)
     
     conn.commit()
     conn.close()
