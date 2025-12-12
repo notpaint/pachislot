@@ -131,7 +131,7 @@ func _unhandled_input(event):
 	if event.is_action_pressed("debug"):
 		# print(bonus_data)
 		# print(JAC_data)
-		print(current_state)
+		print(weight_table["RT1"])
 		
 
 func maxbet():
@@ -206,7 +206,7 @@ func scoring_symbols(supposed_symbol_data, kind, payout):
 
 func table_logic(supposed_symbols, control_data, reel_pos, base_ID):
 	valid_roles.clear()
-	
+
 	for row in control_data:
 		var slide = row["slide"][reel_pos][base_ID]
 		var kind = row["kind"]
@@ -765,3 +765,7 @@ func end_BB():
 	current_bonus = null
 	print("BB_END")
 	print(current_bonus_payout)
+
+
+func check_RT():
+	pass

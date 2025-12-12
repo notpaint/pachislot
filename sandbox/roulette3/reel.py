@@ -53,12 +53,21 @@ role_data = [
      '[]'
      ),
 
-     ('Replay', 0, 3, 
+     ('Replay_A', 0, 3, 
       create_multi_pattern(
           (rep_any, rep_any, rep_any)
       ),
       '[]'
       ),
+
+      ('Replay_B', 0, 3,
+       create_multi_pattern(
+           (bell_any, "suica", bell_any),
+           (bell_any, "cherry", bell_any),
+           (bell_any, "r7", bell_any)
+       ),
+       '[]'
+       ),
 
       ('Cherry', 2, 2,
        create_multi_pattern(
@@ -94,9 +103,9 @@ role_data = [
         ("rep_2", bonus_any, bell_any),
         ("rep_2", rep_any, bonus_any),
         ("rep_2", rep_any, "suica"),
-        (bell_any, "suica", bell_any),
-        (bell_any, "cherry", bell_any),
-        (bell_any, "r7", bell_any),
+        (bell_any, "suica", "suica"),
+        (bell_any, "cherry", "suica"),
+        (bell_any, "r7", "suica"),
         ("r7", rep_any, bell_any)
      )
      ),
@@ -107,9 +116,9 @@ role_data = [
         ("rep_2", bonus_any, bonus_any),
         ("rep_2", rep_any, bell_any),
         ("rep_2", rep_any, "suica"),
-        (bell_any, "suica", bell_any),
-        (bell_any, "cherry", bell_any),
-        (bell_any, "r7", bell_any),
+        (bell_any, "suica", "suica"),
+        (bell_any, "cherry", "suica"),
+        (bell_any, "r7", "suica"),
         ("r7", rep_any, rep_any)
      )
      )
@@ -126,8 +135,8 @@ flag_data_normal = [
     {"name": 'BB1', "weight": 10000},
     {"name": 'Cherry', "weight": 3300},
     {"name": 'Suica', "weight": 2200},
-    {"name": 'vac', "weight": 13107},
-    {"name": 'vac', "weight": 4844}
+    {"name": 'vac', "weight": 13107, 'RT': 'RT1'},
+    {"name": 'vac', "weight": 4844, 'RT': 'RT1'}
 ]
 
 flag_data_JAC = {
@@ -139,7 +148,14 @@ flag_data_JAC = {
 RT_map = {
     'BB1' : {
         "Replay_A": "vac"
+    },
+    'RT1' : {
+        "vac" : "Replay_A"
     }
+}
+
+RT_data = {
+    "RT1" : 30
 }
 
 JAC_BB1 = [{"weight": 65535, "JAC_type" : "JAC1"}]
@@ -155,14 +171,19 @@ bonus_data = {
     'RB1' : {
         "max_payout" : None,
         "JACIN_type" : "JAC1",
-        "JAC_nums" : None
+        "JAC_nums" : None,
+        "before_RT" : None,
+        "after_RT" : None
     },
     'BB1' : {
         "max_payout" : 300,
         "JACIN_type" : "JAC1",
-        "JAC_nums" : json.dumps(JAC_BB1)
+        "JAC_nums" : json.dumps(JAC_BB1),
+        "before_RT" : None,
+        "after_RT" : "RT1"
     }
 }
+
 
 # [{"フラグ名", "重複役"}]
 flag_role_map = [
@@ -176,7 +197,7 @@ flag_role_map = [
     },
     {
         "flag": "Replay_A",
-        "roles": ["Replay"]
+        "roles": ["Replay_A"]
     },
     {
         "flag": "Cherry",
@@ -234,7 +255,7 @@ def generate_flag_list(seq, RT_mode = None):
         name = item["name"]
         weight = item["weight"]
         tag = item.get("RT")
-        if RT_mode is not None and tag in RT_map:
+        if RT_mode is not None and tag in RT_map and tag == RT_mode:
             mode = RT_map[tag]
             if name in mode:
                 name = mode[name]
@@ -312,6 +333,7 @@ def generate_flag_table(cursor):
     flag_data = {}
     flag_data["Normal"] = generate_flag_list(flag_data_normal, RT_mode = None)
     flag_data["BB1"] = generate_flag_list(flag_data_normal, RT_mode = "BB1")
+    flag_data["RT1"] = generate_flag_list(flag_data_normal, RT_mode = "RT1")
     for x,y in flag_data_JAC.items():
         flag_data[x] = y
     for status, weights in flag_data.items():
@@ -336,6 +358,7 @@ def generate_flag_table(cursor):
             cursor.execute("""
                            INSERT OR IGNORE INTO flag_table (weight_status_id, flag_id, weight)
                            VALUES (?, ?, ?)""", (state_id, flag_id, weight))
+
 
 def generate_control_table(cursor):
     cursor.executemany("""
@@ -366,6 +389,7 @@ def generate_control_table(cursor):
             else:
                 print(f"ERROR ON generate_control_table() : {name} DOES EXIST")
 
+
 def generate_flag_role_map(cursor):
     for data in flag_role_map:
         flag = data["flag"]
@@ -387,6 +411,7 @@ def generate_flag_role_map(cursor):
                            INSERT OR IGNORE INTO flag_role_map (flag_ID, role_ID)
                            VALUES (?, ?)""", (flag_ID, role_ID))   
 
+
 def generate_reel_table(cursor):
     dir = os.path.dirname(__file__)
     csv_path = os.path.join(dir, "reel_table.csv")
@@ -395,6 +420,7 @@ def generate_reel_table(cursor):
         for reel_ID, design in enumerate(item):
             cursor.execute("""INSERT OR IGNORE INTO reel_table (reel_pos, reel_id, reel_design)
                            VALUES (?, ?, ?)""", (reel_pos, reel_ID, design))
+
 
 def generate_JAC_data(cursor):
     for name, data in JAC_data.items():
@@ -409,8 +435,10 @@ def generate_bonus_data(cursor):
         max_payout = data["max_payout"]
         JACIN_type = data["JACIN_type"]
         JAC_nums = data["JAC_nums"]
-        cursor.execute("""INSERT OR IGNORE INTO bonus_data (name, max_payout, JACIN_type, JAC_nums)
-                       VALUES (?, ?, ?, ?)""", (name, max_payout, JACIN_type, JAC_nums))
+        before_RT = data["before_RT"]
+        after_RT = data["after_RT"]
+        cursor.execute("""INSERT OR IGNORE INTO bonus_data (name, max_payout, JACIN_type, JAC_nums, before_RT, after_RT)
+                       VALUES (?, ?, ?, ?, ?, ?)""", (name, max_payout, JACIN_type, JAC_nums, before_RT, after_RT))
 
 
 #%%

@@ -30,7 +30,9 @@ CREATE TABLE bonus_data(
     name TEXT,
     max_payout INT,
     JACIN_type TEXT,
-    JAC_nums TEXT
+    JAC_nums TEXT,
+    before_RT TEXT,
+    after_RT TEXT
 );
 
 CREATE TABLE flag_table (
