@@ -123,7 +123,7 @@ flag_data_normal = [
     {"name": 'Replay_A', "weight": 4000, 'RT': 'BB1'},
     {"name": 'RB1', "weight": 10000},
     {"name": 'Replay_A', "weight": 4978, 'RT': 'BB1'},
-    {"name": 'RB1', "weight": 10000},
+    {"name": 'BB1', "weight": 10000},
     {"name": 'Cherry', "weight": 3300},
     {"name": 'Suica', "weight": 2200},
     {"name": 'vac', "weight": 13107},

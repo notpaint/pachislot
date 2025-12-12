@@ -176,7 +176,6 @@ func try_stop_reel(reel_pos):
 			stop_reels(slide,current_pixel ,raw_ID ,reel_pos)
 
 
-
 func get_supposed_symbols(base_ID, reel_pos):
 	var supposed_symbols : Array = []
 	for i in range(5):
@@ -193,24 +192,34 @@ func get_supposed_symbols(base_ID, reel_pos):
 	return(supposed_symbols)
 
 
+func scoring_symbols(supposed_symbol_data, kind, payout):
+	supposed_symbol_data["combo"] += 1
+
+	if supposed_symbol_data["kind"] > kind:
+		return
+
+	supposed_symbol_data["kind"] = kind
+
+	if supposed_symbol_data["payout"] < payout:
+		supposed_symbol_data["payout"] = payout
+	
+
 func table_logic(supposed_symbols, control_data, reel_pos, base_ID):
+	valid_roles.clear()
+	
 	for row in control_data:
 		var slide = row["slide"][reel_pos][base_ID]
 		var kind = row["kind"]
 		var payout = row["payout"]
 		var pattern_list = row["pattern"]
 
-		var supposed_data = supposed_symbols[slide]
-		var supposed_symbol = supposed_data["symbol"]
+		var supposed_symbol_data = supposed_symbols[slide]
+		var supposed_symbol = supposed_symbol_data["symbol"]
 
 		for valid_pattern in pattern_list:
 			var target_symbol = valid_pattern[reel_pos]
 			if target_symbol == supposed_symbol:
-				print(target_symbol)
-				supposed_data["kind"] = kind
-				supposed_data["combo"] += 1
-				if supposed_data["payout"] < payout:
-					supposed_data["payout"] = payout
+				scoring_symbols(supposed_symbol_data, kind, payout)
 				var pattern = valid_pattern
 				var data = {
 					"pattern" : pattern,
@@ -250,12 +259,9 @@ func control_logic(supposed_symbols, valid_role, reel_pos):
 			var valid_pattern = row["pattern"]
 			var valid_symbol = valid_pattern[reel_pos]
 			for i in (supposed_symbols.size()):
-				var supposed_data = supposed_symbols[i]
-				if supposed_data["symbol"] == valid_symbol:
-					supposed_data["kind"] = kind
-					supposed_data["combo"] += 1
-					if supposed_data["payout"] > payout:
-						supposed_data["payout"] = payout
+				var supposed_symbol_data = supposed_symbols[i]
+				if supposed_symbol_data["symbol"] == valid_symbol:
+					scoring_symbols(supposed_symbol_data, kind, payout)
 					var data = {
 						"pattern": valid_pattern,
 						"kind": kind,
@@ -276,7 +282,6 @@ func control_logic(supposed_symbols, valid_role, reel_pos):
 
 	return(dodge_invalid_role(supposed_symbols, reel_pos))
 	
-
 	
 func miss_route(supposed_symbols, ghosts, reel_pos):
 	var miss_slides : Array = []
@@ -631,48 +636,79 @@ func stop_reels(slide, current_pixel, raw_ID, reel_pos):
 
 
 func check_prize():
-	var reel_result : Array = [[],[],[]]
+
+	if JAC_game:
+		JAC_counter[1] -= 1
+
+	var reel_result : Array = get_reel_result()
+
+	var matched_role = get_matched_role(reel_result)
+
+	if matched_role:
+		role_prize(matched_role)
+
+	if JAC_game:
+		print(JAC_counter)
+		if JAC_counter[0] <= 0 or JAC_counter[1] <= 0:
+			end_JAC()
+
+	if current_bonus and max_bonus_payout > 0:
+		if current_bonus_payout >= max_bonus_payout:
+			end_BB()
+	
+	result_flag = null
+
+
+func role_prize(matched_role):
+	var role = matched_role["name"]
+	var payout = matched_role["payout"]
+	var kind = matched_role["kind"]
+
+	MY += payout
+
+	if current_bonus and max_bonus_payout > 0:
+		current_bonus_payout += payout
+
+	if JAC_game:
+		JAC_counter[0] -= 1
+
+	match kind:
+		1: #ボーナス
+			if bonus_data.has(role):
+				start_bonus(role)
+			else:
+				pass
+		2: #小役
+			pass
+		3: #リプレイ
+			bet_medals = 3
+
+
+func get_matched_role(reel_result):
+	for role in all_roles:
+		var role_data = all_roles[role]
+		var patterns = role_data["pattern"]
+		for pattern in patterns:
+			if reel_result == pattern:
+				var data = {
+					"name" : role,
+					"payout" : role_data["payout"],
+					"kind" : role_data["kind"],
+					"pattern" : role_data["pattern"]
+				}
+				return (data)
+
+
+func get_reel_result():
+	var reel_result : Array = [[], [], []]
 	for i in range(3):
 		var reel = reels[i]
 		var current_pixel = reel.position.y
 		var raw_ID = get_raw_ID(current_pixel)
 		var base_ID = posmod(raw_ID, pattern_sum)
 		reel_result[i] = reel_table[i][base_ID]
-	for role in all_roles:
-		var patterns = all_roles[role]["pattern"]
-		var kind = all_roles[role]["kind"]
-		for pattern in patterns:
-			if reel_result == pattern:
-				var payout = all_roles[role]["payout"]
-				MY += payout
-				if current_bonus:
-					current_bonus_payout += payout
-				if kind == 3:
-					bet_medals = 3
-					result_flag = null
+	return (reel_result)
 
-				if kind == 1:
-					if bonus_data.has(role):
-						start_bonus(role)
-					else:
-						pass
-
-				if JAC_game:
-					JAC_counter[0] -= 1
-					print(JAC_counter)
-					if JAC_counter[0] == 0:
-						end_JAC()
-
-	if JAC_game:
-		JAC_counter[1] -= 1
-		print(JAC_counter)
-		if JAC_counter[1] == 0:
-			end_JAC()
-
-	if not max_bonus_payout == 0:
-		if max_bonus_payout < current_bonus_payout:
-			end_BB()
-		
 
 func start_bonus(role):
 	var data = bonus_data[role]
@@ -709,11 +745,14 @@ func end_JAC():
 	JAC_game = false
 	JAC_counter = [0,0]
 	current_state = "Normal"
+	print("JAC_END")
+	print(MY)
 
-	if not max_bonus_payout == 0:
+	if current_bonus and max_bonus_payout > 0:
 		current_state = current_bonus
 		var JACIN_type = bonus_data[current_bonus]["JACIN_type"]
 		if JACIN_type:
+			print("AUTO_JACIN")
 			start_JAC(JACIN_type)
 		else:
 			pass
@@ -724,3 +763,5 @@ func end_BB():
 	JAC_counter = [0,0]
 	current_state = "Normal"
 	current_bonus = null
+	print("BB_END")
+	print(current_bonus_payout)
