@@ -35,6 +35,12 @@ CREATE TABLE bonus_data(
     after_RT TEXT
 );
 
+CREATE TABLE RT_data(
+    name TEXT,
+    game INT,
+    type INT
+);
+
 CREATE TABLE flag_table (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     weight_status_id INT,

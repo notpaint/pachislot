@@ -139,11 +139,13 @@ flag_data_normal = [
     {"name": 'vac', "weight": 4844, 'RT': 'RT1'}
 ]
 
+
 flag_data_JAC = {
     "JAC1" : [
         {"name": "middleBell", "weight": 65536}
     ]
 }
+
 
 RT_map = {
     'BB1' : {
@@ -154,11 +156,16 @@ RT_map = {
     }
 }
 
+#('RT名', 継続ゲーム数, rank{0 = RT0, 1 = ボーナス中orボーナス後or入賞系無限RT, 2 = 入賞系有限RT, 3 = ボーナス成立中RT})
 RT_data = {
-    "RT1" : 30
+    ('RT0', None, 0),
+    ('RT1', 30, 1),
+    ('BB1', None, 1)
 }
 
+
 JAC_BB1 = [{"weight": 65535, "JAC_type" : "JAC1"}]
+
 
 JAC_data = {
     'JAC1' : {
@@ -176,7 +183,7 @@ bonus_data = {
         "after_RT" : None
     },
     'BB1' : {
-        "max_payout" : 300,
+        "max_payout" : 2,
         "JACIN_type" : "JAC1",
         "JAC_nums" : json.dumps(JAC_BB1),
         "before_RT" : None,
@@ -331,7 +338,7 @@ def apply_vac_control(cursor, reel_pos, slides):
 
 def generate_flag_table(cursor):
     flag_data = {}
-    flag_data["Normal"] = generate_flag_list(flag_data_normal, RT_mode = None)
+    flag_data["RT0"] = generate_flag_list(flag_data_normal, RT_mode = None)
     flag_data["BB1"] = generate_flag_list(flag_data_normal, RT_mode = "BB1")
     flag_data["RT1"] = generate_flag_list(flag_data_normal, RT_mode = "RT1")
     for x,y in flag_data_JAC.items():
@@ -440,6 +447,9 @@ def generate_bonus_data(cursor):
         cursor.execute("""INSERT OR IGNORE INTO bonus_data (name, max_payout, JACIN_type, JAC_nums, before_RT, after_RT)
                        VALUES (?, ?, ?, ?, ?, ?)""", (name, max_payout, JACIN_type, JAC_nums, before_RT, after_RT))
 
+def generate_RT_data(cursor):
+    cursor.executemany("""INSERT OR IGNORE INTO RT_data (name, game, type)
+                    VALUES (?, ?, ?)""", (RT_data))
 
 #%%
 
@@ -467,6 +477,7 @@ if __name__=="__main__":
     generate_reel_table(cursor)
     generate_JAC_data(cursor)
     generate_bonus_data(cursor)
+    generate_RT_data(cursor)
     
     conn.commit()
     conn.close()

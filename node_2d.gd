@@ -15,6 +15,7 @@ var flag_table : Dictionary = {}
 var all_roles : Dictionary = {}
 var control_table : Dictionary = {}
 var JAC_data : Dictionary = {}
+var RT_data : Dictionary = {}
 var bonus_data : Dictionary = {}
 var bonus_variety : Array = ["RB1", "BB1"]
 
@@ -37,15 +38,17 @@ var active_tweens : Array[Tween] = [null, null, null]
 
 var result_flag
 var result_roles : Array = []
-var bonus_state = null
-var current_state = "Normal"
-
+var bonus_state = "RB1" #成立中ボーナス
+var current_state = "RT0" #フラグ状態
+var RT_game : int = 0
+var RT_level : int = 0
 
 var JAC_game = false
 var JAC_counter : Array
-var current_bonus
+var current_bonus #作動中ボーナス
 var max_bonus_payout : int = 0
 var current_bonus_payout : int = 0
+
 
 
 @onready var L_reel = $window/L_reel
@@ -100,8 +103,8 @@ func _unhandled_input(event):
 							continue
 					result_roles.append(role)
 			if bonus_state:
-				var current_bonus = all_roles[bonus_state]
-				result_roles.append(current_bonus)
+				var current_est_bonus = all_roles[bonus_state]
+				result_roles.append(current_est_bonus)
 
 
 			# if not result_roles.is_empty():
@@ -129,9 +132,15 @@ func _unhandled_input(event):
 			try_stop_reel(2)
 
 	if event.is_action_pressed("debug"):
+		# print(weight_table[current_state])
+		# print(all_roles)
 		# print(bonus_data)
+		# max_bonus_payout = 2
 		# print(JAC_data)
-		print(weight_table["RT1"])
+		# print(weight_table["RT1"])
+		# print(RT_data)
+		print(RT_game)
+		print(current_state)
 		
 
 func maxbet():
@@ -345,6 +354,7 @@ func load_data_from_db():
 	load_control_table()
 	load_all_roles()
 	load_JAC_data()
+	load_RT_data()
 	load_bonus_data()
 	load_reel_table()
 
@@ -487,10 +497,27 @@ func load_JAC_data():
 		var play_count = int(row["play_count"])
 		JAC_data[JAC_name] = [prize_count, play_count]
 
+func load_RT_data():
+	db.query("SELECT name, game, type FROM RT_data")
+	var results = db.query_result
+
+	for row in results:
+		var RT_name = row["name"]
+		var game = row["game"]
+		if game:
+			game = int(game)
+		var type = int(row["type"])
+		var data = {
+			"name" : RT_name,
+			"game" : game,
+			"type" : type
+		}
+		RT_data[RT_name] = data
+
 
 #ボーナスデータ読み込み
 func load_bonus_data():
-	db.query("SELECT name, max_payout, JACIN_type, JAC_nums FROM bonus_data")
+	db.query("SELECT name, max_payout, JACIN_type, JAC_nums, before_RT, after_RT FROM bonus_data")
 	var results = db.query_result
 	
 	for row in results:
@@ -502,12 +529,16 @@ func load_bonus_data():
 		var JAC_nums = row["JAC_nums"]
 		if JAC_nums:
 			JAC_nums = JSON.parse_string(JAC_nums)
+		var before_RT = row["before_RT"]
+		var after_RT = row["after_RT"]
 		if not bonus_data.has(bonus_name):
 			var data = {
 				"name" : bonus_name,
 				"max_payout" : max_payout,
 				"JACIN_type" : JACIN_type,
-				"JAC_nums" : JAC_nums
+				"JAC_nums" : JAC_nums,
+				"before_RT" : before_RT,
+				"after_RT" : after_RT
 			}
 			bonus_data[bonus_name] = data
 
@@ -640,6 +671,11 @@ func check_prize():
 	if JAC_game:
 		JAC_counter[1] -= 1
 
+	if not JAC_game and RT_game != 0:
+		RT_game -= 1
+		if RT_game <= 0:
+			end_RT()
+
 	var reel_result : Array = get_reel_result()
 
 	var matched_role = get_matched_role(reel_result)
@@ -654,7 +690,7 @@ func check_prize():
 
 	if current_bonus and max_bonus_payout > 0:
 		if current_bonus_payout >= max_bonus_payout:
-			end_BB()
+			end_bonus()
 	
 	result_flag = null
 
@@ -717,7 +753,7 @@ func start_bonus(role):
 	current_bonus = role
 
 	if not max_payout:
-		if current_state == "Normal":
+		if current_state == "RT0":
 			start_JAC(JACIN_type)
 			return
 		else:
@@ -734,6 +770,7 @@ func start_bonus(role):
 		current_state = role
 
 
+
 func start_JAC(JAC):
 	print("JAC_IN")
 	JAC_game = true
@@ -744,9 +781,8 @@ func start_JAC(JAC):
 func end_JAC():
 	JAC_game = false
 	JAC_counter = [0,0]
-	current_state = "Normal"
+	current_state = "RT0"
 	print("JAC_END")
-	print(MY)
 
 	if current_bonus and max_bonus_payout > 0:
 		current_state = current_bonus
@@ -757,15 +793,37 @@ func end_JAC():
 		else:
 			pass
 
+	elif current_bonus:
+		end_bonus()
+	
 
-func end_BB():
+func end_bonus():
 	JAC_game = false
-	JAC_counter = [0,0]
-	current_state = "Normal"
+	JAC_counter = [0, 0]
+	current_state = "RT0"
+	var after_RT = bonus_data[current_bonus]["after_RT"]
+	if after_RT:
+		start_RT(after_RT)
+	print("%s IS END" % [current_bonus])
 	current_bonus = null
-	print("BB_END")
-	print(current_bonus_payout)
+	max_bonus_payout = 0
+	current_bonus_payout = 0
 
 
-func check_RT():
+func start_RT(RT):
+	var RT_type = RT_data[RT]["type"]
+	if RT_level > RT_type:
+		return
+	RT_game = 0
+	RT_level = RT_type
+	current_state = RT
+	var game = RT_data[RT]["game"]
+	if game:
+		RT_game = game
+		print(game)
 	pass
+
+
+func end_RT():
+	RT_level = 0
+	current_state = "RT0"
