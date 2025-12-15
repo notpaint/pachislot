@@ -28,7 +28,7 @@ def create_multi_pattern(*patterns):
 
 
 #%%
-# ('小役名', "払い出し枚数",'リプレイ(3)or小役(2)orボーナス(1),', '入賞系', 'こぼし目')
+# ('小役名', "払い出し枚数",'リプレイ(3)or小役(2)orボーナス(1),', '入賞系', 'こぼし目', '入賞系HUD')
 
 rep_any = ["rep_1", "rep_2"]
 bell_any = ["bell_1", "bell_2"]
@@ -43,21 +43,21 @@ role_data = [
          (rep_any, "blank", rep_any),
          (rep_any, "bar", rep_any)
          ),
-     '[]'
+     None
      ),
 
     ('middleBell', 8, 2,
       create_multi_pattern(
           (bell_any, bell_any, bell_any)
       ),
-     '[]'
+     None
      ),
 
      ('Replay_A', 0, 3, 
       create_multi_pattern(
           (rep_any, rep_any, rep_any)
       ),
-      '[]'
+      None
       ),
 
       ('Replay_B', 0, 3,
@@ -66,7 +66,7 @@ role_data = [
            (bell_any, "cherry", bell_any),
            (bell_any, "r7", bell_any)
        ),
-       '[]'
+       None
        ),
 
       ('Cherry', 2, 2,
@@ -90,14 +90,18 @@ role_data = [
      ),
 
     ('middleSuica', 5, 2,
-    '[["suica", "suica", "suica"]]',
+    create_multi_pattern(
+        ("suica", "suica", "suica")
+    ),
      create_multi_pattern(
          ("suica", suica_group, rep_any)
      ),
     ),
 
     ('BB1', 0, 1,
-    '[["r7", "r7", "r7"]]',
+    create_multi_pattern(
+        ("r7", "r7", "r7")
+    ),
      create_multi_pattern(
         ("rep_2", "suica", "bell_2"),
         ("rep_2", bonus_any, bell_any),
@@ -111,7 +115,9 @@ role_data = [
      ),
 
     ('RB1', 0, 1, 
-    '[["r7", "r7", "bar"]]',
+     create_multi_pattern(
+         ("r7", "r7", "bar")
+     ),
      create_multi_pattern(
         ("rep_2", bonus_any, bonus_any),
         ("rep_2", rep_any, bell_any),
@@ -201,6 +207,10 @@ flag_role_map = [
     {
         "flag": "upperBell",
         "roles": ["upperBell"]
+    },
+    {
+        "flag" : "321Bell",
+        "roles" : ["upperBell"]
     },
     {
         "flag": "Replay_A",

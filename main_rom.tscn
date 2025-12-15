@@ -1,0 +1,67 @@
+[gd_scene load_steps=5 format=3 uid="uid://dgo8yji46qgjq"]
+
+[ext_resource type="Script" uid="uid://bosxca34lretl" path="res://node_2d.gd" id="1_70mst"]
+[ext_resource type="Texture2D" uid="uid://dgv14gfoayy2n" path="res://images/L_reel.png" id="2_ea3yd"]
+[ext_resource type="Texture2D" uid="uid://buk2bsahidym6" path="res://images/C_reel.png" id="3_hpx1w"]
+[ext_resource type="Texture2D" uid="uid://bbssctyxihdun" path="res://images/R_reel.png" id="4_70mst"]
+
+[node name="mainROM" type="Node2D"]
+script = ExtResource("1_70mst")
+
+[node name="window" type="Control" parent="."]
+clip_contents = true
+custom_minimum_size = Vector2(1266, 639)
+layout_mode = 3
+offset_top = 213.0
+offset_right = 1266.0
+offset_bottom = 852.0
+
+[node name="L_reel" type="Node2D" parent="window"]
+
+[node name="L_image_1" type="Sprite2D" parent="window/L_reel"]
+texture = ExtResource("2_ea3yd")
+centered = false
+
+[node name="L_image_2" type="Sprite2D" parent="window/L_reel"]
+position = Vector2(0, -4536)
+texture = ExtResource("2_ea3yd")
+centered = false
+
+[node name="L_image_3" type="Sprite2D" parent="window/L_reel"]
+position = Vector2(0, -9072)
+texture = ExtResource("2_ea3yd")
+centered = false
+
+[node name="C_reel" type="Node2D" parent="window"]
+position = Vector2(422, 0)
+
+[node name="C_image_1" type="Sprite2D" parent="window/C_reel"]
+texture = ExtResource("3_hpx1w")
+centered = false
+
+[node name="C_image_2" type="Sprite2D" parent="window/C_reel"]
+texture = ExtResource("3_hpx1w")
+centered = false
+offset = Vector2(0, -4536)
+
+[node name="C_image_3" type="Sprite2D" parent="window/C_reel"]
+texture = ExtResource("3_hpx1w")
+centered = false
+offset = Vector2(0, -9072)
+
+[node name="R_reel" type="Node2D" parent="window"]
+position = Vector2(844, 0)
+
+[node name="R_image_1" type="Sprite2D" parent="window/R_reel"]
+texture = ExtResource("4_70mst")
+centered = false
+
+[node name="R_image_2" type="Sprite2D" parent="window/R_reel"]
+position = Vector2(0, -4536)
+texture = ExtResource("4_70mst")
+centered = false
+
+[node name="R_image_3" type="Sprite2D" parent="window/R_reel"]
+position = Vector2(0, -9072)
+texture = ExtResource("4_70mst")
+centered = false

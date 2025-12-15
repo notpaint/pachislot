@@ -1,6 +1,6 @@
 extends Node2D
 
-const pattern_scale : float = 128.0
+const pattern_scale : float = 216.0
 const pattern_sum : int = 21
 const reel_length : float = pattern_scale * pattern_sum
 const pattern_per : float = 1.0 / pattern_sum
@@ -35,10 +35,9 @@ var current_spin_speed : Array = [0.0, 0.0, 0.0]
 
 var active_tweens : Array[Tween] = [null, null, null]
 
-
 var result_flag
 var result_roles : Array = []
-var bonus_state = "RB1" #成立中ボーナス
+var bonus_state = "BB1" #成立中ボーナス
 var current_state = "RT0" #フラグ状態
 var RT_game : int = 0
 var RT_level : int = 0
@@ -84,12 +83,9 @@ func _unhandled_input(event):
 
 	if event.is_action_pressed("lever"):
 		if not is_spinning[0] and not is_spinning[1] and not is_spinning[2] and not bet_medals == 0:
-			current_reel = [[],[],[]]
-			valid_roles = []
-			miss_patterns = []
+			clear_current_data()
 			var rand_num :int = drawing()
 			result_flag = select_flags(rand_num)
-			result_roles = []
 
 			if not result_flag == "vac":
 				var result_flag_table = flag_table[result_flag]
@@ -142,6 +138,12 @@ func _unhandled_input(event):
 		print(RT_game)
 		print(current_state)
 		
+func clear_current_data():
+	current_reel = [[],[],[]]
+	result_flag = null
+	valid_roles = []
+	miss_patterns = []
+	result_roles = []
 
 func maxbet():
 	if not is_spinning[0] and not is_spinning[1] and not is_spinning[2]:
@@ -413,8 +415,9 @@ func load_flag_table():
 		var payout = int(row["payout"])
 		var pattern_json = row["pattern"]
 		var pattern_array = JSON.parse_string(pattern_json)
-		var miss_pattern_json = row["miss_pattern"]
-		var miss_pattern_array = JSON.parse_string(miss_pattern_json)
+		var miss_pattern_array = row["miss_pattern"]
+		if miss_pattern_array:
+			miss_pattern_array = JSON.parse_string(miss_pattern_array)
 		if not flag_table.has(flag):
 			flag_table[flag] = []
 		var data = {"role" : role, "kind": kind, "payout": payout, "pattern": pattern_array, "miss_pattern": miss_pattern_array}
@@ -431,7 +434,9 @@ func load_all_roles():
 		var payout = int(row["payout"])
 		var kind = int(row["kind"])
 		var pattern = JSON.parse_string(row["pattern"])
-		var miss_pattern = JSON.parse_string(row["miss_pattern"])
+		var miss_pattern = row["miss_pattern"]
+		if miss_pattern:
+			miss_pattern = JSON.parse_string(miss_pattern)
 		all_roles[role] = []
 		# var data = {"payout": payout, "kind": kind, "pattern":pattern}
 		# all_roles[role].append(data)
@@ -692,7 +697,6 @@ func check_prize():
 		if current_bonus_payout >= max_bonus_payout:
 			end_bonus()
 	
-	result_flag = null
 
 
 func role_prize(matched_role):
@@ -768,7 +772,6 @@ func start_bonus(role):
 		max_bonus_payout = max_payout
 		current_bonus_payout = 0
 		current_state = role
-
 
 
 func start_JAC(JAC):
