@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://dgo8yji46qgjq"]
 
-[ext_resource type="Script" uid="uid://bosxca34lretl" path="res://node_2d.gd" id="1_70mst"]
+[ext_resource type="Script" uid="uid://bosxca34lretl" path="res://mainROM.gd" id="1_70mst"]
 [ext_resource type="Texture2D" uid="uid://dgv14gfoayy2n" path="res://images/L_reel.png" id="2_ea3yd"]
 [ext_resource type="Texture2D" uid="uid://buk2bsahidym6" path="res://images/C_reel.png" id="3_hpx1w"]
 [ext_resource type="Texture2D" uid="uid://bbssctyxihdun" path="res://images/R_reel.png" id="4_70mst"]
@@ -12,6 +12,7 @@ script = ExtResource("1_70mst")
 clip_contents = true
 custom_minimum_size = Vector2(1266, 639)
 layout_mode = 3
+anchors_preset = 0
 offset_top = 213.0
 offset_right = 1266.0
 offset_bottom = 852.0
