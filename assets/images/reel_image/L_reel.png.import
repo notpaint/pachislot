@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bbssctyxihdun"
-path="res://.godot/imported/R_reel.png-dce4a63f6ee40d1c47e7a1c30c5f988b.ctex"
+uid="uid://dgv14gfoayy2n"
+path="res://.godot/imported/L_reel.png-eb9819551c87d6b094f79a4b2df6214a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://images/R_reel.png"
-dest_files=["res://.godot/imported/R_reel.png-dce4a63f6ee40d1c47e7a1c30c5f988b.ctex"]
+source_file="res://assets/images/reel_image/L_reel.png"
+dest_files=["res://.godot/imported/L_reel.png-eb9819551c87d6b094f79a4b2df6214a.ctex"]
 
 [params]
 

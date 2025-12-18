@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://cwsebe3rj3wrk"]
 
-[ext_resource type="Script" uid="uid://dxt08s4s74f8s" path="res://hud.gd" id="1_37p78"]
+[ext_resource type="Script" uid="uid://dxt08s4s74f8s" path="res://scenes/HUD/hud.gd" id="1_37p78"]
 
 [node name="HUD" type="CanvasLayer"]
 offset = Vector2(1266, 0)

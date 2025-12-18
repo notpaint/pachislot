@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b8pg8wi82j3kj"
-path="res://.godot/imported/L_reel.svg-85d491b1b5df150db453ee35661f1ba1.ctex"
+uid="uid://bbssctyxihdun"
+path="res://.godot/imported/R_reel.png-64e980280fddd04bf59483cb61425b48.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://images/L_reel.svg"
-dest_files=["res://.godot/imported/L_reel.svg-85d491b1b5df150db453ee35661f1ba1.ctex"]
+source_file="res://assets/images/reel_image/R_reel.png"
+dest_files=["res://.godot/imported/R_reel.png-64e980280fddd04bf59483cb61425b48.ctex"]
 
 [params]
 
@@ -38,6 +38,3 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
-svg/scale=1.0
-editor/scale_with_editor_scale=false
-editor/convert_colors_with_editor_theme=false

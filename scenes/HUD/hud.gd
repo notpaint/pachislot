@@ -13,11 +13,14 @@ extends CanvasLayer
 
 func _ready():
 	if mainROM:
+		mainROM.flag.connect(_on_flaged)
 		mainROM.prized.connect(_on_prized)
 
 func _on_prized(reel_result):
 	print(reel_result)
 
+func _on_flaged(result_flag):
+	print(result_flag)
 
 
 func _unhandled_input(event):
