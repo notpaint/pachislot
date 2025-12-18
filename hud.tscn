@@ -3,11 +3,12 @@
 [ext_resource type="Script" uid="uid://dxt08s4s74f8s" path="res://hud.gd" id="1_37p78"]
 
 [node name="HUD" type="CanvasLayer"]
-offset = Vector2(800, 0)
-transform = Transform2D(1, 0, 0, 1, 800, 0)
+offset = Vector2(1266, 0)
+transform = Transform2D(1, 0, 0, 1, 1266, 0)
 script = ExtResource("1_37p78")
 
 [node name="flag_name" type="RichTextLabel" parent="."]
-offset_right = 369.0
-offset_bottom = 75.0
+offset_right = 714.0
+offset_bottom = 114.0
+theme_override_font_sizes/normal_font_size = 39
 bbcode_enabled = true
