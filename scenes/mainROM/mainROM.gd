@@ -30,7 +30,7 @@ var bet_medals = 0
 var is_spinning = [false, false, false]
 
 var max_spin_speed : float = (reel_rpm / 60.0) * reel_length
-var acceleration : float = 2500
+var acceleration : float = 5000
 var current_spin_speed : Array = [0.0, 0.0, 0.0]
 
 var active_tweens : Array[Tween] = [null, null, null]
@@ -50,6 +50,7 @@ var current_bonus_payout : int = 0
 
 signal flag(result_flag)
 signal prized(reel_result)
+signal spin_start()
 
 
 @onready var L_reel = $window/L_reel
@@ -122,6 +123,8 @@ func start_spin():
 		is_spinning[i] = true
 	
 	bet_medals = 0
+
+	spin_start.emit()
 
 
 func clear_current_data():

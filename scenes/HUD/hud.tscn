@@ -12,3 +12,27 @@ offset_right = 714.0
 offset_bottom = 114.0
 theme_override_font_sizes/normal_font_size = 39
 bbcode_enabled = true
+
+[node name="result_role" type="RichTextLabel" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="reel_result_UI" type="HBoxContainer" parent="."]
+offset_top = 110.0
+offset_right = 419.0
+offset_bottom = 207.0
+
+[node name="L_symbol" type="TextureRect" parent="reel_result_UI"]
+custom_minimum_size = Vector2(137.5, 97)
+layout_mode = 2
+expand_mode = 1
+
+[node name="C_symbol" type="TextureRect" parent="reel_result_UI"]
+custom_minimum_size = Vector2(137.5, 97)
+layout_mode = 2
+expand_mode = 1
+
+[node name="R_symbol" type="TextureRect" parent="reel_result_UI"]
+custom_minimum_size = Vector2(137.5, 97)
+layout_mode = 2
+expand_mode = 1
