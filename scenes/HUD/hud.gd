@@ -1,7 +1,12 @@
 extends CanvasLayer
 
+var db : SQLite
+var db_path = "database_v2.db"
+
 var symbol_image_folder = "assets/images/symbol_image/"
 var bonus_symbols = ["r7", "bar", "b7"]
+
+var HUD_data : Dictionary = {"vac": "ハズレ"}
 
 @onready var reel_result_image = [
 	$reel_result_UI/L_symbol,
@@ -11,22 +16,19 @@ var bonus_symbols = ["r7", "bar", "b7"]
 
 @onready var mainROM = $"../mainROM"
 @onready var flag_name = $flag_name
-
-# func _process(delta):
-# 	if main_rom:
-		# if not str(main_rom.result_flag) == null:
-		# 	flag_name.text = str(main_rom.result_flag)
-		# if not str(main_rom.current_reel) == null:
-		# 	flag_name.text = str(main_rom.current_reel)
+@onready var result_role = $"result_role"
 
 func _ready():
+	db = SQLite.new()
+	db.path = db_path
+	db.open_db()
+	load_HUD_data()
+
 	if mainROM:
 		mainROM.flag.connect(_on_flaged)
 		mainROM.prized.connect(_on_prized)
 		mainROM.spin_start.connect(_on_spin_start)
-	if reel_result_image:
-		print(reel_result_image)
-
+		mainROM.bonus_est.connect(_on_bonus_est)
 
 func _on_prized(reel_result):
 	for i in range(3):
@@ -41,7 +43,11 @@ func _on_prized(reel_result):
 
 
 func _on_flaged(result_flag):
-	print(result_flag)
+	if HUD_data.has(result_flag):
+		var display_name = HUD_data[result_flag]
+		flag_name.text = display_name
+	else:
+		flag_name.text = result_flag
 
 func _on_spin_start():
 	for i in range(3):
@@ -51,3 +57,27 @@ func _unhandled_input(event):
 	if event.is_action_pressed("debug"):
 		var font : Font = flag_name.get_theme_font("font_size")
 		print(font)
+
+func _on_bonus_est(bonus):
+	result_role.text = bonus if bonus else ""
+
+
+
+func load_HUD_data():
+	var order = """
+	SELECT
+	f.flag,
+	fH.flag_name
+	FROM
+	flag_HUD AS fH
+	JOIN
+	flags AS f ON f.id = fH.flag_ID
+	"""
+
+	db.query(order)
+	var results = db.query_result
+
+	for row in results:
+		var flag = row["flag"]
+		var display_name = row["flag_name"]
+		HUD_data[flag] = display_name

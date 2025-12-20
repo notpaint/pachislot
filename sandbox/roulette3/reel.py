@@ -28,7 +28,7 @@ def create_multi_pattern(*patterns):
 
 
 #%%
-# ('小役名', "払い出し枚数",'リプレイ(3)or小役(2)orボーナス(1),', '入賞系', 'こぼし目', '入賞系HUD')
+# ('小役名', "払い出し枚数",'リプレイ(3)or小役(2)orボーナス(1),', '入賞系', 'こぼし目')
 
 rep_any = ["rep_1", "rep_2"]
 bell_any = ["bell_1", "bell_2"]
@@ -235,6 +235,22 @@ flag_role_map = [
     }
 ]
 
+HUD_role_data = {
+    "upperBell": {"name": "上段ベル"}
+}
+
+HUD_flag_data = {
+    "middleBell": "中段ベル",
+    "upperBell": "上段ベル",
+    "Replay_A": "中段リプレイ",
+    "Cherry": "チェリー",
+    "Suica": "スイカ",
+    "BB1": "BB1",
+    "RB1": "RB1"
+}
+
+
+
 #%%
 
 reel_csv = {
@@ -376,6 +392,18 @@ def generate_flag_table(cursor):
                            INSERT OR IGNORE INTO flag_table (weight_status_id, flag_id, weight)
                            VALUES (?, ?, ?)""", (state_id, flag_id, weight))
 
+def generate_flag_HUD(cursor):
+    for flag, flag_name in HUD_flag_data.items():
+        cursor.execute("SELECT id FROM flags WHERE flag = (?)", (flag,))
+        flag_row = cursor.fetchone()
+        if flag_row is None:
+            print(f"ERROR ON generate_flag_HUD() : {flag} DOES NOT EXIST IN flags")
+            continue
+        flag_ID = flag_row[0]
+        cursor.execute("""
+                       INSERT OR IGNORE INTO flag_HUD (flag_ID, flag_name)
+                       VALUES (?, ?)
+                       """, (flag_ID, flag_name))
 
 def generate_control_table(cursor):
     cursor.executemany("""
@@ -457,6 +485,7 @@ def generate_bonus_data(cursor):
         cursor.execute("""INSERT OR IGNORE INTO bonus_data (name, max_payout, JACIN_type, JAC_nums, before_RT, after_RT)
                        VALUES (?, ?, ?, ?, ?, ?)""", (name, max_payout, JACIN_type, JAC_nums, before_RT, after_RT))
 
+
 def generate_RT_data(cursor):
     cursor.executemany("""INSERT OR IGNORE INTO RT_data (name, game, type)
                     VALUES (?, ?, ?)""", (RT_data))
@@ -488,6 +517,7 @@ if __name__=="__main__":
     generate_JAC_data(cursor)
     generate_bonus_data(cursor)
     generate_RT_data(cursor)
-    
+    generate_flag_HUD(cursor)
+
     conn.commit()
     conn.close()

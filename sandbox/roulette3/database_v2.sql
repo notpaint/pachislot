@@ -14,6 +14,12 @@ CREATE TABLE flags(
     flag TEXT
 );
 
+CREATE TABLE flag_HUD(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    flag_ID INT,
+    flag_name TEXT
+);
+
 -- 確率状態一覧
 CREATE TABLE weight_status (
     id INTEGER PRIMARY KEY AUTOINCREMENT,

@@ -37,7 +37,11 @@ var active_tweens : Array[Tween] = [null, null, null]
 
 var result_flag
 var result_roles : Array = []
-var bonus_state = "BB1" #成立中ボーナス
+var bonus_state: #成立中ボーナス
+	set(value):
+		bonus_state = value
+		bonus_est.emit(value)
+		
 var current_state = "RT0" #フラグ状態
 var RT_game : int = 0
 var RT_level : int = 0
@@ -51,6 +55,7 @@ var current_bonus_payout : int = 0
 signal flag(result_flag)
 signal prized(reel_result)
 signal spin_start()
+signal bonus_est(bonus_state)
 
 
 @onready var L_reel = $window/L_reel
@@ -110,6 +115,7 @@ func _unhandled_input(event):
 		# print(RT_game)
 		# print(current_state)
 		pass
+		
 		
 func start_spin():
 
@@ -787,6 +793,7 @@ func start_bonus(role):
 	var data = bonus_data[role]
 	var JACIN_type = data["JACIN_type"]
 	var max_payout = data["max_payout"]
+	bonus_state = null
 	current_bonus = role
 
 	if not max_payout:
