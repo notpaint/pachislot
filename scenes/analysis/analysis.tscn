@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://c6kdejl5wqyw3"]
+
+[ext_resource type="Script" uid="uid://cc7eueacbq47h" path="res://scenes/analysis/analysis.gd" id="1_kryac"]
+
+[node name="analysis" type="Node2D" unique_id=1302851162]
+script = ExtResource("1_kryac")

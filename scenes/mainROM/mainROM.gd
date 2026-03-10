@@ -114,6 +114,7 @@ func _unhandled_input(event):
 		# print(RT_data)
 		# print(RT_game)
 		# print(current_state)
+		print(weight_table)
 		pass
 		
 		
@@ -629,11 +630,10 @@ func select_flags(value):
 
 #乱数生成
 func drawing():
-	var loop_duration : int = 50000
+	var loop_duration : int = 65536 * 2
 	var current_time = Time.get_ticks_usec()
 	var current_value: float = current_time % loop_duration
-	var ratio: float = float(current_value) / float(loop_duration)
-	var result_value: int = int(ratio * 65536)
+	var result_value = int(current_value / 2)
 	return(result_value)
 
 
@@ -731,9 +731,6 @@ func check_prize():
 			end_bonus()
 	
 	prized.emit(reel_result)
-
-	
-	
 
 
 func role_prize(matched_role):
@@ -841,7 +838,6 @@ func end_JAC():
 		end_bonus()
 
 
-
 func end_bonus():
 	JAC_game = false
 	JAC_counter = [0, 0]
@@ -856,6 +852,8 @@ func end_bonus():
 
 
 func start_RT(RT):
+	if bonus_state:
+		return
 	var RT_type = RT_data[RT]["type"]
 	if RT_level > RT_type:
 		return

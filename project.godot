@@ -8,17 +8,23 @@
 
 config_version=5
 
+[animation]
+
+compatibility/default_parent_skeleton_in_mesh_instance_3d=true
+
 [application]
 
 config/name="slot"
 run/main_scene="uid://crig6x6kwjswk"
-config/features=PackedStringArray("4.5", "Forward Plus")
+config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
 [display]
 
 window/size/viewport_width=1980
 window/size/viewport_height=1080
+window/subwindows/embed_subwindows=false
+window/per_pixel_transparency/allowed=true
 
 [editor_plugins]
 

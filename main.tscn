@@ -1,10 +1,13 @@
-[gd_scene load_steps=3 format=3 uid="uid://crig6x6kwjswk"]
+[gd_scene format=3 uid="uid://crig6x6kwjswk"]
 
 [ext_resource type="PackedScene" uid="uid://dgo8yji46qgjq" path="res://scenes/mainROM/main_rom.tscn" id="1_0xm2m"]
 [ext_resource type="PackedScene" uid="uid://cwsebe3rj3wrk" path="res://scenes/HUD/hud.tscn" id="2_h2yge"]
+[ext_resource type="PackedScene" uid="uid://c6kdejl5wqyw3" path="res://scenes/analysis/analysis.tscn" id="3_h2yge"]
 
-[node name="main" type="Node2D"]
+[node name="main" type="Node2D" unique_id=531150307]
 
-[node name="mainROM" parent="." instance=ExtResource("1_0xm2m")]
+[node name="mainROM" parent="." unique_id=914309446 instance=ExtResource("1_0xm2m")]
 
-[node name="HUD" parent="." instance=ExtResource("2_h2yge")]
+[node name="HUD" parent="." unique_id=878973966 instance=ExtResource("2_h2yge")]
+
+[node name="analysis" parent="." unique_id=1302851162 instance=ExtResource("3_h2yge")]
