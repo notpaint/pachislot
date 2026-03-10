@@ -1,0 +1,46 @@
+graph TD
+    %% ノードのスタイル定義
+    classDef main fill:#fff,stroke:#333,stroke-width:2px
+    classDef start fill:#f5f5f5,stroke:#666,stroke-dasharray: 5 5
+    classDef art fill:#ffebee,stroke:#e91e63,stroke-width:2px
+    classDef fall fill:#e3f2fd,stroke:#2196f3,stroke-width:2px
+
+    %% ノード定義
+    A[RT5]
+    B[RT0]
+    
+    全状態:::start --ボーナス終了-->A
+    A -- 択ベル不正解 --> B
+
+    %% ARTゾーン（左側に配置）
+    subgraph ART_Challenge [純増プラス区間]
+        D{技術介入}:::start
+        E[RT2<br/>30G終了]:::art
+        F[RT1<br/>50G終了]:::art
+    end
+
+    B -- ART突入リプ当選 --> D
+    D -- 失敗 --> E
+    D -- 成功 --> F
+    
+    %% 戻る線は点線にして目立たせない
+    E -.-> B
+    F -.-> B
+
+    %% 転落ゾーン（右側に配置）
+    subgraph Fall_Check [純増マイナス区間]
+        H{択当て}:::start
+        G{技術介入}:::start
+        I[RT3<br/>200G終了]:::fall
+        J[RT4<br/>400G終了]:::fall
+    end
+
+    B -- 転落リプ当選 --> H
+    H -- 成功 --> B
+    H -- 失敗 --> G
+    G -- 成功 --> I
+    G -- 失敗 --> J
+    
+    %% 戻る線
+    I -.-> B
+    J -.-> B
