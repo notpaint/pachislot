@@ -11,19 +11,13 @@ CREATE TABLE roles(
 --　フラグ一覧
 CREATE TABLE flags(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    flag TEXT
+    flag TEXT UNIQUE
 );
 
 CREATE TABLE flag_HUD(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     flag_ID INT,
     flag_name TEXT
-);
-
--- 確率状態一覧
-CREATE TABLE weight_status (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    weight_state TEXT
 );
 
 CREATE TABLE JAC_data(
@@ -49,10 +43,11 @@ CREATE TABLE RT_data(
 
 CREATE TABLE flag_table (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    weight_status_id INT,
+    bonus_state TEXT,
+    RT_state TEXT,
+    bet_state INT,
     flag_id INT,
     weight INT,
-    FOREIGN KEY(weight_status_id) REFERENCES weight_status(id)
     FOREIGN KEY(flag_id) REFERENCES flags(id)
 );
 

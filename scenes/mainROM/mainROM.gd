@@ -48,9 +48,11 @@ var RT_level : int = 0
 
 var JAC_game = false
 var JAC_counter : Array
-var current_bonus #作動中ボーナス
+var current_bonus : String = "None" #作動中ボーナス
 var max_bonus_payout : int = 0
 var current_bonus_payout : int = 0
+
+var test_msg : Dictionary = Database.weight_table
 
 signal flag(result_flag)
 signal prized(reel_result)
@@ -401,14 +403,11 @@ func load_weight_table():
 	var order = """
 	SELECT 
 	f.flag,
-	ws.weight_state,
-	ft.weight
+	ft.bonus_state, ft.RT_state, ft.bet_state, ft.weight
 	FROM
 	flags AS f
 	JOIN
 	flag_table AS ft ON ft.flag_id = f.id
-	JOIN
-	weight_status AS ws ON ft.weight_status_id = ws.id
 	"""
 
 	db.query(order)
@@ -416,12 +415,18 @@ func load_weight_table():
 
 	for row in results:
 		var flag = row["flag"]
-		var weight_state = row["weight_state"]
+		var bonus_state = row["bonus_state"]
+		var RT_state = row["RT_state"]
+		var bet_state = int(row["bet_state"])
 		var weight = int(row["weight"])
-		if not weight_table.has(weight_state):
-			weight_table[weight_state] = []
+		if not weight_table.has(bonus_state):
+			weight_table[bonus_state] = {}
+		if not weight_table[bonus_state].has(RT_state):
+			weight_table[bonus_state][RT_state] = {}
+		if not weight_table[bonus_state][RT_state].has(bet_state):
+			weight_table[bonus_state][RT_state][bet_state] = []
 		var data = {"flag": flag, "weight": weight}
-		weight_table[weight_state].append(data)
+		weight_table[bonus_state][RT_state][bet_state].append(data)
 
 
 #flag_table(フラグの重複役一覧)作成
@@ -601,21 +606,26 @@ func load_reel_table():
 
 #フラグ抽選
 func select_flags(value):
-	if bet_medals == 3:
-		if weight_table.has(current_state):
-			var current_weight_table = weight_table[current_state]
-			for data in current_weight_table:
-				var weight = int(data["weight"])
-				value -= weight
-				if value < 0:
-					return(data["flag"])
-			return("vac")
-		else:
-			print("error : current_state is %s" % [current_state])
-			return
-	else:
-		return
+	if not weight_table.has(current_bonus):
+		print("error : bonus_state %s not found" % current_bonus)
+		return "vac"
+	var current_RT_table = weight_table[current_bonus]
 
+	if not current_RT_table.has(current_state):
+		print("error : RT_state %s not found" % current_state)
+		return "vac"
+	var current_bet_table = current_RT_table[current_state]
+
+	if not current_bet_table.has(bet_medals):
+		return "vac"
+	var current_weight_table = current_bet_table[bet_medals]
+	
+	for data in current_weight_table:
+		var weight = int(data["weight"])
+		value -= weight
+		if value < 0:
+			return(data["flag"])
+	return("vac")
 	# if bet_medals == 3:
 	# 	var current_weight_table = weight_table["Normal"]
 	# 	for data in current_weight_table:
@@ -846,7 +856,7 @@ func end_bonus():
 	if after_RT:
 		start_RT(after_RT)
 	print("%s IS END" % [current_bonus])
-	current_bonus = null
+	current_bonus = "None"
 	max_bonus_payout = 0
 	current_bonus_payout = 0
 

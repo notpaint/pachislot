@@ -132,7 +132,7 @@ role_data = [
 
 
 # [{'フラグ名', '確率', 'RT状態'}]
-flag_data_normal = [
+flag_data_3bet = [
     {"name": 'middleBell', "weight": 6554},
     {"name": 'upperBell', "weight": 6553},
     {"name": 'Replay_A', "weight": 4000, 'RT': 'BB1'},
@@ -145,6 +145,10 @@ flag_data_normal = [
     {"name": 'vac', "weight": 4844, 'RT': 'RT1'}
 ]
 
+flag_data_1bet = [
+    {"name": 'vac', "weight": 65536}
+]
+
 
 flag_data_JAC = {
     "JAC1" : [
@@ -152,6 +156,19 @@ flag_data_JAC = {
     ]
 }
 
+flag_data_bet = {3: flag_data_3bet, 1: flag_data_1bet}
+
+flag_data_normal = {
+    "None": {
+        "RT0": flag_data_bet,
+        "RT1": flag_data_bet
+    },
+    "JAC1": {
+        "None" : {
+        1 : flag_data_JAC["JAC1"]
+        }
+    }
+}
 
 RT_map = {
     'BB1' : {
@@ -363,34 +380,28 @@ def apply_vac_control(cursor, reel_pos, slides):
 #%%
 
 def generate_flag_table(cursor):
-    flag_data = {}
-    flag_data["RT0"] = generate_flag_list(flag_data_normal, RT_mode = None)
-    flag_data["BB1"] = generate_flag_list(flag_data_normal, RT_mode = "BB1")
-    flag_data["RT1"] = generate_flag_list(flag_data_normal, RT_mode = "RT1")
-    for x,y in flag_data_JAC.items():
-        flag_data[x] = y
-    for status, weights in flag_data.items():
-        cursor.execute("""
-                       INSERT OR IGNORE INTO weight_status (weight_state)
-                       VALUES (?)""", (status,))
-        cursor.execute("""
-                       SELECT id FROM weight_status
-                       WHERE weight_state = (?)""", (status,))
-        state_id = cursor.fetchone()[0]
-        for item in weights:
-            name = item["name"]
-            weight = item["weight"]
-            cursor.execute("""
-                           INSERT OR IGNORE INTO flags (flag)
-                           VALUES (?)""", (name,))
-            cursor.execute("""
-                           SELECT id FROM flags
-                           WHERE flag = (?)""", (name,))
-            flag_id = cursor.fetchone()[0]
+    for bonus_state, RT_list in flag_data_normal.items():
+        for RT_state, bet_list in RT_list.items():
+            for bet_state, weights in bet_list.items():
+                if RT_state != "None":
+                    current_RT = RT_state
+                else:
+                    current_RT = None
+                final_flags = generate_flag_list(weights, RT_mode = current_RT)
 
-            cursor.execute("""
-                           INSERT OR IGNORE INTO flag_table (weight_status_id, flag_id, weight)
-                           VALUES (?, ?, ?)""", (state_id, flag_id, weight))
+                for item in final_flags:
+                    name = item["name"]
+                    weight = item["weight"]
+                    cursor.execute("INSERT OR IGNORE INTO flags (flag) VALUES (?)", (name,))
+                    cursor.execute("SELECT id FROM flags WHERE flag = (?)", (name,))
+                    flag_id = cursor.fetchone()[0]
+
+                    cursor.execute("""
+                                   INSERT OR IGNORE INTO flag_table 
+                                   (bonus_state, RT_state, bet_state, flag_id, weight)
+                                   VALUES (?, ?, ?, ? ,?)
+                                   """, (bonus_state, RT_state, bet_state, flag_id, weight))
+                
 
 def generate_flag_HUD(cursor):
     for flag, flag_name in HUD_flag_data.items():
