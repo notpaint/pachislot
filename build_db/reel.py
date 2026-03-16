@@ -1,5 +1,6 @@
 import sqlite3
 import os
+from pathlib import Path
 import csv
 import itertools
 import json
@@ -270,10 +271,15 @@ HUD_flag_data = {
 
 #%%
 
+dir = Path(__file__).resolve().parent
+csv_dir = dir / "csv"
+sql_path = dir / "sql" / "database_v2.sql"
+db_path = dir / "db" / "database_v2.db"
+
 reel_csv = {
-    0: "L_slide.csv",
-    1: "C_slide.csv",
-    2: "R_slide.csv"
+    0: csv_dir / "L_slide.csv",
+    1: csv_dir / "C_slide.csv",
+    2: csv_dir / "R_slide.csv"
 }
 
 #現在のフラグの内訳を表示
@@ -426,9 +432,7 @@ def generate_control_table(cursor):
 
     role_dict = dict(cursor.fetchall())
 
-    for reel_pos, csv_file in reel_csv.items():
-        dir = os.path.dirname(__file__)
-        csv_path = os.path.join(dir, csv_file)
+    for reel_pos, csv_path in reel_csv.items():
         slide_list = load_slide_csv(csv_path, reel_pos)
         for item in slide_list:
             role_id_list = []
@@ -469,8 +473,7 @@ def generate_flag_role_map(cursor):
 
 
 def generate_reel_table(cursor):
-    dir = os.path.dirname(__file__)
-    csv_path = os.path.join(dir, "reel_table.csv")
+    csv_path = csv_dir / "reel_table.csv"
     reel_table = load_reel_csv(csv_path)
     for reel_pos, item in enumerate(reel_table):
         for reel_ID, design in enumerate(item):
@@ -505,22 +508,25 @@ def generate_RT_data(cursor):
 
 if __name__=="__main__":
 
-    dir = os.path.dirname(__file__)
-    sql_path = os.path.join(dir, "database_v2.sql")
-    db_path = os.path.join(dir, "database_v2.db")
+    dir = Path(__file__).resolve().parent
+    csv_dir = dir / "csv"
+    sql_path = dir / "sql" / "database_v2.sql"
+    db_path = dir / "db" / "database_v2.db"
 
-    if os.path.exists(db_path):
+    if db_path.exists():
         try:
             print("初期化完了")
-            os.remove(db_path)
+            db_path.unlink()
         except PermissionError:
             print("他のプログラムが使用中")
             exit()
 
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
-    with open(sql_path, "r", encoding="UTF-8") as f:
+
+    with sql_path.open("r", encoding="UTF-8") as f:
         conn.executescript(f.read())
+    
     generate_control_table(cursor)
     generate_flag_table(cursor)
     generate_flag_role_map(cursor)
