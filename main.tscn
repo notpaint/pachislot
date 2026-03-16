@@ -3,6 +3,8 @@
 [ext_resource type="PackedScene" uid="uid://dgo8yji46qgjq" path="res://scenes/mainROM/main_rom.tscn" id="1_0xm2m"]
 [ext_resource type="PackedScene" uid="uid://cwsebe3rj3wrk" path="res://scenes/HUD/hud.tscn" id="2_h2yge"]
 [ext_resource type="PackedScene" uid="uid://c6kdejl5wqyw3" path="res://scenes/analysis/analysis.tscn" id="3_h2yge"]
+[ext_resource type="PackedScene" uid="uid://bkon8sbn4bepv" path="res://scenes/debug/debug.tscn" id="4_lquwl"]
+[ext_resource type="Script" uid="uid://c2nus2xi3yh8b" path="res://scenes/debug/debug.gd" id="5_7mycd"]
 
 [node name="main" type="Node2D" unique_id=531150307]
 
@@ -11,3 +13,8 @@
 [node name="HUD" parent="." unique_id=878973966 instance=ExtResource("2_h2yge")]
 
 [node name="analysis" parent="." unique_id=1302851162 instance=ExtResource("3_h2yge")]
+
+[node name="debug" parent="." unique_id=234602057 instance=ExtResource("4_lquwl")]
+initial_position = 1
+size = Vector2i(800, 600)
+script = ExtResource("5_7mycd")
