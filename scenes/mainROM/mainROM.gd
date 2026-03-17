@@ -6,10 +6,6 @@ const reel_length : float = pattern_scale * pattern_sum
 const pattern_per : float = 1.0 / pattern_sum
 const reel_rpm : float = 80.0
 
-var db : SQLite
-var db_path = "database_v2.db"
-
-
 var weight_table : Dictionary = {}
 var flag_table : Dictionary = {}
 var all_roles : Dictionary = {}
@@ -26,38 +22,45 @@ var current_control_table : Array = []
 var valid_roles : Array = []
 
 var MY = 0
-var bet_medals = 0
+var bet_medals : int = 0:
+	set(value):
+		if bet_medals == value:
+			return
+		bet_medals = value
+		medal_bet.emit(value)
 var is_spinning = [false, false, false]
+var can_stop_reel : Array = [false, false, false]
 
 var max_spin_speed : float = (reel_rpm / 60.0) * reel_length
-var acceleration : float = 5000
+var acceleration : float = 6500
 var current_spin_speed : Array = [0.0, 0.0, 0.0]
 
 var active_tweens : Array[Tween] = [null, null, null]
 
 var result_flag
 var result_roles : Array = []
-var bonus_state: #成立中ボーナス
+
+var bonus_state:  #成立中ボーナス
 	set(value):
 		bonus_state = value
 		bonus_est.emit(value)
-		
-var current_state = "RT0" #フラグ状態
+var current_JAC : String= "None" #JAC状態
+var current_RT : String = "RT0" #RT状態
+var current_bonus : String = "None" #作動中ボーナス
+
 var RT_game : int = 0
 var RT_level : int = 0
 
 var JAC_game = false
 var JAC_counter : Array
-var current_bonus : String = "None" #作動中ボーナス
 var max_bonus_payout : int = 0
 var current_bonus_payout : int = 0
-
-var test_msg : Dictionary = Database.weight_table
 
 signal flag(result_flag)
 signal prized(reel_result)
 signal spin_start()
 signal bonus_est(bonus_state)
+signal medal_bet(bet_medals)
 
 
 @onready var L_reel = $window/L_reel
@@ -67,9 +70,6 @@ signal bonus_est(bonus_state)
 @onready var reels = [L_reel, C_reel, R_reel]
 
 func _ready():
-	db = SQLite.new()
-	db.path = db_path
-	db.open_db()
 
 	load_data_from_db()
 
@@ -80,6 +80,8 @@ func _process(delta: float):
 		if is_spinning[i] and (active_tweens[i] == null or not active_tweens[i].is_running()):
 			current_spin_speed[i] = move_toward(current_spin_speed[i], max_spin_speed, acceleration * delta)
 			reels[i].position.y += current_spin_speed[i] * delta
+			if current_spin_speed[i] >= max_spin_speed:
+				can_stop_reel[i] = true
 			if reels[i].position.y >= reel_length:
 				reels[i].position.y -= reel_length
 		else:
@@ -107,7 +109,6 @@ func _unhandled_input(event):
 			try_stop_reel(2)
 
 	if event.is_action_pressed("debug"):
-		# print(weight_table[current_state])
 		# print(all_roles)
 		# print(bonus_data)
 		# max_bonus_payout = 2
@@ -115,8 +116,14 @@ func _unhandled_input(event):
 		# print(weight_table["RT1"])
 		# print(RT_data)
 		# print(RT_game)
-		# print(current_state)
-		print(weight_table)
+		# print(bonus_data)
+		# print(current_RT)
+		# print(JAC_game)
+		# print(RT_game)
+		print("is_spinning:", is_spinning)
+		print("can_stop_reel", can_stop_reel)
+		print("active_tweens:", active_tweens)
+
 		pass
 		
 		
@@ -130,8 +137,6 @@ func start_spin():
 
 	for i in range (3):
 		is_spinning[i] = true
-	
-	bet_medals = 0
 
 	spin_start.emit()
 
@@ -154,6 +159,8 @@ func can_spin():
 func generate_flag():	
 	var rand_num : int = drawing()
 	result_flag = select_flags(rand_num)
+
+	# result_flag = ("BB1")
 
 	flag.emit(result_flag)
 
@@ -185,6 +192,9 @@ func maxbet():
 	if not is_spinning[0] and not is_spinning[1] and not is_spinning[2]:
 		if bet_medals == 3:
 			return
+		if current_JAC != "None":
+			bet_medals = 1
+			return
 		MY = MY + bet_medals
 		bet_medals = 0
 		MY = MY - 3
@@ -192,6 +202,12 @@ func maxbet():
 
 
 func try_stop_reel(reel_pos):
+	if not can_stop_reel[reel_pos]:
+		return
+	if not is_spinning[reel_pos]:
+		return
+	if active_tweens[reel_pos]:
+		return
 	var reel = reels[reel_pos]
 	var current_pixel = reel.position.y
 	var raw_ID = get_raw_ID(current_pixel)
@@ -277,7 +293,7 @@ func table_logic(supposed_symbols, control_data, reel_pos, base_ID):
 		
 	if not valid_roles.is_empty():
 		supposed_symbols.sort_custom(sorting_symbols)
-		print(supposed_symbols)
+		# print(supposed_symbols)
 		return(supposed_symbols[0]["slide"])
 	
 	var miss_slides : Array = []
@@ -399,20 +415,20 @@ func load_data_from_db():
 
 #フラグ抽選
 func select_flags(value):
-	if not weight_table.has(current_bonus):
-		print("error : bonus_state %s not found" % current_bonus)
+	if not weight_table.has(current_JAC):
+		print("error : bonus_state %s not found" % current_JAC)
 		return "vac"
-	var current_RT_table = weight_table[current_bonus]
+	var current_RT_table = weight_table[current_JAC]
 
-	if not current_RT_table.has(current_state):
-		print("error : RT_state %s not found" % current_state)
+	if not current_RT_table.has(current_RT):
+		print("error : RT_state %s not found" % current_RT)
 		return "vac"
-	var current_bet_table = current_RT_table[current_state]
+	var current_bet_table = current_RT_table[current_RT]
 
 	if not current_bet_table.has(bet_medals):
 		return "vac"
-	var current_weight_table = current_bet_table[bet_medals]
 
+	var current_weight_table = current_bet_table[bet_medals]
 	for data in current_weight_table:
 		var weight = int(data["weight"])
 		value -= weight
@@ -477,13 +493,17 @@ func stop_reels(slide, current_pixel, raw_ID, reel_pos):
 	var reel = reels[reel_pos]
 	var target_pixel = raw_ID * pattern_scale
 
-	print(slide)
+	# print(slide)
 
 	target_pixel += (slide * pattern_scale)
 	var target_speed : float = abs(target_pixel - current_pixel) / current_spin_speed[reel_pos]
 	active_tweens[reel_pos] = create_tween()
 	active_tweens[reel_pos].tween_property(reel, "position:y" , target_pixel, target_speed)
-	active_tweens[reel_pos].tween_callback(func(): is_spinning[reel_pos] = false)
+	active_tweens[reel_pos].tween_callback(func():
+		is_spinning[reel_pos] = false
+		can_stop_reel[reel_pos] = false
+		active_tweens[reel_pos] = null
+		)
 	await active_tweens[reel_pos].finished
 
 	reel.position.y = fmod(reel.position.y, reel_length)
@@ -499,6 +519,8 @@ func stop_reels(slide, current_pixel, raw_ID, reel_pos):
 
 
 func check_prize():
+
+	bet_medals = 0
 
 	if JAC_game:
 		JAC_counter[1] -= 1
@@ -520,7 +542,7 @@ func check_prize():
 		if JAC_counter[0] <= 0 or JAC_counter[1] <= 0:
 			end_JAC()
 
-	if current_bonus and max_bonus_payout > 0:
+	if current_bonus != "None" and max_bonus_payout > 0:
 		if current_bonus_payout >= max_bonus_payout:
 			end_bonus()
 	
@@ -534,7 +556,7 @@ func role_prize(matched_role):
 
 	MY += payout
 
-	if current_bonus and max_bonus_payout > 0:
+	if current_bonus != "None" and max_bonus_payout > 0:
 		current_bonus_payout += payout
 
 	if JAC_game:
@@ -588,12 +610,8 @@ func start_bonus(role):
 	current_bonus = role
 
 	if not max_payout:
-		if current_state == "RT0":
-			start_JAC(JACIN_type)
-			return
-		else:
-			start_JAC(JACIN_type)
-			return
+		start_JAC(JACIN_type)
+		return
 	
 	if JACIN_type:
 		max_bonus_payout = max_payout
@@ -602,25 +620,27 @@ func start_bonus(role):
 	else:
 		max_bonus_payout = max_payout
 		current_bonus_payout = 0
-		current_state = role
+		current_bonus = role
 
 
 
 func start_JAC(JAC):
 	print("JAC_IN")
+	current_RT = "RT0"
 	JAC_game = true
 	JAC_counter = JAC_data[JAC].duplicate()
-	current_state = JAC
+	current_JAC = JAC
 
 
 func end_JAC():
 	JAC_game = false
 	JAC_counter = [0,0]
-	current_state = "RT0"
+	# var present_JAC = current_JAC
+	current_JAC = "None"
 	print("JAC_END")
 
-	if current_bonus and max_bonus_payout > 0:
-		current_state = current_bonus
+	if current_bonus != "None" and max_bonus_payout > 0:
+		# current_JAC = present_JAC
 		var JACIN_type = bonus_data[current_bonus]["JACIN_type"]
 		if JACIN_type:
 			print("AUTO_JACIN")
@@ -628,19 +648,20 @@ func end_JAC():
 		else:
 			pass
 
-	elif current_bonus:
+	elif current_bonus != "None":
 		end_bonus()
 
 
 func end_bonus():
 	JAC_game = false
 	JAC_counter = [0, 0]
-	current_state = "RT0"
 	var after_RT = bonus_data[current_bonus]["after_RT"]
 	if after_RT:
 		start_RT(after_RT)
+	
 	print("%s IS END" % [current_bonus])
 	current_bonus = "None"
+	current_JAC = "None"
 	max_bonus_payout = 0
 	current_bonus_payout = 0
 
@@ -653,7 +674,7 @@ func start_RT(RT):
 		return
 	RT_game = 0
 	RT_level = RT_type
-	current_state = RT
+	current_RT = RT
 	var game = RT_data[RT]["game"]
 	if game:
 		RT_game = game
@@ -663,4 +684,4 @@ func start_RT(RT):
 
 func end_RT():
 	RT_level = 0
-	current_state = "RT0"
+	current_RT = "RT0"

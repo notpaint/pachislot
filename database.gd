@@ -14,6 +14,8 @@ var RT_data : Dictionary = {}
 var bonus_data : Dictionary = {}
 var reel_table : Array = [[],[],[]]
 
+var HUD_data : Dictionary = {"vac": "ハズレ"}
+
 func _ready():
 	db = SQLite.new()
 	db.path = db_path
@@ -29,6 +31,7 @@ func load_data_from_db():
 	load_RT_data()
 	load_bonus_data()
 	load_reel_table()
+	load_HUD_data()
 
 #weight_table(フラグの確率表)作成
 #{"weight_state":[{"flag", "weight"}]}
@@ -235,3 +238,22 @@ func load_reel_table():
 		var reel_id = int(row["reel_id"])
 		var design = row["reel_design"]
 		reel_table[reel_pos][reel_id] = design
+
+func load_HUD_data():
+	var order = """
+	SELECT
+	f.flag,
+	fH.flag_name
+	FROM
+	flag_HUD AS fH
+	JOIN
+	flags AS f ON f.id = fH.flag_ID
+	"""
+
+	db.query(order)
+	var results = db.query_result
+
+	for row in results:
+		var flag = row["flag"]
+		var display_name = row["flag_name"]
+		HUD_data[flag] = display_name

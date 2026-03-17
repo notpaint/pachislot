@@ -1,4 +1,19 @@
 [gd_scene format=3 uid="uid://bkon8sbn4bepv"]
 
-[node name="Window" type="Window" unique_id=234602057]
+[ext_resource type="Script" uid="uid://cwaedwn80sol7" path="res://scenes/debug/flaglist.gd" id="1_kfclf"]
+[ext_resource type="Script" uid="uid://dr211sl3g1rro" path="res://scenes/debug/label.gd" id="2_fym4n"]
+
+[node name="debug" type="Window" unique_id=234602057]
 oversampling_override = 1.0
+position = Vector2i(0, 36)
+
+[node name="flaglist" type="OptionButton" parent="." unique_id=401952528]
+visible = false
+offset_right = 32.0
+offset_bottom = 20.0
+script = ExtResource("1_kfclf")
+
+[node name="Label" type="Label" parent="." unique_id=836799253]
+offset_right = 40.0
+offset_bottom = 23.0
+script = ExtResource("2_fym4n")

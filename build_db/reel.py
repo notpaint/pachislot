@@ -1,5 +1,4 @@
 import sqlite3
-import os
 from pathlib import Path
 import csv
 import itertools
@@ -152,7 +151,7 @@ flag_data_1bet = [
 
 
 flag_data_JAC = {
-    "JAC1" : [
+    "RB1" : [
         {"name": "middleBell", "weight": 65536}
     ]
 }
@@ -164,9 +163,9 @@ flag_data_normal = {
         "RT0": flag_data_bet,
         "RT1": flag_data_bet
     },
-    "JAC1": {
-        "None" : {
-        1 : flag_data_JAC["JAC1"]
+    "RB1": {
+        "RT0" : {
+        1 : flag_data_JAC["RB1"]
         }
     }
 }
@@ -188,11 +187,11 @@ RT_data = {
 }
 
 
-JAC_BB1 = [{"weight": 65535, "JAC_type" : "JAC1"}]
+JAC_BB1 = [{"weight": 65535, "JAC_type" : "RB1"}]
 
 
 JAC_data = {
-    'JAC1' : {
+    'RB1' : {
         "prize_count" : 8,
         "play_count": 12
     }
@@ -201,14 +200,14 @@ JAC_data = {
 bonus_data = {
     'RB1' : {
         "max_payout" : None,
-        "JACIN_type" : "JAC1",
+        "JACIN_type" : "RB1",
         "JAC_nums" : None,
         "before_RT" : None,
         "after_RT" : None
     },
     'BB1' : {
         "max_payout" : 2,
-        "JACIN_type" : "JAC1",
+        "JACIN_type" : "RB1",
         "JAC_nums" : json.dumps(JAC_BB1),
         "before_RT" : None,
         "after_RT" : "RT1"
