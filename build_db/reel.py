@@ -53,6 +53,34 @@ role_data = [
      None
      ),
 
+    ('missBell_A', 1, 2,
+     create_multi_pattern(
+         (rep_any, 'bell_1', bell_any)
+     ),
+     None
+     ),
+    
+    ('missBell_B', 1, 2,
+     create_multi_pattern(
+         (rep_any, 'bell_2', bell_any)
+     ),
+     None
+     ),
+
+    # ('missBell_C', 1, 2,
+    #  create_multi_pattern(
+    #      (rep_any, bell_any, 'bell_1')
+    #  ),
+    #  None
+    #  ),
+
+    # ('missBell_D', 1, 2,
+    #  create_multi_pattern(
+    #      (rep_any, bell_any, 'bell_2')
+    #  ),
+    #  None
+    #  ),
+
      ('Replay_A', 0, 3, 
       create_multi_pattern(
           (rep_any, rep_any, rep_any)
@@ -71,8 +99,8 @@ role_data = [
 
       ('Cherry', 2, 2,
        create_multi_pattern(
-           ("bar", bell_any, bell_any),
-           ("blank", bell_any, bell_any)
+           ("bar", rep_any, rep_any),
+           ("blank", rep_any, rep_any)
        ),
        create_multi_pattern(
            (bonus_any, bell_any, bell_any),
@@ -164,7 +192,7 @@ flag_data_normal = {
         "RT1": flag_data_bet
     },
     "RB1": {
-        "RT0" : {
+        "None" : {
         1 : flag_data_JAC["RB1"]
         }
     }
@@ -203,10 +231,10 @@ bonus_data = {
         "JACIN_type" : "RB1",
         "JAC_nums" : None,
         "before_RT" : None,
-        "after_RT" : None
+        "after_RT" : "RT0"
     },
     'BB1' : {
-        "max_payout" : 2,
+        "max_payout" : 4,
         "JACIN_type" : "RB1",
         "JAC_nums" : json.dumps(JAC_BB1),
         "before_RT" : None,
@@ -274,6 +302,8 @@ dir = Path(__file__).resolve().parent
 csv_dir = dir / "csv"
 sql_path = dir / "sql" / "database_v2.sql"
 db_path = dir / "db" / "database_v2.db"
+
+slide_map_csv = csv_dir / "control_map.csv"
 
 reel_csv = {
     0: csv_dir / "L_slide.csv",
@@ -369,6 +399,23 @@ def load_slide_csv(csv_path, reel_pos):
 
     return(slide_list)
 
+def load_control_map(csv_path):
+    mapping = {}
+    with open(csv_path, "r", encoding="UTF-8-SIG") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            role = row["role"].strip()
+            if role.startswith("#"): continue
+
+            mapping[role] = {
+                0: row["L_reel"].strip(),
+                1: row["C_reel"].strip(),
+                2: row["R_reel"].strip()
+            }
+    return mapping
+
+                
+
 def apply_control_table(cursor, role_ID, reel_pos, slides):
     for reel_ID, slide in enumerate(slides):
         cursor.execute("""INSERT INTO control_table (role_id, reel_pos, reel_ID, slide)
@@ -430,23 +477,35 @@ def generate_control_table(cursor):
     cursor.execute("SELECT role,id FROM roles")
 
     role_dict = dict(cursor.fetchall())
+    control_map = load_control_map(slide_map_csv)
 
     for reel_pos, csv_path in reel_csv.items():
+
         slide_list = load_slide_csv(csv_path, reel_pos)
+
+        slide_dict = {}
         for item in slide_list:
-            role_id_list = []
-            name = item["name"]
-            reel_pos = item["reel_pos"]
-            target = item["target"]
-            if name in role_dict:
-                role_id_list.append(role_dict[name])
-            if role_id_list:
-                for role_id in role_id_list:
-                   apply_control_table(cursor, role_id, reel_pos, target) 
-            elif name =="vac":
-                apply_vac_control(cursor, reel_pos, target)
-            else:
-                print(f"ERROR ON generate_control_table() : {name} DOES EXIST")
+            slide_dict[item["name"]] = item["target"]
+        
+        for role, reel in control_map.items():
+            role_control = reel[reel_pos]
+            if role_control not in slide_dict:
+                print(f"ERROR ON generate_control_table() : {role_control} DOES NOT EXIST IN {reel_pos}, {role}")
+                continue
+            slide = slide_dict[role_control]
+
+            if role == "vac":
+                apply_vac_control(cursor, reel_pos, slide)
+                continue
+
+            if role not in role_dict:
+                print(f"ERROR ON generate_control_table() : {role} DOES NOT EXIST")
+                continue
+
+            role_id = role_dict[role]
+            apply_control_table(cursor, role_id, reel_pos, slide)
+
+            
 
 
 def generate_flag_role_map(cursor):

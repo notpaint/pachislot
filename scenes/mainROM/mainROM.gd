@@ -118,11 +118,10 @@ func _unhandled_input(event):
 		# print(RT_game)
 		# print(bonus_data)
 		# print(current_RT)
-		# print(JAC_game)
+		print(JAC_game)
 		# print(RT_game)
-		print("is_spinning:", is_spinning)
-		print("can_stop_reel", can_stop_reel)
-		print("active_tweens:", active_tweens)
+		print(weight_table)
+
 
 		pass
 		
@@ -415,10 +414,12 @@ func load_data_from_db():
 
 #フラグ抽選
 func select_flags(value):
+
 	if not weight_table.has(current_JAC):
 		print("error : bonus_state %s not found" % current_JAC)
 		return "vac"
 	var current_RT_table = weight_table[current_JAC]
+
 
 	if not current_RT_table.has(current_RT):
 		print("error : RT_state %s not found" % current_RT)
@@ -625,8 +626,8 @@ func start_bonus(role):
 
 
 func start_JAC(JAC):
+	current_RT = "None"
 	print("JAC_IN")
-	current_RT = "RT0"
 	JAC_game = true
 	JAC_counter = JAC_data[JAC].duplicate()
 	current_JAC = JAC
