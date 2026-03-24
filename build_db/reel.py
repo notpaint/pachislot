@@ -55,35 +55,36 @@ role_data = [
 
     ('missBell_A', 1, 2,
      create_multi_pattern(
+         ('rep_1', bell_any, bell_any)
+     ),
+     None
+     ),
+
+    ('missBell_B', 1, 2,
+     create_multi_pattern(
+         ('rep_2', bell_any, bell_any)
+     ),
+     None
+     ),
+
+    ('missBell_C', 1, 2,
+     create_multi_pattern(
          (rep_any, 'bell_1', bell_any)
      ),
      None
      ),
-    
-    ('missBell_B', 1, 2,
+
+    ('missBell_D', 1, 2,
      create_multi_pattern(
-         (rep_any, 'bell_2', bell_any)
+         (rep_any, 'bell_1', bell_any)
      ),
      None
      ),
 
-    # ('missBell_C', 1, 2,
-    #  create_multi_pattern(
-    #      (rep_any, bell_any, 'bell_1')
-    #  ),
-    #  None
-    #  ),
-
-    # ('missBell_D', 1, 2,
-    #  create_multi_pattern(
-    #      (rep_any, bell_any, 'bell_2')
-    #  ),
-    #  None
-    #  ),
 
      ('Replay_A', 0, 3, 
       create_multi_pattern(
-          (rep_any, rep_any, rep_any)
+          (rep_any, 'bell_2', rep_any)
       ),
       None
       ),
@@ -157,6 +158,36 @@ role_data = [
      )
      )
 ]
+
+role_pattern_priority = {
+    "upperBell": {
+        "default": {
+            1: [
+                {"reel_ID": 1, "priority": 2, "route": "valid"},
+                {"reel_ID": 6, "priority": 2, "route": "valid"}
+            ]
+        }
+    },
+    "downSuica": {
+        "default": {
+            1: [
+                {"reel_ID": 13, "priority": 2, "route": "valid"}
+            ]
+        },
+        "BB1": {
+            1: [
+                {"reel_ID": 12, "priority": 2, "route": "valid"}
+            ]
+        }
+    },
+    "BB1": {
+        "default": {
+            1: [
+                {"reel_ID": 13, "priority": 2, "route": "ghost"}
+            ]
+        }
+    }
+}
 
 
 # [{'フラグ名', '確率', 'RT状態'}]
@@ -242,6 +273,18 @@ bonus_data = {
     }
 }
 
+bonus_music = {
+    'RB1' : {
+        "start" : None,
+        "loop" : None,
+        "end" : None
+    },
+    'BB1' : {
+        "start": None,
+        "loop" : None,
+        "end": None
+    }
+}
 
 # [{"フラグ名", "重複役"}]
 flag_role_map = [
@@ -279,6 +322,8 @@ flag_role_map = [
         "roles": ["RB1"]
     }
 ]
+
+
 
 HUD_role_data = {
     "upperBell": {"name": "上段ベル"}
@@ -404,8 +449,8 @@ def load_control_map(csv_path):
     with open(csv_path, "r", encoding="UTF-8-SIG") as f:
         reader = csv.DictReader(f)
         for row in reader:
-            role = row["role"].strip()
-            if role.startswith("#"): continue
+            role = (row.get("role") or "").strip()
+            if not role or role.startswith("#"): continue
 
             mapping[role] = {
                 0: row["L_reel"].strip(),
@@ -505,7 +550,26 @@ def generate_control_table(cursor):
             role_id = role_dict[role]
             apply_control_table(cursor, role_id, reel_pos, slide)
 
-            
+def generate_role_pattern_priority(cursor):
+    for role, bonus_data in role_pattern_priority.items():
+        cursor.execute("SELECT id FROM roles WHERE role = (?)", (role,))
+        role_row = cursor.fetchone()
+        if role_row is None:
+            print(f"ERROR ON generate_role_pattern_priority() : {role} DOES NOT EXIST")
+            continue
+        role_id = role_row[0]
+        for bonus, reel_data in bonus_data.items():
+            bonus_state = bonus
+            for reel, data in reel_data.items():
+                reel_pos = int(reel)
+                for item in data:
+                    reel_ID = int(item["reel_ID"])
+                    priority = int(item["priority"])
+                    route = item["route"]
+                    cursor.execute("""
+                                   INSERT OR IGNORE INTO role_pattern_priority (role_id, bonus_state, reel_pos, reel_ID, priority, route)
+                                   VALUES (? ,?, ?, ? ,? ,?)
+                                   """, (role_id, bonus_state, reel_pos, reel_ID, priority, route))
 
 
 def generate_flag_role_map(cursor):
@@ -586,6 +650,7 @@ if __name__=="__main__":
         conn.executescript(f.read())
     
     generate_control_table(cursor)
+    generate_role_pattern_priority(cursor)
     generate_flag_table(cursor)
     generate_flag_role_map(cursor)
     generate_reel_table(cursor)

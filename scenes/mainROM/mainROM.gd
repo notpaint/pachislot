@@ -46,7 +46,10 @@ var bonus_state:  #成立中ボーナス
 		bonus_est.emit(value)
 var current_JAC : String= "None" #JAC状態
 var current_RT : String = "RT0" #RT状態
-var current_bonus : String = "None" #作動中ボーナス
+var current_bonus : String = "None":
+	set(value):
+		current_bonus = value
+		now_bonus.emit(value)
 
 var RT_game : int = 0
 var RT_level : int = 0
@@ -60,6 +63,7 @@ signal flag(result_flag)
 signal prized(reel_result)
 signal spin_start()
 signal bonus_est(bonus_state)
+signal now_bonus(current_bonus)
 signal medal_bet(bet_medals)
 
 
@@ -118,9 +122,10 @@ func _unhandled_input(event):
 		# print(RT_game)
 		# print(bonus_data)
 		# print(current_RT)
-		print(JAC_game)
+		# print(JAC_game)
 		# print(RT_game)
-		print(weight_table)
+		# print(weight_table)
+		print(current_bonus)
 
 
 		pass

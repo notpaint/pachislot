@@ -68,6 +68,19 @@ CREATE TABLE vac_control(
     slide INT
 );
 
+CREATE TABLE role_pattern_priority(
+    role_id INT,
+    bonus_state TEXT,
+    reel_pos INT,
+    reel_ID INT,
+    priority INT,
+    route TEXT,
+    FOREIGN KEY (role_id) REFERENCES roles(id),
+    FOREIGN KEY (reel_pos) REFERENCES reel_poses(reel_pos),
+    FOREIGN KEY (reel_ID) REFERENCES reel_IDs(reel_id),
+    PRIMARY KEY (role_id, bonus_state, reel_pos, reel_ID, route)
+);
+
 CREATE TABLE reel_table(
     reel_pos INT,
     reel_id INT,

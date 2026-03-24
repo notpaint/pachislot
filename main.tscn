@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://bkon8sbn4bepv" path="res://scenes/debug/debug.tscn" id="4_lquwl"]
 [ext_resource type="Script" uid="uid://c2nus2xi3yh8b" path="res://scenes/debug/debug.gd" id="5_7mycd"]
 [ext_resource type="PackedScene" uid="uid://c70j8ea87e5ew" path="res://scenes/UI/UI.tscn" id="6_272bh"]
+[ext_resource type="PackedScene" uid="uid://qy8yhhsv2mwt" path="res://scenes/effects/effects.tscn" id="7_272bh"]
 
 [node name="main" type="Node2D" unique_id=531150307]
 
@@ -22,3 +23,5 @@ visible = false
 script = ExtResource("5_7mycd")
 
 [node name="UI" parent="." unique_id=122271127 instance=ExtResource("6_272bh")]
+
+[node name="effects" parent="." unique_id=1805229761 instance=ExtResource("7_272bh")]

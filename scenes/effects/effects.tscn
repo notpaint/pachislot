@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://qy8yhhsv2mwt"]
+
+[ext_resource type="Script" uid="uid://dyrqrc1calxh1" path="res://scenes/effects/sound.gd" id="1_4wp5r"]
+[ext_resource type="Script" uid="uid://bi21r6otx53a0" path="res://scenes/effects/music.gd" id="2_f0rvd"]
+
+[node name="Effects" type="Node" unique_id=1805229761]
+
+[node name="sound" type="Node" parent="." unique_id=1886538669]
+script = ExtResource("1_4wp5r")
+
+[node name="music" type="AudioStreamPlayer" parent="sound" unique_id=1325923433]
+script = ExtResource("2_f0rvd")
