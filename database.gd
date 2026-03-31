@@ -9,6 +9,7 @@ var weight_table : Dictionary = {}
 var flag_table : Dictionary = {}
 var all_roles : Dictionary = {}
 var control_table : Dictionary = {}
+var pattern_priority: Dictionary = {}
 var JAC_data : Dictionary = {}
 var RT_data : Dictionary = {}
 var bonus_data : Dictionary = {}
@@ -26,6 +27,7 @@ func load_data_from_db():
 	load_weight_table()
 	load_flag_table()
 	load_control_table()
+	load_pattern_priority_table()
 	load_all_roles()
 	load_JAC_data()
 	load_RT_data()
@@ -165,6 +167,38 @@ func load_control_table():
 			for i in range(3):
 				control_table[role][i].resize(pattern_sum)
 		control_table[role][reel_pos][reel_ID] = slide
+
+func load_pattern_priority_table():
+	
+	var order = """
+	SELECT
+	r.role,
+	pp.role_id, pp.bonus_state, pp.reel_pos, pp.reel_ID, pp.priority, pp.route
+	FROM
+	role_pattern_priority AS pp
+	JOIN
+	roles AS r ON pp.role_id = r.id
+	"""
+	
+	db.query(order)
+	var results = db.query_result
+	
+	for row in results:
+		var role = row["role"]
+		var bonus_state = row["bonus_state"]
+		var reel_pos = int(row["reel_pos"])
+		var reel_ID = int(row["reel_ID"])
+		var priority = int(row["priority"])
+		var route = row["route"]
+		if not pattern_priority.has(role):
+			pattern_priority[role] = {}
+		if not pattern_priority[role].has(bonus_state):
+			pattern_priority[role][bonus_state] = {}
+		if not pattern_priority[role][bonus_state].has(reel_pos):
+			pattern_priority[role][bonus_state][reel_pos] = {}
+		if not pattern_priority[role][bonus_state][reel_pos].has(route):
+			pattern_priority[role][bonus_state][reel_pos][route] = {}
+		pattern_priority[role][bonus_state][reel_pos][route][reel_ID] = priority
 
 
 func load_JAC_data():

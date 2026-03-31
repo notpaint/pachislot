@@ -84,7 +84,7 @@ role_data = [
 
      ('Replay_A', 0, 3, 
       create_multi_pattern(
-          (rep_any, 'bell_2', rep_any)
+          (rep_any, rep_any, rep_any)
       ),
       None
       ),

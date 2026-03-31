@@ -10,6 +10,7 @@ var weight_table : Dictionary = {}
 var flag_table : Dictionary = {}
 var all_roles : Dictionary = {}
 var control_table : Dictionary = {}
+var pattern_priority : Dictionary = {}
 var JAC_data : Dictionary = {}
 var RT_data : Dictionary = {}
 var bonus_data : Dictionary = {}
@@ -113,21 +114,8 @@ func _unhandled_input(event):
 			try_stop_reel(2)
 
 	if event.is_action_pressed("debug"):
-		# print(all_roles)
-		# print(bonus_data)
-		# max_bonus_payout = 2
-		# print(JAC_data)
-		# print(weight_table["RT1"])
-		# print(RT_data)
-		# print(RT_game)
-		# print(bonus_data)
-		# print(current_RT)
-		# print(JAC_game)
-		# print(RT_game)
-		# print(weight_table)
-		print(current_bonus)
-
-
+		# print(current_reel)
+		print(pattern_priority)
 		pass
 		
 		
@@ -250,16 +238,18 @@ func get_supposed_symbols(base_ID, reel_pos):
 		var supposed_symbol = reel_table[reel_pos][target_ID]
 		var data = {
 			"slide" : i,
+			"target_ID" : target_ID,
 			"symbol" : supposed_symbol,
 			"kind" : 0,
 			"combo" : 0,
-			"payout" : 0 
+			"payout" : 0,
+			"priority" : 0
 		}
 		supposed_symbols.append(data)
 	return(supposed_symbols)
 
 
-func scoring_symbols(supposed_symbol_data, kind, payout):
+func scoring_symbols(supposed_symbol_data, kind, payout, priority):
 	supposed_symbol_data["combo"] += 1
 
 	if supposed_symbol_data["kind"] > kind:
@@ -269,16 +259,21 @@ func scoring_symbols(supposed_symbol_data, kind, payout):
 
 	if supposed_symbol_data["payout"] < payout:
 		supposed_symbol_data["payout"] = payout
+
+	var current_priority = supposed_symbol_data["priority"]
+	supposed_symbol_data["priority"] = max(current_priority, priority)
 	
 
 func table_logic(supposed_symbols, control_data, reel_pos, base_ID):
 	valid_roles.clear()
 
 	for row in control_data:
+		var role = row["role"]
 		var slide = row["slide"][reel_pos][base_ID]
 		var kind = row["kind"]
 		var payout = row["payout"]
 		var pattern_list = row["pattern"]
+		var priority = 0
 
 		var supposed_symbol_data = supposed_symbols[slide]
 		var supposed_symbol = supposed_symbol_data["symbol"]
@@ -286,9 +281,10 @@ func table_logic(supposed_symbols, control_data, reel_pos, base_ID):
 		for valid_pattern in pattern_list:
 			var target_symbol = valid_pattern[reel_pos]
 			if target_symbol == supposed_symbol:
-				scoring_symbols(supposed_symbol_data, kind, payout)
+				scoring_symbols(supposed_symbol_data, kind, payout, priority)
 				var pattern = valid_pattern
 				var data = {
+					"role": role,
 					"pattern" : pattern,
 					"kind" : kind,
 					"payout": payout
@@ -297,7 +293,6 @@ func table_logic(supposed_symbols, control_data, reel_pos, base_ID):
 		
 	if not valid_roles.is_empty():
 		supposed_symbols.sort_custom(sorting_symbols)
-		# print(supposed_symbols)
 		return(supposed_symbols[0]["slide"])
 	
 	var miss_slides : Array = []
@@ -321,24 +316,32 @@ func control_logic(supposed_symbols, valid_role, reel_pos):
 	if not valid_role.is_empty():
 		var current_valid_roles : Array = []
 		for row in valid_role:
+			# print(row)
+			var role = row["role"]
 			var kind = row["kind"]
 			var payout = row["payout"]
 			var valid_pattern = row["pattern"]
 			var valid_symbol = valid_pattern[reel_pos]
 			for i in (supposed_symbols.size()):
 				var supposed_symbol_data = supposed_symbols[i]
+				var target_ID = supposed_symbol_data["target_ID"]
 				if supposed_symbol_data["symbol"] == valid_symbol:
-					scoring_symbols(supposed_symbol_data, kind, payout)
+					var priority = get_pattern_priority(role, reel_pos, target_ID, "valid")
+					scoring_symbols(supposed_symbol_data, kind, payout, priority)
 					var data = {
+						"role": role,
 						"pattern": valid_pattern,
 						"kind": kind,
-						"payout": payout
+						"payout": payout,
+						"priority": priority
 					}
 					current_valid_roles.append(data)
+
 
 		if not current_valid_roles.is_empty():
 			valid_roles = current_valid_roles
 			supposed_symbols.sort_custom(sorting_symbols)
+			print(supposed_symbols)
 			return(supposed_symbols[0]["slide"])
 
 		valid_roles = []
@@ -393,6 +396,25 @@ func dodge_invalid_role(supposed_symbols, reel_pos):
 	return(4)
 
 
+func get_pattern_priority(role, reel_pos, target_ID, route):
+	if not pattern_priority.has(role):
+		return 0
+	
+	var state = bonus_state
+	if state == null or not pattern_priority[role].has(bonus_state):
+		state = "default"
+	
+	if not pattern_priority[role].has(state):
+		return 0
+	if not pattern_priority[role][state].has(reel_pos):
+		return 0
+	if not pattern_priority[role][state][reel_pos].has(route):
+		return 0
+	if not pattern_priority[role][state][reel_pos][route].has(target_ID):
+		return 0
+
+	var priority = pattern_priority[role][state][reel_pos][route][target_ID]
+	return priority
 
 func sorting_symbols(x, y):
 	if x["kind"] != y["kind"]:
@@ -401,7 +423,9 @@ func sorting_symbols(x, y):
 		return x["combo"] > y["combo"]
 	if x["payout"] != y ["payout"]:
 		return x["payout"] > y["payout"]
-	return x["slide"] > y["slide"]
+	if x["priority"] != y["priority"]:
+		return x["priority"] > y["priority"]
+	return x["slide"] < y["slide"]
 
 
 #フラグデータ読み込み
@@ -410,6 +434,7 @@ func load_data_from_db():
 	flag_table = Database.flag_table
 	all_roles = Database.all_roles
 	control_table = Database.control_table
+	pattern_priority = Database.pattern_priority
 	JAC_data = Database.JAC_data
 	RT_data = Database.RT_data
 	bonus_data = Database.bonus_data
@@ -436,6 +461,7 @@ func select_flags(value):
 
 	var current_weight_table = current_bet_table[bet_medals]
 	for data in current_weight_table:
+		return("vac")
 		var weight = int(data["weight"])
 		value -= weight
 		if value < 0:
