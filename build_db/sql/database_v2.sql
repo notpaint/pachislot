@@ -62,10 +62,14 @@ CREATE TABLE control_table(
 );
 
 -- 外れ制御テーブル
-CREATE TABLE vac_control(
+CREATE TABLE vac_control_table(
     reel_pos INT,
     reel_ID INT,
     slide INT
+);
+
+CREATE TABLE vac_pattern(
+    pattern TEXT
 );
 
 CREATE TABLE role_pattern_priority(

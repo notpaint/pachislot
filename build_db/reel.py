@@ -159,6 +159,21 @@ role_data = [
      )
 ]
 
+vac_pattern = [
+    create_multi_pattern(
+        (rep_any, rep_any, "r7"),
+        (rep_any, rep_any, "bar"),
+        (rep_any, rep_any, "blank"),
+        (rep_any, rep_any, "cherry"),
+        ("rep_2", "bar", "bar"),
+        ("rep_2", "bar", "cherry"),
+        ("rep_2", "bar", "blank"),
+        ("rep_2", "r7", "bar"),
+        ("rep_2", "r7", "cherry"),
+        ("rep_2", "r7", "blank")
+    )
+]
+
 role_pattern_priority = {
     "upperBell": {
         "default": {
@@ -467,9 +482,9 @@ def apply_control_table(cursor, role_ID, reel_pos, slides):
                        VALUES (?, ?, ?, ?)
                        """, (role_ID, reel_pos, reel_ID, slide))
 
-def apply_vac_control(cursor, reel_pos, slides):
+def apply_vac_control_table(cursor, reel_pos, slides):
     for reel_ID, slide in enumerate(slides):
-        cursor.execute("""INSERT INTO vac_control (reel_pos, reel_ID, slide)
+        cursor.execute("""INSERT INTO vac_control_table (reel_pos, reel_ID, slide)
                        VALUES (?, ?, ?)
                        """, (reel_pos, reel_ID, slide))
 
@@ -540,7 +555,7 @@ def generate_control_table(cursor):
             slide = slide_dict[role_control]
 
             if role == "vac":
-                apply_vac_control(cursor, reel_pos, slide)
+                apply_vac_control_table(cursor, reel_pos, slide)
                 continue
 
             if role not in role_dict:
@@ -625,6 +640,10 @@ def generate_bonus_data(cursor):
 def generate_RT_data(cursor):
     cursor.executemany("""INSERT OR IGNORE INTO RT_data (name, game, type)
                     VALUES (?, ?, ?)""", (RT_data))
+    
+
+def generate_vac_pattern(cursor):
+    cursor.execute("""INSERT INTO vac_pattern (pattern) VALUES (?)""", vac_pattern)
 
 #%%
 
@@ -658,6 +677,7 @@ if __name__=="__main__":
     generate_bonus_data(cursor)
     generate_RT_data(cursor)
     generate_flag_HUD(cursor)
+    generate_vac_pattern(cursor)
 
     conn.commit()
     conn.close()

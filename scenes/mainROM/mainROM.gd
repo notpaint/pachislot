@@ -10,6 +10,7 @@ var weight_table : Dictionary = {}
 var flag_table : Dictionary = {}
 var all_roles : Dictionary = {}
 var control_table : Dictionary = {}
+var vac_pattern : Dictionary = {}
 var pattern_priority : Dictionary = {}
 var JAC_data : Dictionary = {}
 var RT_data : Dictionary = {}
@@ -220,7 +221,7 @@ func try_stop_reel(reel_pos):
 			stop_reels(slide,current_pixel ,raw_ID ,reel_pos)
 	else:
 		if result_roles.is_empty():
-			slide = current_control_table[0]["slide"][reel_pos][base_ID]
+			slide = vac_control_logic(supposed_symbols, reel_pos)
 			stop_reels(slide,current_pixel ,raw_ID ,reel_pos)
 		else:
 			slide = control_logic(
@@ -324,6 +325,7 @@ func control_logic(supposed_symbols, valid_role, reel_pos):
 			var valid_symbol = valid_pattern[reel_pos]
 			for i in (supposed_symbols.size()):
 				var supposed_symbol_data = supposed_symbols[i]
+				print(supposed_symbol_data)
 				var target_ID = supposed_symbol_data["target_ID"]
 				if supposed_symbol_data["symbol"] == valid_symbol:
 					var priority = get_pattern_priority(role, reel_pos, target_ID, "valid")
@@ -427,6 +429,31 @@ func sorting_symbols(x, y):
 		return x["priority"] > y["priority"]
 	return x["slide"] < y["slide"]
 
+func vac_control_logic(supposed_symbols, reel_pos):
+	var patterns = vac_pattern.get("pattern", [])
+	for i in (supposed_symbols.size()):
+		var supposed_symbol = supposed_symbols[i]["symbol"]
+		var slide = supposed_symbols[i]["slide"]
+
+		for pattern in patterns:
+			if pattern[reel_pos] != supposed_symbol:
+				continue
+			var matched = true
+			for j in range(3):
+				if j == reel_pos:
+					continue
+				if not current_reel[j].is_empty() and pattern[j] != current_reel[j]:
+					matched = false
+					break
+			
+			if matched:
+				return slide
+	
+	return 4
+			
+
+	
+
 
 #フラグデータ読み込み
 func load_data_from_db():
@@ -434,6 +461,7 @@ func load_data_from_db():
 	flag_table = Database.flag_table
 	all_roles = Database.all_roles
 	control_table = Database.control_table
+	vac_pattern = Database.vac_pattern
 	pattern_priority = Database.pattern_priority
 	JAC_data = Database.JAC_data
 	RT_data = Database.RT_data

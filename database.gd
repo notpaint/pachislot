@@ -9,6 +9,7 @@ var weight_table : Dictionary = {}
 var flag_table : Dictionary = {}
 var all_roles : Dictionary = {}
 var control_table : Dictionary = {}
+var vac_pattern : Dictionary = {}
 var pattern_priority: Dictionary = {}
 var JAC_data : Dictionary = {}
 var RT_data : Dictionary = {}
@@ -34,6 +35,7 @@ func load_data_from_db():
 	load_bonus_data()
 	load_reel_table()
 	load_HUD_data()
+	load_vac_pattern()
 
 #weight_table(フラグの確率表)作成
 #{"weight_state":[{"flag", "weight"}]}
@@ -131,7 +133,7 @@ func load_all_roles():
 func load_control_table():
 
 	#はずれ(vac)制御読み込み
-	db.query("SELECT reel_pos, reel_ID, slide FROM vac_control")
+	db.query("SELECT reel_pos, reel_ID, slide FROM vac_control_table")
 	var results = db.query_result
 
 	for row in results:
@@ -167,6 +169,14 @@ func load_control_table():
 			for i in range(3):
 				control_table[role][i].resize(pattern_sum)
 		control_table[role][reel_pos][reel_ID] = slide
+
+func load_vac_pattern():
+	db.query("SELECT pattern FROM vac_pattern")
+	var results = db.query_result
+
+	var row = results[0]
+	var pattern = JSON.parse_string(row["pattern"])
+	vac_pattern = {"pattern" : pattern}
 
 func load_pattern_priority_table():
 	
