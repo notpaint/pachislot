@@ -47,7 +47,10 @@ var bonus_state:  #成立中ボーナス
 		bonus_state = value
 		bonus_est.emit(value)
 var current_JAC : String= "None" #JAC状態
-var current_RT : String = "RT0" #RT状態
+var current_RT : String = "RT0":
+	set(value):
+		current_RT = value
+		now_RT.emit(value)
 var current_bonus : String = "None":
 	set(value):
 		current_bonus = value
@@ -66,8 +69,10 @@ signal prized(reel_result)
 signal spin_start()
 signal bonus_est(bonus_state)
 signal now_bonus(current_bonus)
+signal now_RT(current_RT)
 signal medal_bet(bet_medals)
 
+@onready var debug = $"../debug"
 
 @onready var L_reel = $window/L_reel
 @onready var C_reel = $window/C_reel
@@ -116,7 +121,7 @@ func _unhandled_input(event):
 
 	if event.is_action_pressed("debug"):
 		# print(current_reel)
-		print(pattern_priority)
+		print(all_roles)
 		pass
 		
 		
@@ -147,6 +152,7 @@ func can_spin():
 	if bet_medals == 0:
 		return false
 	return true
+
 
 
 func generate_flag():	
@@ -343,11 +349,22 @@ func control_logic(supposed_symbols, valid_role, reel_pos):
 		if not current_valid_roles.is_empty():
 			valid_roles = current_valid_roles
 			supposed_symbols.sort_custom(sorting_symbols)
-			print(supposed_symbols)
+			# print(supposed_symbols)
 			return(supposed_symbols[0]["slide"])
 
+
 		valid_roles = []
-		return(miss_route(supposed_symbols, miss_patterns, reel_pos))
+		var ghosts : Array = []
+		for row in valid_role:
+			var role = row["role"]
+			var miss = all_roles[role]["miss_pattern"]
+			if miss:
+				for pattern in miss:
+					ghosts.append(pattern)
+		print(ghosts)
+		if not ghosts.is_empty():
+			print(ghosts)
+			return(miss_route(supposed_symbols, ghosts, reel_pos))
 	
 	if not miss_patterns.is_empty():
 		return(miss_route(supposed_symbols, miss_patterns, reel_pos))
@@ -469,7 +486,6 @@ func load_data_from_db():
 	reel_table = Database.reel_table
 
 
-
 #フラグ抽選
 func select_flags(value):
 
@@ -489,7 +505,7 @@ func select_flags(value):
 
 	var current_weight_table = current_bet_table[bet_medals]
 	for data in current_weight_table:
-		return("vac")
+		return("Suica")
 		var weight = int(data["weight"])
 		value -= weight
 		if value < 0:

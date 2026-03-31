@@ -114,7 +114,8 @@ role_data = [
          (bell_any, "suica", "cherry")
      ),
      create_multi_pattern(
-         (bell_any, suica_group, rep_any)
+         (bell_any, suica_group, rep_any),
+         (bell_any, "cherry", rep_any),
      )
      ),
 

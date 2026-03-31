@@ -1,19 +1,46 @@
 [gd_scene format=3 uid="uid://bkon8sbn4bepv"]
 
-[ext_resource type="Script" uid="uid://cwaedwn80sol7" path="res://scenes/debug/flaglist.gd" id="1_kfclf"]
+[ext_resource type="Script" uid="uid://cwaedwn80sol7" path="res://scenes/debug/force_flag/flaglist.gd" id="1_kfclf"]
+[ext_resource type="Script" uid="uid://blthco12a8tj5" path="res://scenes/debug/debug.gd" id="1_pa0g8"]
 [ext_resource type="Script" uid="uid://dr211sl3g1rro" path="res://scenes/debug/label.gd" id="2_fym4n"]
+[ext_resource type="Script" uid="uid://nbut0ohdkrib" path="res://scenes/debug/force_flag/force_flag.gd" id="3_oa6p7"]
 
 [node name="debug" type="Window" unique_id=234602057]
 oversampling_override = 1.0
 position = Vector2i(0, 36)
 
-[node name="flaglist" type="OptionButton" parent="." unique_id=401952528]
-visible = false
-offset_right = 32.0
-offset_bottom = 20.0
+[node name="debug" type="Control" parent="." unique_id=1853359781]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_pa0g8")
+
+[node name="Label" type="Label" parent="debug" unique_id=836799253]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 18.0
+offset_right = 64.0
+offset_bottom = 41.0
+script = ExtResource("2_fym4n")
+
+[node name="force_flag" type="Control" parent="debug" unique_id=2041636788]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("3_oa6p7")
+
+[node name="flaglist" type="OptionButton" parent="debug/force_flag" unique_id=401952528]
+custom_minimum_size = Vector2(320, 48)
+layout_mode = 0
+offset_left = 3.0
+offset_top = 82.0
+offset_right = 323.0
+offset_bottom = 130.0
+theme_override_font_sizes/font_size = 24
 script = ExtResource("1_kfclf")
 
-[node name="Label" type="Label" parent="." unique_id=836799253]
-offset_right = 40.0
-offset_bottom = 23.0
-script = ExtResource("2_fym4n")
+[node name="send" type="Button" parent="debug/force_flag" unique_id=76402667]
+layout_mode = 0
+offset_right = 78.0
+offset_bottom = 44.0
