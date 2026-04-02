@@ -22,6 +22,7 @@ config/icon="res://icon.svg"
 [autoload]
 
 Database="*uid://r6sw4rn3726c"
+Datahub="*uid://bk3o6v2v2670w"
 
 [display]
 

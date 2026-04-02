@@ -11,6 +11,7 @@ func _ready():
 func _on_send_pressed():
     var selected_flag = flaglist.get_item_metadata(flaglist.selected)
     if selected_flag:
+        Datahub.force_flag = selected_flag
         force_flag.emit(selected_flag)
     else:
         print("NULL")

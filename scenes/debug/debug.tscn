@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://blthco12a8tj5" path="res://scenes/debug/debug.gd" id="1_pa0g8"]
 [ext_resource type="Script" uid="uid://dr211sl3g1rro" path="res://scenes/debug/label.gd" id="2_fym4n"]
 [ext_resource type="Script" uid="uid://nbut0ohdkrib" path="res://scenes/debug/force_flag/force_flag.gd" id="3_oa6p7"]
+[ext_resource type="Script" uid="uid://ojlylclxg4ol" path="res://scenes/debug/controller.gd" id="5_hxnlu"]
 
 [node name="debug" type="Window" unique_id=234602057]
 oversampling_override = 1.0
@@ -42,5 +43,27 @@ script = ExtResource("1_kfclf")
 
 [node name="send" type="Button" parent="debug/force_flag" unique_id=76402667]
 layout_mode = 0
-offset_right = 78.0
-offset_bottom = 44.0
+offset_left = 353.0
+offset_top = 84.0
+offset_right = 431.0
+offset_bottom = 128.0
+
+[node name="controller" type="Control" parent="debug" unique_id=874077371]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("5_hxnlu")
+
+[node name="maxbet" type="Button" parent="debug/controller" unique_id=1234978317]
+layout_mode = 0
+offset_left = 25.0
+offset_top = 154.0
+offset_right = 109.0
+offset_bottom = 188.0
+
+[node name="lever" type="Button" parent="debug/controller" unique_id=1980286895]
+layout_mode = 0
+offset_left = 124.0
+offset_top = 125.0
+offset_right = 212.0
+offset_bottom = 174.0

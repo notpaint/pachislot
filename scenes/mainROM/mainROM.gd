@@ -30,6 +30,8 @@ var bet_medals : int = 0:
 			return
 		bet_medals = value
 		medal_bet.emit(value)
+		Datahub.bet_medals = value
+
 var is_spinning = [false, false, false]
 var can_stop_reel : Array = [false, false, false]
 
@@ -39,22 +41,41 @@ var current_spin_speed : Array = [0.0, 0.0, 0.0]
 
 var active_tweens : Array[Tween] = [null, null, null]
 
-var result_flag
+var result_flag : String = "None": #当選フラグ
+	set(value):
+		if result_flag == value:
+			return
+		result_flag = value
+		flag.emit(value)
+		Datahub.result_flag = value
+		
 var result_roles : Array = []
 
 var bonus_state:  #成立中ボーナス
 	set(value):
+		if bonus_state == value:
+			return
 		bonus_state = value
 		bonus_est.emit(value)
+		Datahub.bonus_state = value
+
 var current_JAC : String= "None" #JAC状態
+
 var current_RT : String = "RT0":
 	set(value):
+		if current_RT == value:
+			return
 		current_RT = value
 		now_RT.emit(value)
+		Datahub.bonus_state = value
+
 var current_bonus : String = "None":
 	set(value):
+		if current_bonus == value:
+			return
 		current_bonus = value
 		now_bonus.emit(value)
+		Datahub.current_bonus = value
 
 var RT_game : int = 0
 var RT_level : int = 0
@@ -72,8 +93,6 @@ signal now_bonus(current_bonus)
 signal now_RT(current_RT)
 signal medal_bet(bet_medals)
 
-@onready var debug = $"../debug"
-
 @onready var L_reel = $window/L_reel
 @onready var C_reel = $window/C_reel
 @onready var R_reel = $window/R_reel
@@ -81,7 +100,7 @@ signal medal_bet(bet_medals)
 @onready var reels = [L_reel, C_reel, R_reel]
 
 func _ready():
-
+	connect_to_debug()
 	load_data_from_db()
 
 
@@ -110,13 +129,13 @@ func _unhandled_input(event):
 	if event.is_action_pressed("maxbet"):
 		maxbet()
 	if event.is_action_pressed("stop_left"):
-		if result_flag:
+		if not result_flag == "None":
 			try_stop_reel(0)
 	if event.is_action_pressed("stop_center"):
-		if result_flag:	
+		if not result_flag == "None":	
 			try_stop_reel(1)
 	if event.is_action_pressed("stop_right"):
-		if result_flag:	
+		if not result_flag == "None":	
 			try_stop_reel(2)
 
 	if event.is_action_pressed("debug"):
@@ -141,7 +160,7 @@ func start_spin():
 
 func clear_current_data():
 	current_reel = [[],[],[]]
-	result_flag = null
+	result_flag = "None"
 	valid_roles = []
 	miss_patterns = []
 	result_roles = []
@@ -159,10 +178,10 @@ func generate_flag():
 	var rand_num : int = drawing()
 	result_flag = select_flags(rand_num)
 
-	# result_flag = ("BB1")
-
-	flag.emit(result_flag)
-
+	if not Datahub.force_flag == "None":
+		result_flag = Datahub.force_flag
+		Datahub.force_flag = "None"
+	
 	return (result_flag)
 
 func generate_role_list():
@@ -198,6 +217,13 @@ func maxbet():
 		bet_medals = 0
 		MY = MY - 3
 		bet_medals = 3
+
+func _on_maxbet_requested():
+	maxbet()
+
+func _on_lever_requested():
+	if can_spin():
+		start_spin()
 
 
 func try_stop_reel(reel_pos):
@@ -485,6 +511,11 @@ func load_data_from_db():
 	bonus_data = Database.bonus_data
 	reel_table = Database.reel_table
 
+#デバッグデータベース接続
+func connect_to_debug():
+	Datahub.maxbet_requested.connect(_on_maxbet_requested)
+	Datahub.lever_requested.connect(_on_lever_requested)
+
 
 #フラグ抽選
 func select_flags(value):
@@ -505,7 +536,6 @@ func select_flags(value):
 
 	var current_weight_table = current_bet_table[bet_medals]
 	for data in current_weight_table:
-		return("Suica")
 		var weight = int(data["weight"])
 		value -= weight
 		if value < 0:
