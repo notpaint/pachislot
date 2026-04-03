@@ -4,6 +4,7 @@ vac,L_middleRep,C_vac,R_vac
 ,,,
 upperBell,L_middleRep,C_upperBell,R_middleRep
 middleBell,L_middleBell,C_middleBell,R_middleBell
+downBell,L_middleRep,C_middleBell,R_downBell
 missBell_A,L_middleRep,C_middleBell,R_middleBell
 ,,,
 Replay_A,L_middleRep,C_middleRep,R_middleRep

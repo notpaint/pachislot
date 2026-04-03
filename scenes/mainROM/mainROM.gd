@@ -225,6 +225,9 @@ func _on_lever_requested():
 	if can_spin():
 		start_spin()
 
+func _on_stop_requested(reel_pos):
+	try_stop_reel(reel_pos)
+
 
 func try_stop_reel(reel_pos):
 	if not can_stop_reel[reel_pos]:
@@ -515,6 +518,7 @@ func load_data_from_db():
 func connect_to_debug():
 	Datahub.maxbet_requested.connect(_on_maxbet_requested)
 	Datahub.lever_requested.connect(_on_lever_requested)
+	Datahub.stop_requested.connect(_on_stop_requested)
 
 
 #フラグ抽選

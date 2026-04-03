@@ -37,7 +37,7 @@ suica_group = ["suica", "r7", "cherry"]
 
 
 role_data = [
-    ('upperBell', 3, 2,
+    ('upperBell', 8, 2,
      create_multi_pattern(
          (rep_any, "cherry", rep_any),
          (rep_any, "blank", rep_any),
@@ -45,6 +45,15 @@ role_data = [
          ),
      None
      ),
+
+     ('downBell', 8, 2,
+      create_multi_pattern(
+          (rep_any, bell_any, "suica"),
+          (rep_any, bell_any, "bar"),
+          (rep_any, bell_any, "r7")
+        ),
+    None
+    ),
 
     ('middleBell', 8, 2,
       create_multi_pattern(
@@ -141,7 +150,7 @@ role_data = [
         (bell_any, "suica", "suica"),
         (bell_any, "cherry", "suica"),
         (bell_any, "r7", "suica"),
-        ("r7", rep_any, bell_any)
+        ("r7", bell_any, rep_any)
      )
      ),
 
@@ -156,7 +165,7 @@ role_data = [
         (bell_any, "suica", "suica"),
         (bell_any, "cherry", "suica"),
         (bell_any, "r7", "suica"),
-        ("r7", rep_any, rep_any)
+        ("r7", bell_any, rep_any)
      )
      )
 ]
@@ -209,16 +218,17 @@ role_pattern_priority = {
 
 # [{'フラグ名', '確率', 'RT状態'}]
 flag_data_3bet = [
-    {"name": 'middleBell', "weight": 6554},
-    {"name": 'upperBell', "weight": 6553},
+    {"name": 'middleBell', "weight": 0},
+    {"name": 'upperBell', "weight": 3277},
+    {"name": 'downBell', 'weight': 3277},
     {"name": 'Replay_A', "weight": 4000, 'RT': 'BB1'},
-    {"name": 'RB1', "weight": 10000},
+    {"name": 'RB1', "weight": 188},
     {"name": 'Replay_A', "weight": 4978, 'RT': 'BB1'},
-    {"name": 'BB1', "weight": 10000},
-    {"name": 'Cherry', "weight": 3300},
-    {"name": 'Suica', "weight": 2200},
+    {"name": 'BB1', "weight": 188},
+    {"name": 'Cherry', "weight": 655},
+    {"name": 'Suica', "weight": 820},
     {"name": 'vac', "weight": 13107, 'RT': 'RT1'},
-    {"name": 'vac', "weight": 4844, 'RT': 'RT1'}
+    {"name": 'vac', "weight": 35046, 'RT': 'RT1'}
 ]
 
 flag_data_1bet = [
@@ -314,6 +324,10 @@ flag_role_map = [
         "roles": ["upperBell"]
     },
     {
+        "flag": "downBell",
+        "roles": ["downBell"]
+    },
+    {
         "flag" : "321Bell",
         "roles" : ["upperBell"]
     },
@@ -375,11 +389,11 @@ reel_csv = {
 
 #現在のフラグの内訳を表示
 def check():
-    total = sum(d["weight"] for d in flag_data_normal if d["name"])
+    total = sum(d["weight"] for d in flag_data_3bet if d["name"])
     print(f"現在の合計:{total}")
     print(f"残り変数:{65536 - total}")
     table = {}
-    for d in flag_data_normal:
+    for d in flag_data_3bet:
         name = d["name"]
         w = d["weight"]
 

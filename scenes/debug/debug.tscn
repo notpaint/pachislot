@@ -38,6 +38,7 @@ offset_left = 3.0
 offset_top = 82.0
 offset_right = 323.0
 offset_bottom = 130.0
+focus_mode = 0
 theme_override_font_sizes/font_size = 24
 script = ExtResource("1_kfclf")
 
@@ -47,23 +48,10 @@ offset_left = 353.0
 offset_top = 84.0
 offset_right = 431.0
 offset_bottom = 128.0
+focus_mode = 0
 
 [node name="controller" type="Control" parent="debug" unique_id=874077371]
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("5_hxnlu")
-
-[node name="maxbet" type="Button" parent="debug/controller" unique_id=1234978317]
-layout_mode = 0
-offset_left = 25.0
-offset_top = 154.0
-offset_right = 109.0
-offset_bottom = 188.0
-
-[node name="lever" type="Button" parent="debug/controller" unique_id=1980286895]
-layout_mode = 0
-offset_left = 124.0
-offset_top = 125.0
-offset_right = 212.0
-offset_bottom = 174.0
