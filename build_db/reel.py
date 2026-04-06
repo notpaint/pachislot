@@ -144,7 +144,7 @@ role_data = [
     ),
      create_multi_pattern(
         ("rep_2", "suica", "bell_2"),
-        ("rep_2", bonus_any, bell_any),
+        ("rep_2", "r7", bell_any),
         ("rep_2", rep_any, bonus_any),
         ("rep_2", rep_any, "suica"),
         (bell_any, "suica", "suica"),
@@ -159,7 +159,7 @@ role_data = [
          ("r7", "r7", "bar")
      ),
      create_multi_pattern(
-        ("rep_2", bonus_any, bonus_any),
+        ("rep_2", "r7", bonus_any),
         ("rep_2", rep_any, bell_any),
         ("rep_2", rep_any, "suica"),
         (bell_any, "suica", "suica"),
@@ -250,7 +250,7 @@ flag_data_normal = {
         "RT1": flag_data_bet
     },
     "RB1": {
-        "None" : {
+        "RT0" : {
         1 : flag_data_JAC["RB1"]
         }
     }

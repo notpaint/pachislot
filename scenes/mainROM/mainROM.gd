@@ -735,7 +735,7 @@ func start_bonus(role):
 
 
 func start_JAC(JAC):
-	current_RT = "None"
+	current_RT = "RT0"
 	print("JAC_IN")
 	JAC_game = true
 	JAC_counter = JAC_data[JAC].duplicate()
