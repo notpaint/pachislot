@@ -1,6 +1,6 @@
 extends Node2D
 
-const pattern_scale : float = 216.0
+const pattern_scale : float = 215.0
 const pattern_sum : int = 21
 const reel_length : float = pattern_scale * pattern_sum
 const pattern_per : float = 1.0 / pattern_sum
@@ -23,7 +23,13 @@ var miss_patterns: Array = []
 var current_control_table : Array = []
 var valid_roles : Array = []
 
-var MY = 0
+var medal_sum : int = 1000:
+	set(value):
+		if medal_sum == value:
+			return
+		medal_sum = value
+		medal_number.emit(value)
+
 var bet_medals : int = 0:
 	set(value):
 		if bet_medals == value:
@@ -92,6 +98,7 @@ signal bonus_est(bonus_state)
 signal now_bonus(current_bonus)
 signal now_RT(current_RT)
 signal medal_bet(bet_medals)
+signal medal_number(medal_sum)
 
 @onready var L_reel = $window/L_reel
 @onready var C_reel = $window/C_reel
@@ -139,9 +146,10 @@ func _unhandled_input(event):
 			try_stop_reel(2)
 
 	if event.is_action_pressed("debug"):
-		# print(current_reel)
-		print(all_roles)
-		pass
+		print_to_console()
+
+func print_to_console():
+	print(medal_sum)
 		
 		
 func start_spin():
@@ -165,6 +173,7 @@ func clear_current_data():
 	miss_patterns = []
 	result_roles = []
 
+
 func can_spin():
 	if is_spinning.has(true):
 		return false
@@ -184,6 +193,7 @@ func generate_flag():
 	
 	return (result_flag)
 
+
 func generate_role_list():
 	if result_flag == "vac":
 		if bonus_state:
@@ -195,6 +205,8 @@ func generate_role_list():
 		var role_name = role["role"]
 		if role_name in bonus_variety:
 			if not bonus_state:
+				if bonus_data[role_name]["before_RT"]:
+					start_RT(bonus_data[role_name]["before_RT"])
 				bonus_state = role_name
 				continue
 			if bonus_state:
@@ -208,14 +220,20 @@ func generate_role_list():
 
 func maxbet():
 	if not is_spinning[0] and not is_spinning[1] and not is_spinning[2]:
+		if current_JAC != "None":
+			if bet_medals != 0:
+				return
+			var play_bet = JAC_data[current_JAC]["bet"]
+			if medal_sum < play_bet:
+				return
+			bet_medals = play_bet
+			medal_sum = medal_sum - bet_medals
+			return
 		if bet_medals == 3:
 			return
-		if current_JAC != "None":
-			bet_medals = 1
+		if medal_sum < 3:
 			return
-		MY = MY + bet_medals
-		bet_medals = 0
-		MY = MY - 3
+		medal_sum = medal_sum - 3
 		bet_medals = 3
 
 func _on_maxbet_requested():
@@ -227,6 +245,9 @@ func _on_lever_requested():
 
 func _on_stop_requested(reel_pos):
 	try_stop_reel(reel_pos)
+
+func _on_debug_requested():
+	print_to_console()
 
 
 func try_stop_reel(reel_pos):
@@ -246,6 +267,8 @@ func try_stop_reel(reel_pos):
 	if is_spinning[0] and is_spinning[1] and is_spinning[2]:
 		if result_roles.is_empty():
 			slide = current_control_table[0]["slide"][reel_pos][base_ID]
+			var target_ID = posmod(raw_ID + slide, pattern_sum)
+			current_reel[reel_pos] = reel_table[reel_pos][target_ID]
 			stop_reels(slide,current_pixel ,raw_ID ,reel_pos)
 		else:
 			slide = table_logic(
@@ -257,6 +280,8 @@ func try_stop_reel(reel_pos):
 	else:
 		if result_roles.is_empty():
 			slide = vac_control_logic(supposed_symbols, reel_pos)
+			var target_ID = posmod(raw_ID + slide, pattern_sum)
+			current_reel[reel_pos] = reel_table[reel_pos][target_ID]
 			stop_reels(slide,current_pixel ,raw_ID ,reel_pos)
 		else:
 			slide = control_logic(
@@ -360,7 +385,6 @@ func control_logic(supposed_symbols, valid_role, reel_pos):
 			var valid_symbol = valid_pattern[reel_pos]
 			for i in (supposed_symbols.size()):
 				var supposed_symbol_data = supposed_symbols[i]
-				print(supposed_symbol_data)
 				var target_ID = supposed_symbol_data["target_ID"]
 				if supposed_symbol_data["symbol"] == valid_symbol:
 					var priority = get_pattern_priority(role, reel_pos, target_ID, "valid")
@@ -390,9 +414,7 @@ func control_logic(supposed_symbols, valid_role, reel_pos):
 			if miss:
 				for pattern in miss:
 					ghosts.append(pattern)
-		print(ghosts)
 		if not ghosts.is_empty():
-			print(ghosts)
 			return(miss_route(supposed_symbols, ghosts, reel_pos))
 	
 	if not miss_patterns.is_empty():
@@ -519,6 +541,7 @@ func connect_to_debug():
 	Datahub.maxbet_requested.connect(_on_maxbet_requested)
 	Datahub.lever_requested.connect(_on_lever_requested)
 	Datahub.stop_requested.connect(_on_stop_requested)
+	Datahub.debug_requested.connect(_on_debug_requested)
 
 
 #フラグ抽選
@@ -664,7 +687,7 @@ func role_prize(matched_role):
 	var payout = matched_role["payout"]
 	var kind = matched_role["kind"]
 
-	MY += payout
+	medal_sum += payout
 
 	if current_bonus != "None" and max_bonus_payout > 0:
 		current_bonus_payout += payout
@@ -738,7 +761,7 @@ func start_JAC(JAC):
 	current_RT = "RT0"
 	print("JAC_IN")
 	JAC_game = true
-	JAC_counter = JAC_data[JAC].duplicate()
+	JAC_counter = JAC_data[JAC]["counter"].duplicate()
 	current_JAC = JAC
 
 
@@ -780,8 +803,8 @@ func start_RT(RT):
 	if bonus_state:
 		return
 	var RT_type = RT_data[RT]["type"]
-	if RT_level > RT_type:
-		return
+	# if RT_level > RT_type:
+	# 	return
 	RT_game = 0
 	RT_level = RT_type
 	current_RT = RT

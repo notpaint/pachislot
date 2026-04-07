@@ -5,15 +5,15 @@
 [ext_resource type="Script" uid="uid://cxmncakshufhi" path="res://scenes/UI/bet_medals.gd" id="2_gl4co"]
 
 [node name="UI" type="CanvasLayer" unique_id=122271127]
-offset = Vector2(1266, 0)
-transform = Transform2D(1, 0, 0, 1, 1266, 0)
+offset = Vector2(1260, 0)
+transform = Transform2D(1, 0, 0, 1, 1260, 0)
 
 [node name="UI" type="Control" parent="." unique_id=1984206647]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = -1980.0
+offset_right = -1920.0
 offset_bottom = -1080.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -38,3 +38,11 @@ texture = ExtResource("1_0wsoe")
 [node name="3_bet" type="TextureRect" parent="UI/bet_medals" unique_id=1924764780]
 layout_mode = 2
 texture = ExtResource("1_0wsoe")
+
+[node name="medal_sum" type="Label" parent="UI" unique_id=439335713]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 900.0
+offset_right = 190.0
+offset_bottom = 1022.7
+theme_override_font_sizes/font_size = 50

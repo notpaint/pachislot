@@ -35,13 +35,16 @@ offset_bottom = 207.0
 custom_minimum_size = Vector2(137.5, 97)
 layout_mode = 2
 expand_mode = 1
+stretch_mode = 5
 
 [node name="C_symbol" type="TextureRect" parent="HUD/reel_result_UI" unique_id=99072634]
 custom_minimum_size = Vector2(137.5, 97)
 layout_mode = 2
 expand_mode = 1
+stretch_mode = 5
 
 [node name="R_symbol" type="TextureRect" parent="HUD/reel_result_UI" unique_id=1913535237]
 custom_minimum_size = Vector2(137.5, 97)
 layout_mode = 2
 expand_mode = 1
+stretch_mode = 5

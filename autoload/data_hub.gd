@@ -18,6 +18,7 @@ signal _result_flag(flag)
 signal maxbet_requested()
 signal lever_requested()
 signal stop_requested(reel_pos)
+signal debug_requested()
 
 func request_maxbet():
     maxbet_requested.emit()
@@ -27,4 +28,7 @@ func request_lever():
 
 func request_stop(reel_pos : int):
     stop_requested.emit(reel_pos)
+
+func request_debug():
+    debug_requested.emit()
 

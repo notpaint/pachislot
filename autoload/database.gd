@@ -212,14 +212,19 @@ func load_pattern_priority_table():
 
 
 func load_JAC_data():
-	db.query("SELECT name, prize_count, play_count FROM JAC_data")
+	db.query("SELECT name, prize_count, play_count, play_bet FROM JAC_data")
 	var results = db.query_result
 
 	for row in results:
 		var JAC_name = row["name"]
 		var prize_count = int(row["prize_count"])
 		var play_count = int(row["play_count"])
-		JAC_data[JAC_name] = [prize_count, play_count]
+		var play_bet = int(row["play_bet"])
+		var data = {
+			"counter" : [prize_count, play_count],
+			"bet": play_bet
+		}
+		JAC_data[JAC_name] = data
 
 func load_RT_data():
 	db.query("SELECT name, game, type FROM RT_data")

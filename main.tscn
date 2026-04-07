@@ -16,7 +16,7 @@
 [node name="analysis" parent="." unique_id=1302851162 instance=ExtResource("3_h2yge")]
 
 [node name="debug" parent="." unique_id=234602057 instance=ExtResource("4_lquwl")]
-initial_position = 1
+position = Vector2i(2000, 127)
 size = Vector2i(800, 600)
 
 [node name="UI" parent="." unique_id=122271127 instance=ExtResource("6_272bh")]

@@ -23,7 +23,8 @@ CREATE TABLE flag_HUD(
 CREATE TABLE JAC_data(
     name TEXT,
     prize_count INT,
-    play_count INT
+    play_count INT,
+    play_bet INT
 );
 
 CREATE TABLE bonus_data(

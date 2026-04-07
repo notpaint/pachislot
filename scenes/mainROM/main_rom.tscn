@@ -1,68 +1,68 @@
-[gd_scene load_steps=5 format=3 uid="uid://dgo8yji46qgjq"]
+[gd_scene format=3 uid="uid://dgo8yji46qgjq"]
 
 [ext_resource type="Script" uid="uid://bosxca34lretl" path="res://scenes/mainROM/mainROM.gd" id="1_70mst"]
 [ext_resource type="Texture2D" uid="uid://dgv14gfoayy2n" path="res://assets/images/reel_image/L_reel.png" id="2_ea3yd"]
 [ext_resource type="Texture2D" uid="uid://buk2bsahidym6" path="res://assets/images/reel_image/C_reel.png" id="3_hpx1w"]
 [ext_resource type="Texture2D" uid="uid://bbssctyxihdun" path="res://assets/images/reel_image/R_reel.png" id="4_70mst"]
 
-[node name="mainROM" type="Node2D"]
+[node name="mainROM" type="Node2D" unique_id=1739790333]
 script = ExtResource("1_70mst")
 
-[node name="window" type="Control" parent="."]
+[node name="window" type="Control" parent="." unique_id=1078442104]
 clip_contents = true
-custom_minimum_size = Vector2(1266, 639)
+custom_minimum_size = Vector2(1260, 639)
 layout_mode = 3
 anchors_preset = 0
 offset_top = 213.0
-offset_right = 1266.0
+offset_right = 1260.0
 offset_bottom = 852.0
 
-[node name="L_reel" type="Node2D" parent="window"]
+[node name="L_reel" type="Node2D" parent="window" unique_id=1352300546]
 
-[node name="L_image_1" type="Sprite2D" parent="window/L_reel"]
+[node name="L_image_1" type="Sprite2D" parent="window/L_reel" unique_id=813102180]
 texture = ExtResource("2_ea3yd")
 centered = false
 
-[node name="L_image_2" type="Sprite2D" parent="window/L_reel"]
-position = Vector2(0, -4536)
+[node name="L_image_2" type="Sprite2D" parent="window/L_reel" unique_id=1077464081]
+position = Vector2(0, -4514)
 texture = ExtResource("2_ea3yd")
 centered = false
 
-[node name="L_image_3" type="Sprite2D" parent="window/L_reel"]
-position = Vector2(0, -9072)
+[node name="L_image_3" type="Sprite2D" parent="window/L_reel" unique_id=1119329333]
+position = Vector2(0, -9030)
 texture = ExtResource("2_ea3yd")
 centered = false
 
-[node name="C_reel" type="Node2D" parent="window"]
-position = Vector2(422, 0)
+[node name="C_reel" type="Node2D" parent="window" unique_id=1151081506]
+position = Vector2(420, 0)
 
-[node name="C_image_1" type="Sprite2D" parent="window/C_reel"]
+[node name="C_image_1" type="Sprite2D" parent="window/C_reel" unique_id=128387393]
 texture = ExtResource("3_hpx1w")
 centered = false
 
-[node name="C_image_2" type="Sprite2D" parent="window/C_reel"]
+[node name="C_image_2" type="Sprite2D" parent="window/C_reel" unique_id=786573765]
+position = Vector2(0, -4515)
 texture = ExtResource("3_hpx1w")
 centered = false
-offset = Vector2(0, -4536)
 
-[node name="C_image_3" type="Sprite2D" parent="window/C_reel"]
+[node name="C_image_3" type="Sprite2D" parent="window/C_reel" unique_id=618595190]
+position = Vector2(0, -9030)
 texture = ExtResource("3_hpx1w")
 centered = false
-offset = Vector2(0, -9072)
 
-[node name="R_reel" type="Node2D" parent="window"]
-position = Vector2(844, 0)
+[node name="R_reel" type="Node2D" parent="window" unique_id=208642995]
+position = Vector2(840, 0)
 
-[node name="R_image_1" type="Sprite2D" parent="window/R_reel"]
+[node name="R_image_1" type="Sprite2D" parent="window/R_reel" unique_id=839978683]
 texture = ExtResource("4_70mst")
 centered = false
 
-[node name="R_image_2" type="Sprite2D" parent="window/R_reel"]
-position = Vector2(0, -4536)
+[node name="R_image_2" type="Sprite2D" parent="window/R_reel" unique_id=1170786169]
+position = Vector2(0, -4515)
 texture = ExtResource("4_70mst")
 centered = false
 
-[node name="R_image_3" type="Sprite2D" parent="window/R_reel"]
-position = Vector2(0, -9072)
+[node name="R_image_3" type="Sprite2D" parent="window/R_reel" unique_id=1255255652]
+position = Vector2(0, -9030)
 texture = ExtResource("4_70mst")
 centered = false

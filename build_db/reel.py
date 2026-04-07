@@ -107,7 +107,7 @@ role_data = [
        None
        ),
 
-      ('Cherry', 2, 2,
+      ('Cherry_A', 2, 2,
        create_multi_pattern(
            ("bar", rep_any, rep_any),
            ("blank", rep_any, rep_any)
@@ -225,10 +225,11 @@ flag_data_3bet = [
     {"name": 'RB1', "weight": 188},
     {"name": 'Replay_A', "weight": 4978, 'RT': 'BB1'},
     {"name": 'BB1', "weight": 188},
-    {"name": 'Cherry', "weight": 655},
-    {"name": 'Suica', "weight": 820},
+    {"name": 'Cherry_A', "weight": 655},
+    {"name": 'downSuica', "weight": 820},
     {"name": 'vac', "weight": 13107, 'RT': 'RT1'},
-    {"name": 'vac', "weight": 35046, 'RT': 'RT1'}
+    {"name": 'vac', "weight": 35046, 'RT': 'RT1'},
+    {"name": 'Cherry_A_with_BB1', 'weight': 0}
 ]
 
 flag_data_1bet = [
@@ -279,7 +280,8 @@ JAC_BB1 = [{"weight": 65535, "JAC_type" : "RB1"}]
 JAC_data = {
     'RB1' : {
         "prize_count" : 8,
-        "play_count": 12
+        "play_count": 12,
+        "play_bet": 1
     }
 }
 
@@ -295,7 +297,7 @@ bonus_data = {
         "max_payout" : 4,
         "JACIN_type" : "RB1",
         "JAC_nums" : json.dumps(JAC_BB1),
-        "before_RT" : None,
+        "before_RT" : "RT0",
         "after_RT" : "RT1"
     }
 }
@@ -336,11 +338,11 @@ flag_role_map = [
         "roles": ["Replay_A"]
     },
     {
-        "flag": "Cherry",
-        "roles": ["Cherry"]
+        "flag": "Cherry_A",
+        "roles": ["Cherry_A"]
     },
     {
-        "flag": "Suica",
+        "flag": "downSuica",
         "roles": ["downSuica"]
     },
     {
@@ -351,6 +353,10 @@ flag_role_map = [
     {
         "flag": "RB1",
         "roles": ["RB1"]
+    },
+    {
+        "flag": "Cherry_A_with_BB1",
+        "roles": ["Cherry_A", "BB1"]
     }
 ]
 
@@ -364,10 +370,11 @@ HUD_flag_data = {
     "middleBell": "中段ベル",
     "upperBell": "上段ベル",
     "Replay_A": "中段リプレイ",
-    "Cherry": "チェリー",
-    "Suica": "スイカ",
+    "Cherry_A": "弱チェリー",
+    "downSuica": "右下がりスイカ",
     "BB1": "BB1",
-    "RB1": "RB1"
+    "RB1": "RB1",
+    "Cherry_A_with_BB1": "弱チェリー+BB1"
 }
 
 
@@ -638,8 +645,9 @@ def generate_JAC_data(cursor):
     for name, data in JAC_data.items():
         prize_count = data["prize_count"]
         play_count = data["play_count"]
-        cursor.execute("""INSERT OR IGNORE INTO JAC_data (name, prize_count, play_count)
-                       VALUES (?, ?, ?)""", (name, prize_count, play_count))
+        play_bet = data["play_bet"]
+        cursor.execute("""INSERT OR IGNORE INTO JAC_data (name, prize_count, play_count, play_bet)
+                       VALUES (?, ?, ?, ?)""", (name, prize_count, play_count, play_bet))
 
 
 def generate_bonus_data(cursor):

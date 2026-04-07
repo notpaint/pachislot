@@ -46,6 +46,8 @@ func _unhandled_input(event):
 	if event.is_action_pressed("stop_right"):
 		if not Datahub.result_flag == "None":
 			Datahub.request_stop(2)
+	if event.is_action_pressed("debug"):
+		Datahub.request_debug()
 	if Input.is_action_just_pressed("debug_popup"):
 		var flag_pop = flaglist.get_popup()
 		if flag_pop.get_item_count() == 0:
