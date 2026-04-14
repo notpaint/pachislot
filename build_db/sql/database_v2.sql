@@ -86,6 +86,15 @@ CREATE TABLE role_pattern_priority(
     PRIMARY KEY (role_id, bonus_state, reel_pos, reel_ID, route)
 );
 
+CREATE TABLE flag_role_priority(
+    flag_ID INT,
+    bonus_state TEXT,
+    reel_pos INT,
+    priority INT,
+    FOREIGN KEY (flag_ID) REFERENCES flags(id),
+    FOREIGN KEY (reel_pos) REFERENCES reel_poses(reel_pos)
+);
+
 CREATE TABLE reel_table(
     reel_pos INT,
     reel_id INT,

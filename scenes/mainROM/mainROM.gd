@@ -12,6 +12,7 @@ var all_roles : Dictionary = {}
 var control_table : Dictionary = {}
 var vac_pattern : Dictionary = {}
 var pattern_priority : Dictionary = {}
+var flag_priority : Dictionary = {}
 var JAC_data : Dictionary = {}
 var RT_data : Dictionary = {}
 var bonus_data : Dictionary = {}
@@ -149,7 +150,7 @@ func _unhandled_input(event):
 		print_to_console()
 
 func print_to_console():
-	print(medal_sum)
+	print(flag_priority)
 		
 		
 func start_spin():
@@ -304,14 +305,18 @@ func get_supposed_symbols(base_ID, reel_pos):
 			"kind" : 0,
 			"combo" : 0,
 			"payout" : 0,
-			"priority" : 0
+			"priority" : 0,
+			"count_roles" : []
 		}
 		supposed_symbols.append(data)
 	return(supposed_symbols)
 
 
-func scoring_symbols(supposed_symbol_data, kind, payout, priority):
-	supposed_symbol_data["combo"] += 1
+func scoring_symbols(supposed_symbol_data, kind, payout, priority, role):
+	
+	if not role in supposed_symbol_data["count_roles"]:
+		supposed_symbol_data["count_roles"].append(role)
+		supposed_symbol_data["combo"] += 1
 
 	if supposed_symbol_data["kind"] > kind:
 		return
@@ -342,7 +347,7 @@ func table_logic(supposed_symbols, control_data, reel_pos, base_ID):
 		for valid_pattern in pattern_list:
 			var target_symbol = valid_pattern[reel_pos]
 			if target_symbol == supposed_symbol:
-				scoring_symbols(supposed_symbol_data, kind, payout, priority)
+				scoring_symbols(supposed_symbol_data, kind, payout, priority, role)
 				var pattern = valid_pattern
 				var data = {
 					"role": role,
@@ -353,7 +358,16 @@ func table_logic(supposed_symbols, control_data, reel_pos, base_ID):
 				valid_roles.append(data)
 		
 	if not valid_roles.is_empty():
-		supposed_symbols.sort_custom(sorting_symbols)
+		var type = 0
+		if flag_priority.has(result_flag):
+			if bonus_state and flag_priority[result_flag].has(bonus_state):
+				type = flag_priority[result_flag][bonus_state][reel_pos]
+			else:
+				type = flag_priority[result_flag]["default"][reel_pos]
+		print("押したリール:{reel_pos}")
+		for s in supposed_symbols:
+			print("symbol:%s, Combo:%d, Payout:%d" % [s["symbol"], s["combo"], s["payout"]])
+		supposed_symbols.sort_custom(sorting_symbols.bind(type))
 		return(supposed_symbols[0]["slide"])
 	
 	var miss_slides : Array = []
@@ -388,7 +402,7 @@ func control_logic(supposed_symbols, valid_role, reel_pos):
 				var target_ID = supposed_symbol_data["target_ID"]
 				if supposed_symbol_data["symbol"] == valid_symbol:
 					var priority = get_pattern_priority(role, reel_pos, target_ID, "valid")
-					scoring_symbols(supposed_symbol_data, kind, payout, priority)
+					scoring_symbols(supposed_symbol_data, kind, payout, priority, role)
 					var data = {
 						"role": role,
 						"pattern": valid_pattern,
@@ -401,7 +415,16 @@ func control_logic(supposed_symbols, valid_role, reel_pos):
 
 		if not current_valid_roles.is_empty():
 			valid_roles = current_valid_roles
-			supposed_symbols.sort_custom(sorting_symbols)
+			var type = 0
+			if flag_priority.has(result_flag):
+				if bonus_state and flag_priority[result_flag].has(bonus_state):
+					type = flag_priority[result_flag][bonus_state][reel_pos]
+				else:
+					type = flag_priority[result_flag]["default"][reel_pos]
+			print("押したリール:%d" %reel_pos)
+			for s in supposed_symbols:
+				print("symbol:%s, Combo:%d, Payout:%d" % [s["symbol"], s["combo"], s["payout"]])
+			supposed_symbols.sort_custom(sorting_symbols.bind(type))
 			# print(supposed_symbols)
 			return(supposed_symbols[0]["slide"])
 
@@ -486,13 +509,19 @@ func get_pattern_priority(role, reel_pos, target_ID, route):
 	var priority = pattern_priority[role][state][reel_pos][route][target_ID]
 	return priority
 
-func sorting_symbols(x, y):
+func sorting_symbols(x, y, type):
 	if x["kind"] != y["kind"]:
 		return x["kind"] > y["kind"]
-	if x["combo"] != y["combo"]:
-		return x["combo"] > y["combo"]
-	if x["payout"] != y ["payout"]:
-		return x["payout"] > y["payout"]
+	if type == 1:
+		if x["combo"] != y["combo"]:
+			return x["combo"] > y["combo"]
+		if x["payout"] != y ["payout"]:
+			return x["payout"] > y["payout"]
+	else:
+		if x["payout"] != y ["payout"]:
+			return x["payout"] > y["payout"]
+		if x["combo"] != y["combo"]:
+			return x["combo"] > y["combo"]
 	if x["priority"] != y["priority"]:
 		return x["priority"] > y["priority"]
 	return x["slide"] < y["slide"]
@@ -531,6 +560,7 @@ func load_data_from_db():
 	control_table = Database.control_table
 	vac_pattern = Database.vac_pattern
 	pattern_priority = Database.pattern_priority
+	flag_priority = Database.flag_priority
 	JAC_data = Database.JAC_data
 	RT_data = Database.RT_data
 	bonus_data = Database.bonus_data

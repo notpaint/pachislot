@@ -46,3 +46,4 @@ offset_top = 900.0
 offset_right = 190.0
 offset_bottom = 1022.7
 theme_override_font_sizes/font_size = 50
+horizontal_alignment = 1

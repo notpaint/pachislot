@@ -6,7 +6,9 @@ upperBell,L_middleRep,C_upperBell,R_middleRep
 middleBell,L_middleBell,C_middleBell,R_middleBell
 downBell,L_middleRep,C_middleBell,R_downBell
 missBell_A,L_middleRep,C_middleBell,R_middleBell
-,,,
+missBell_B,L_middleRep,C_middleBell,R_middleBell
+missBell_C,L_middleRep,C_middleBell,R_middleBell
+missBell_D,L_middleRep,C_middleBell,R_middleBell
 Replay_A,L_middleRep,C_middleRep,R_middleRep
 Cherry_A,L_Cherry,C_middleRep,R_middleRep
 downSuica,L_middleBell,C_middleSuica,R_downSuica

@@ -64,41 +64,40 @@ role_data = [
 
     ('missBell_A', 1, 2,
      create_multi_pattern(
-         ('rep_1', bell_any, bell_any)
+         (rep_any, "bell_1", "bell_1")
      ),
      None
      ),
 
     ('missBell_B', 1, 2,
-     create_multi_pattern(
-         ('rep_2', bell_any, bell_any)
-     ),
-     None
-     ),
+      create_multi_pattern(
+          (rep_any, "bell_1", "bell_2")
+      ),
+      None
+      ),
 
     ('missBell_C', 1, 2,
-     create_multi_pattern(
-         (rep_any, 'bell_1', bell_any)
-     ),
-     None
-     ),
+       create_multi_pattern(
+           (rep_any, "bell_2", "bell_1")
+       ),
+       None
+       ),
 
     ('missBell_D', 1, 2,
-     create_multi_pattern(
-         (rep_any, 'bell_1', bell_any)
-     ),
-     None
-     ),
+        create_multi_pattern(
+            (rep_any, "bell_2", "bell_2")
+        ),
+        None
+        ),
 
-
-     ('Replay_A', 0, 3, 
+    ('Replay_A', 0, 3, 
       create_multi_pattern(
           (rep_any, rep_any, rep_any)
       ),
       None
       ),
 
-      ('Replay_B', 0, 3,
+    ('Replay_B', 0, 3,
        create_multi_pattern(
            (bell_any, "suica", bell_any),
            (bell_any, "cherry", bell_any),
@@ -107,7 +106,7 @@ role_data = [
        None
        ),
 
-      ('Cherry_A', 2, 2,
+    ('Cherry_A', 2, 2,
        create_multi_pattern(
            ("bar", rep_any, rep_any),
            ("blank", rep_any, rep_any)
@@ -216,11 +215,14 @@ role_pattern_priority = {
 }
 
 
+
+
 # [{'フラグ名', '確率', 'RT状態'}]
 flag_data_3bet = [
     {"name": 'middleBell', "weight": 0},
     {"name": 'upperBell', "weight": 3277},
     {"name": 'downBell', 'weight': 3277},
+    {"name": '321Bell', 'weight':0},
     {"name": 'Replay_A', "weight": 4000, 'RT': 'BB1'},
     {"name": 'RB1', "weight": 188},
     {"name": 'Replay_A', "weight": 4978, 'RT': 'BB1'},
@@ -331,7 +333,7 @@ flag_role_map = [
     },
     {
         "flag" : "321Bell",
-        "roles" : ["upperBell"]
+        "roles" : ["middleBell", "missBell_A", "missBell_B", "missBell_C", "missBell_D"]
     },
     {
         "flag": "Replay_A",
@@ -360,6 +362,11 @@ flag_role_map = [
     }
 ]
 
+flag_role_priority = {
+    "321Bell" : {
+        "default" : [1, 1, 0]
+    }
+}
 
 
 HUD_role_data = {
@@ -631,6 +638,20 @@ def generate_flag_role_map(cursor):
                            INSERT OR IGNORE INTO flag_role_map (flag_ID, role_ID)
                            VALUES (?, ?)""", (flag_ID, role_ID))   
 
+def generate_flag_role_priority(cursor):
+    for flag, bonus_data in flag_role_priority.items():
+        cursor.execute("SELECT id FROM flags WHERE flag = (?)", (flag,))
+        flag_row = cursor.fetchone()
+        if flag_row is None:
+            print(f"ERROR ON generate_flag_role_priority(): {flag} DOES NOT EXIST")
+            continue
+        flag_ID = flag_row[0]
+        for bonus, reel_data in bonus_data.items():
+            bonus_state = bonus
+            for reel_pos, priority in enumerate(reel_data):
+                cursor.execute("""
+                               INSERT OR IGNORE INTO flag_role_priority (flag_ID, bonus_state, reel_pos, priority)
+                               VALUES(?, ?, ?, ?)""", (flag_ID, bonus_state, reel_pos, priority))
 
 def generate_reel_table(cursor):
     csv_path = csv_dir / "reel_table.csv"
@@ -696,6 +717,7 @@ if __name__=="__main__":
     generate_role_pattern_priority(cursor)
     generate_flag_table(cursor)
     generate_flag_role_map(cursor)
+    generate_flag_role_priority(cursor)
     generate_reel_table(cursor)
     generate_JAC_data(cursor)
     generate_bonus_data(cursor)
