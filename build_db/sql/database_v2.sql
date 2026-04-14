@@ -37,9 +37,17 @@ CREATE TABLE bonus_data(
 );
 
 CREATE TABLE RT_data(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT,
     game INT,
     type INT
+);
+
+CREATE TABLE RT_pattern(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    RT_id INT,
+    pattern TEXT,
+    FOREIGN KEY(RT_id) REFERENCES RT_data(id)
 );
 
 CREATE TABLE flag_table (

@@ -15,6 +15,7 @@ var pattern_priority : Dictionary = {}
 var flag_priority : Dictionary = {}
 var JAC_data : Dictionary = {}
 var RT_data : Dictionary = {}
+var RT_pattern : Dictionary = {}
 var bonus_data : Dictionary = {}
 var bonus_variety : Array = ["RB1", "BB1"]
 
@@ -150,7 +151,7 @@ func _unhandled_input(event):
 		print_to_console()
 
 func print_to_console():
-	print(flag_priority)
+	print(weight_table)
 		
 		
 func start_spin():
@@ -563,6 +564,7 @@ func load_data_from_db():
 	flag_priority = Database.flag_priority
 	JAC_data = Database.JAC_data
 	RT_data = Database.RT_data
+	RT_pattern = Database.RT_pattern
 	bonus_data = Database.bonus_data
 	reel_table = Database.reel_table
 
@@ -697,6 +699,8 @@ func check_prize():
 
 	var matched_role = get_matched_role(reel_result)
 
+	get_matched_RT_pattern(reel_result)
+
 	if matched_role:
 		role_prize(matched_role)
 
@@ -752,6 +756,13 @@ func get_matched_role(reel_result):
 					"pattern" : role_data["pattern"]
 				}
 				return (data)
+
+func get_matched_RT_pattern(reel_result):
+	for RT_name in RT_pattern:
+		var patterns = RT_pattern[RT_name]
+		for pattern in patterns:
+			if reel_result == pattern:
+				start_RT(RT_name)
 
 
 func get_reel_result():

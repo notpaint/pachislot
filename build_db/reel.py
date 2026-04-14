@@ -229,8 +229,8 @@ flag_data_3bet = [
     {"name": 'upperBell', "weight": 3277},
     {"name": 'downBell', 'weight': 3277},
     {"name": '321Bell', 'weight':0},
-    {"name": 'Replay_A', "weight": 4000},
-    {"name": 'RB1', "weight": 188},
+    {"name": 'Replay_A', "weight": 4000, 'replace':{'RT2': 'Replay_B'}},
+    {"name": 'RB1', "weight": 188, 'replace':{'RT2': 'Replay_B'}},
     {"name": 'Replay_A', "weight": 4978},
     {"name": 'BB1', "weight": 188},
     {"name": 'Cherry_A', "weight": 655},
@@ -256,7 +256,8 @@ flag_data_bet = {3: flag_data_3bet, 1: flag_data_1bet}
 flag_data_normal = {
     "None": {
         "RT0": flag_data_bet,
-        "RT1": flag_data_bet
+        "RT1": flag_data_bet,
+        "RT2": flag_data_bet
     },
     "RB1": {
         "RT0" : {
@@ -281,6 +282,12 @@ RT_data = {
     ('RT2', None, 1),#入賞系無限RT
     ('RT3', 30, 2),#入賞系有限RT
     ('BB1', None, 3)#BB1成立中RT
+}
+
+RT_pattern = {
+    "RT2": [create_multi_pattern(
+        (rep_any, bell_any, bell_any)
+    )]
 }
 
 
@@ -346,6 +353,14 @@ flag_role_map = [
     {
         "flag": "Replay_A",
         "roles": ["Replay_A"]
+    },
+    {
+        "flag": "Replay_B",
+        "roles": ["Replay_B"]
+    },
+    {
+        "flag": "Replay_C",
+        "roles": ["Replay_C"]
     },
     {
         "flag": "Cherry_A",
@@ -692,6 +707,18 @@ def generate_RT_data(cursor):
     cursor.executemany("""INSERT OR IGNORE INTO RT_data (name, game, type)
                     VALUES (?, ?, ?)""", (RT_data))
     
+def generate_RT_pattern(cursor):
+    for RT, patterns in RT_pattern.items():
+        cursor.execute("SELECT id FROM RT_data WHERE name = (?)", (RT,))
+        RT_row = cursor.fetchone()
+        if RT_row is None:
+            print(f"ERROR")
+            continue
+        RT_id = RT_row[0]
+        for pattern in patterns:
+            cursor.execute("""INSERT OR IGNORE INTO RT_pattern (RT_id, pattern)
+                        VALUES (?, ?)""", (RT_id, pattern))
+        
 
 def generate_vac_pattern(cursor):
     cursor.execute("""INSERT INTO vac_pattern (pattern) VALUES (?)""", vac_pattern)
@@ -728,6 +755,7 @@ if __name__=="__main__":
     generate_JAC_data(cursor)
     generate_bonus_data(cursor)
     generate_RT_data(cursor)
+    generate_RT_pattern(cursor)
     generate_flag_HUD(cursor)
     generate_vac_pattern(cursor)
 

@@ -14,6 +14,7 @@ var pattern_priority: Dictionary = {}
 var flag_priority: Dictionary = {}
 var JAC_data : Dictionary = {}
 var RT_data : Dictionary = {}
+var RT_pattern : Dictionary = {}
 var bonus_data : Dictionary = {}
 var reel_table : Array = [[],[],[]]
 
@@ -34,6 +35,7 @@ func load_data_from_db():
 	load_all_roles()
 	load_JAC_data()
 	load_RT_data()
+	load_RT_pattern()
 	load_bonus_data()
 	load_reel_table()
 	load_HUD_data()
@@ -270,6 +272,26 @@ func load_RT_data():
 		}
 		RT_data[RT_name] = data
 
+func load_RT_pattern():
+	
+	var order = """
+	SELECT
+	rt.name,
+	rtp.RT_id, rtp.pattern
+	FROM
+	RT_pattern AS rtp
+	JOIN
+	RT_data AS rt ON rtp.RT_id = rt.id
+	"""
+	db.query(order)
+	var results = db.query_result
+
+	for row in results:
+		var RT_name = row["name"]
+		var pattern = JSON.parse_string(row["pattern"])
+		if not RT_pattern.has(RT_name):
+			RT_pattern[RT_name] = []
+		RT_pattern[RT_name].append_array(pattern)
 
 #ボーナスデータ読み込み
 func load_bonus_data():
