@@ -99,12 +99,18 @@ role_data = [
 
     ('Replay_B', 0, 3,
        create_multi_pattern(
-           (bell_any, "suica", bell_any),
-           (bell_any, "cherry", bell_any),
-           (bell_any, "r7", bell_any)
+           (bell_any, rep_any, bell_any)
        ),
        None
        ),
+    
+    ("Replay_C", 0, 3,
+     create_multi_pattern(
+         ("suica", rep_any, rep_any)
+     ),
+     None
+     ),
+    
 
     ('Cherry_A', 2, 2,
        create_multi_pattern(
@@ -223,14 +229,14 @@ flag_data_3bet = [
     {"name": 'upperBell', "weight": 3277},
     {"name": 'downBell', 'weight': 3277},
     {"name": '321Bell', 'weight':0},
-    {"name": 'Replay_A', "weight": 4000, 'RT': 'BB1'},
+    {"name": 'Replay_A', "weight": 4000},
     {"name": 'RB1', "weight": 188},
-    {"name": 'Replay_A', "weight": 4978, 'RT': 'BB1'},
+    {"name": 'Replay_A', "weight": 4978},
     {"name": 'BB1', "weight": 188},
     {"name": 'Cherry_A', "weight": 655},
     {"name": 'downSuica', "weight": 820},
-    {"name": 'vac', "weight": 13107, 'RT': 'RT1'},
-    {"name": 'vac', "weight": 35046, 'RT': 'RT1'},
+    {"name": 'vac', "weight": 13107, 'replace': {'RT1': 'Replay_A'}},
+    {"name": 'vac', "weight": 35046, 'replace': {'RT1': 'Replay_A'}},
     {"name": 'Cherry_A_with_BB1', 'weight': 0}
 ]
 
@@ -268,11 +274,13 @@ RT_map = {
     }
 }
 
-#('RT名', 継続ゲーム数, rank{0 = RT0, 1 = ボーナス中orボーナス後or入賞系無限RT, 2 = 入賞系有限RT, 3 = ボーナス成立中RT})
+#('RT名', 継続ゲーム数, rank{0 = RT0, 1 = ボーナス後or入賞系無限RT, 2 = 入賞系有限RT, 3 = ボーナス成立中RT})
 RT_data = {
-    ('RT0', None, 0),
-    ('RT1', 30, 1),
-    ('BB1', None, 1)
+    ('RT0', None, 0),#基底RT
+    ('RT1', 30, 1),#BB1終了後RT
+    ('RT2', None, 1),#入賞系無限RT
+    ('RT3', 30, 2),#入賞系有限RT
+    ('BB1', None, 3)#BB1成立中RT
 }
 
 
@@ -299,7 +307,7 @@ bonus_data = {
         "max_payout" : 4,
         "JACIN_type" : "RB1",
         "JAC_nums" : json.dumps(JAC_BB1),
-        "before_RT" : "RT0",
+        "before_RT" : "BB1",
         "after_RT" : "RT1"
     }
 }
@@ -429,11 +437,9 @@ def generate_flag_list(seq, RT_mode = None):
     for item in seq:
         name = item["name"]
         weight = item["weight"]
-        tag = item.get("RT")
-        if RT_mode is not None and tag in RT_map and tag == RT_mode:
-            mode = RT_map[tag]
-            if name in mode:
-                name = mode[name]
+        replace = item.get("replace", {})
+        if RT_mode is not None and RT_mode in replace:
+            name = replace[RT_mode]
         flag_list.append({"name": name, "weight": weight})
     return flag_list
 
