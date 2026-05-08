@@ -703,6 +703,7 @@ func check_prize():
 
 	if matched_role:
 		role_prize(matched_role)
+		print(matched_role["name"])
 
 	if JAC_game:
 		print(JAC_counter)

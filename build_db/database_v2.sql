@@ -38,7 +38,7 @@ CREATE TABLE bonus_data(
 
 CREATE TABLE RT_data(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT,
+    name TEXT UNIQUE,
     game INT,
     type INT
 );

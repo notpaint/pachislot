@@ -1,0 +1,16 @@
+﻿role,L_reel,C_reel,R_reel
+,,,
+vac,L_middleRep,C_vac,R_vac
+,,,
+upperBell,L_middleRep,C_upperBell,R_middleRep
+middleBell,L_middleBell,C_middleBell,R_middleBell
+downBell,L_middleRep,C_middleBell,R_downBell
+,,,
+Cherry_A,L_Cherry,C_middleRep,R_middleRep
+,,,
+downSuica,L_middleBell,C_middleSuica,R_downSuica
+,,,
+Replay,L_middleRep,C_middleRep,R_middleRep
+,,,
+RB1,L_RB1,C_RB1,R_RB1
+BB1,L_BB1,C_BB1,R_BB1
