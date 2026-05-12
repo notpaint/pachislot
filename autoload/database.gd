@@ -16,6 +16,7 @@ var JAC_data : Dictionary = {}
 var RT_data : Dictionary = {}
 var RT_pattern : Dictionary = {}
 var bonus_data : Dictionary = {}
+var bonus_variety : Array = []
 var reel_table : Array = [[],[],[]]
 
 var HUD_data : Dictionary = {"vac": "ハズレ"}
@@ -120,6 +121,8 @@ func load_all_roles():
 		var miss_pattern = row["miss_pattern"]
 		if miss_pattern:
 			miss_pattern = JSON.parse_string(miss_pattern)
+		if kind == int(1):
+			bonus_variety.append(role)
 		all_roles[role] = []
 		# var data = {"payout": payout, "kind": kind, "pattern":pattern}
 		# all_roles[role].append(data)

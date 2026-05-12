@@ -17,7 +17,7 @@ var JAC_data : Dictionary = {}
 var RT_data : Dictionary = {}
 var RT_pattern : Dictionary = {}
 var bonus_data : Dictionary = {}
-var bonus_variety : Array = ["RB1", "BB1"]
+var bonus_variety : Array = []
 
 var reel_table : Array = [[],[],[]]
 var current_reel : Array = [[],[],[]]
@@ -151,7 +151,7 @@ func _unhandled_input(event):
 		print_to_console()
 
 func print_to_console():
-	print(weight_table)
+	print(bonus_variety)
 		
 		
 func start_spin():
@@ -392,7 +392,7 @@ func control_logic(supposed_symbols, valid_role, reel_pos):
 	if not valid_role.is_empty():
 		var current_valid_roles : Array = []
 		for row in valid_role:
-			# print(row)
+			print(row["pattern"])
 			var role = row["role"]
 			var kind = row["kind"]
 			var payout = row["payout"]
@@ -426,6 +426,9 @@ func control_logic(supposed_symbols, valid_role, reel_pos):
 			for s in supposed_symbols:
 				print("symbol:%s, Combo:%d, Payout:%d" % [s["symbol"], s["combo"], s["payout"]])
 			supposed_symbols.sort_custom(sorting_symbols.bind(type))
+			valid_roles = current_valid_roles.filter(
+				func(row): return row["pattern"][reel_pos] == supposed_symbols[0]["symbol"]
+			)
 			# print(supposed_symbols)
 			return(supposed_symbols[0]["slide"])
 
@@ -558,6 +561,7 @@ func load_data_from_db():
 	weight_table = Database.weight_table
 	flag_table = Database.flag_table
 	all_roles = Database.all_roles
+	bonus_variety = Database.bonus_variety
 	control_table = Database.control_table
 	vac_pattern = Database.vac_pattern
 	pattern_priority = Database.pattern_priority
