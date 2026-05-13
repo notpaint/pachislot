@@ -1,6 +1,6 @@
 ﻿role,L_reel,C_reel,R_reel
 ,,,
-vac,L_middleRep,C_vac,R_vac
+vac,L_middleRep,C_middleRep,R_vac
 ,,,
 upperBell,L_middleRep,C_upperBell,R_middleRep
 middleBell,L_middleBell,C_middleBell,R_middleBell
@@ -13,5 +13,8 @@ downSuica,L_middleBell,C_middleSuica,R_downSuica
 middleSuica,L_middleSuica,C_middleSuica,R_middleSuica
 ,,,
 Replay_A,L_middleRep,C_middleRep,R_middleRep
+Replay_B,L_middleRep,C_middleRep,R_r7
+Replay_C,L_middleRep,C_middleRep,R_r7
+Replay_D,L_middleRep,C_middleRep,R_middleBell
 ,,,
 SBB,L_SBB,C_SBB,R_SBB

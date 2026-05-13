@@ -98,6 +98,18 @@ CREATE TABLE flag_role_priority(
     flag_ID INT,
     bonus_state TEXT,
     reel_pos INT,
+    role_ID INT,
+    priority INT,
+    FOREIGN KEY (flag_ID) REFERENCES flags(id),
+    FOREIGN KEY (reel_pos) REFERENCES reel_poses(reel_pos),
+    FOREIGN KEY (role_ID) REFERENCES roles(id)
+);
+
+
+CREATE TABLE flag_combo_priority(
+    flag_ID INT,
+    bonus_state TEXT,
+    reel_pos INT,
     priority INT,
     FOREIGN KEY (flag_ID) REFERENCES flags(id),
     FOREIGN KEY (reel_pos) REFERENCES reel_poses(reel_pos)

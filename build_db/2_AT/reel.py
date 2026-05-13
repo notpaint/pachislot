@@ -61,15 +61,6 @@ role_data = [
       ),
      None
      ),
-    
-    
-    ('Replay_A', 0, 3, 
-      create_multi_pattern(
-          (rep_any, "rep_2", rep_any)
-      ),
-      None
-      ),
-
 
     ('Cherry_A', 2, 2,
        create_multi_pattern(
@@ -80,7 +71,7 @@ role_data = [
         ("blank", "bar", bell_any),
         ("blank", "cherry", bell_any),
         ("blank", "suica", bell_any),
-        ("blank", "r7", bell_any),
+        ("blank", "r7", bell_any)
        ),
        create_multi_pattern(
            (rep_any, "rep_2", bell_any)
@@ -100,6 +91,7 @@ role_data = [
          ("bar", "cherry", "r7"),
          ("bar", "suica", "suica"),
          ("bar", "suica", "r7"),
+         ("bar", "suica", "bar"),
          ("bar", "rep_2", "bar"),
          ("blank", "bar", "suica"),
          ("blank", "bar", "r7"),
@@ -137,6 +129,35 @@ role_data = [
          ("suica", suica_group, rep_any)
      )
     ),
+
+    ('Replay_A', 0, 3, 
+      create_multi_pattern(
+          (rep_any, "rep_2", rep_any)
+      ),
+      None
+      ),
+
+    ('Replay_B', 0, 3,
+     create_multi_pattern(
+         (bell_any, bell_any, "r7"),
+         (rep_any, "r7", "r7")
+     ),
+     None
+     ),
+
+    ('Replay_C', 0, 3,
+     create_multi_pattern(
+         ("r7", "r7", "r7")
+     ),
+     None
+     ),
+
+    ('Replay_D', 0, 3,
+     create_multi_pattern(
+         (rep_any, "r7", rep_any)
+     ),
+     None
+     ),
 
     ('SBB', 0, 1,
     create_multi_pattern(
@@ -189,6 +210,7 @@ role_pattern_priority = {
             1: [
                 {"reel_ID": 1, "priority": 2, "route": "valid"},
                 {"reel_ID": 4, "priority": 2, "route": "valid"},
+                {"reel_ID": 6, "priority": 1, "route": "valid"},
                 {"reel_ID": 9, "priority": 2, "route": "valid"},
                 {"reel_ID": 12, "priority" : 2, "route": "valid"},
                 {"reel_ID": 17, "priority": 2, "route": "valid"},
@@ -201,6 +223,7 @@ role_pattern_priority = {
             1: [
                 {"reel_ID": 1, "priority": 2, "route": "valid"},
                 {"reel_ID": 4, "priority": 2, "route": "valid"},
+                {"reel_ID": 6, "priority": 1, "route": "valid"},
                 {"reel_ID": 9, "priority": 2, "route": "valid"},
                 {"reel_ID": 13, "priority" : 2, "route": "valid"},
                 {"reel_ID": 17, "priority": 2, "route": "valid"},
@@ -229,9 +252,9 @@ flag_data_3bet = [
     {"name": 'upperBell', "weight": 3277},
     {"name": 'downBell', 'weight': 3277},
     {"name": '321Bell', 'weight':0},
-    {"name": 'Replay_A', "weight": 4000},
+    {"name": 'Replay_r7', "weight": 4000},
     {"name": 'vac', "weight": 188},
-    {"name": 'Replay_A', "weight": 4978},
+    {"name": 'Replay_r7', "weight": 4978},
     {"name": 'middleSuica', "weight": 188},
     {"name": 'Cherry_A', "weight": 655},
     {"name": 'Cherry_B', "weight": 655},
@@ -268,7 +291,7 @@ flag_data_normal = {
 
 RT_map = {
     'RT1' : {
-        "vac" : "Replay_A"
+        "vac" : "Replay_r7"
     }
 }
 
@@ -337,8 +360,8 @@ flag_role_map = [
         "roles": ["downBell"]
     },
     {
-        "flag": "Replay_A",
-        "roles": ["Replay_A"]
+        "flag": "Replay_r7",
+        "roles": ["Replay_A", "Replay_B", "Replay_C", "Replay_D"]
     },
     {
         "flag": "Cherry_A",
@@ -363,9 +386,34 @@ flag_role_map = [
     }
 ]
 
-flag_role_priority = {
+flag_combo_priority = {
     "321Bell" : {
         "default" : [1, 1, 0]
+    }
+}
+
+flag_role_priority = {
+    "Replay_r7" : {
+        "default" : {
+            0 : {
+                "Replay_A" : 1,
+                "Replay_B" : 0,
+                "Replay_C" : 0,
+                "Replay_D" : 2
+            },
+            1 : {
+                "Replay_A" : 1,
+                "Replay_B" : 0,
+                "Replay_C" : 0,
+                "Replay_D" : 0
+            },
+            2 : {
+                "Replay_A" : 0,
+                "Replay_B" : 1,
+                "Replay_C" : 2,
+                "Replay_D" : 0
+            }
+        }
     }
 }
 
@@ -638,20 +686,45 @@ def generate_flag_role_map(cursor):
                            INSERT OR IGNORE INTO flag_role_map (flag_ID, role_ID)
                            VALUES (?, ?)""", (flag_ID, role_ID))   
 
-def generate_flag_role_priority(cursor):
-    for flag, bonus_data in flag_role_priority.items():
+
+def generate_flag_combo_priority(cursor):
+    for flag, bonus_data in flag_combo_priority.items():
         cursor.execute("SELECT id FROM flags WHERE flag = (?)", (flag,))
         flag_row = cursor.fetchone()
         if flag_row is None:
-            print(f"ERROR ON generate_flag_role_priority(): {flag} DOES NOT EXIST")
+            print(f"ERROR ON generate_flag_combo_priority(): {flag} DOES NOT EXIST")
             continue
         flag_ID = flag_row[0]
         for bonus, reel_data in bonus_data.items():
             bonus_state = bonus
             for reel_pos, priority in enumerate(reel_data):
                 cursor.execute("""
-                               INSERT OR IGNORE INTO flag_role_priority (flag_ID, bonus_state, reel_pos, priority)
+                               INSERT OR IGNORE INTO flag_combo_priority (flag_ID, bonus_state, reel_pos, priority)
                                VALUES(?, ?, ?, ?)""", (flag_ID, bonus_state, reel_pos, priority))
+
+
+def generate_flag_role_priority(cursor):
+    for flag, bonus_data in flag_role_priority.items():
+        cursor.execute("SELECT id FROM flags WHERE flag = (?)", (flag,))
+        flag_row = cursor.fetchone()
+        if flag_row is None:
+            print(f"ERROR ON flag_role_priority(): {flag} DOES NOT EXIST")
+            continue
+        flag_ID = flag_row[0]
+        for bonus, reel_data in bonus_data.items():
+            bonus_state = bonus
+            for reel, role_data in reel_data.items():
+                reel_pos = reel
+                for role, priority in role_data.items():
+                    cursor.execute("SELECT id FROM roles WHERE role = (?)", (role,))
+                    role_row = cursor.fetchone()
+                    if role_row is None:
+                        print(f"ERROR ON flag_role_priority(): {role} DOES NOT EXIST")
+                        continue
+                    role_ID = role_row[0]
+                    cursor.execute("""
+                                   INSERT OR IGNORE INTO flag_role_priority (flag_ID, bonus_state, reel_pos, role_ID, priority)
+                                   VALUES(?, ?, ?, ?, ?)""", (flag_ID, bonus_state, reel_pos, role_ID, priority))
 
 def generate_reel_table(cursor):
     csv_path = csv_dir / "reel_table.csv"
@@ -729,6 +802,7 @@ if __name__=="__main__":
     generate_role_pattern_priority(cursor)
     generate_flag_table(cursor)
     generate_flag_role_map(cursor)
+    generate_flag_combo_priority(cursor)
     generate_flag_role_priority(cursor)
     generate_reel_table(cursor)
     generate_JAC_data(cursor)

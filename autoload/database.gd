@@ -11,7 +11,8 @@ var all_roles : Dictionary = {}
 var control_table : Dictionary = {}
 var vac_pattern : Dictionary = {}
 var pattern_priority: Dictionary = {}
-var flag_priority: Dictionary = {}
+var flag_role_priority: Dictionary = {}
+var flag_combo_priority : Dictionary = {}
 var JAC_data : Dictionary = {}
 var RT_data : Dictionary = {}
 var RT_pattern : Dictionary = {}
@@ -32,7 +33,8 @@ func load_data_from_db():
 	load_flag_table()
 	load_control_table()
 	load_pattern_priority_table()
-	load_flag_priority()
+	load_flag_role_priority()
+	load_flag_combo_priority()
 	load_all_roles()
 	load_JAC_data()
 	load_RT_data()
@@ -217,14 +219,45 @@ func load_pattern_priority_table():
 			pattern_priority[role][bonus_state][reel_pos][route] = {}
 		pattern_priority[role][bonus_state][reel_pos][route][reel_ID] = priority
 
-func load_flag_priority():
+func load_flag_role_priority():
+	var order = """
+	SELECT
+	f.flag,
+	r.role,
+	frp.flag_ID, frp.bonus_state, frp.reel_pos, frp.role_ID, frp.priority
+	FROM
+	flag_role_priority AS frp
+	JOIN
+	flags AS f ON frp.flag_ID = f.id
+	JOIN
+	roles AS r ON frp.role_ID = r.id
+	"""
+
+	db.query(order)
+	var results = db.query_result
+
+	for row in results:
+		var flag = row["flag"]
+		var bonus_state = row["bonus_state"]
+		var reel_pos = int(row["reel_pos"])
+		var role = row["role"]
+		var priority = int(row["priority"])
+		if not flag_role_priority.has(flag):
+			flag_role_priority[flag] = {}
+		if not flag_role_priority[flag].has(bonus_state):
+			flag_role_priority[flag][bonus_state] = {}
+		if not flag_role_priority[flag][bonus_state].has(reel_pos):
+			flag_role_priority[flag][bonus_state][reel_pos] = {}
+		flag_role_priority[flag][bonus_state][reel_pos][role] = priority
+
+func load_flag_combo_priority():
 
 	var order = """
 	SELECT
 	f.flag,
 	fp.flag_ID, fp.bonus_state, fp.reel_pos, fp.priority
 	FROM
-	flag_role_priority AS fp
+	flag_combo_priority AS fp
 	JOIN
 	flags AS f ON fp.flag_ID = f.id
 	"""
@@ -236,11 +269,11 @@ func load_flag_priority():
 		var bonus_state = row["bonus_state"]
 		var reel_pos = int(row["reel_pos"])
 		var priority = int(row["priority"])
-		if not flag_priority.has(flag):
-			flag_priority[flag] = {}
-		if not flag_priority[flag].has(bonus_state):
-			flag_priority[flag][bonus_state] = {}
-		flag_priority[flag][bonus_state][reel_pos] = priority
+		if not flag_combo_priority.has(flag):
+			flag_combo_priority[flag] = {}
+		if not flag_combo_priority[flag].has(bonus_state):
+			flag_combo_priority[flag][bonus_state] = {}
+		flag_combo_priority[flag][bonus_state][reel_pos] = priority
 
 
 func load_JAC_data():

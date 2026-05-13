@@ -12,7 +12,8 @@ var all_roles : Dictionary = {}
 var control_table : Dictionary = {}
 var vac_pattern : Dictionary = {}
 var pattern_priority : Dictionary = {}
-var flag_priority : Dictionary = {}
+var flag_role_priority: Dictionary = {}
+var flag_combo_priority : Dictionary = {}
 var JAC_data : Dictionary = {}
 var RT_data : Dictionary = {}
 var RT_pattern : Dictionary = {}
@@ -151,7 +152,7 @@ func _unhandled_input(event):
 		print_to_console()
 
 func print_to_console():
-	print(bonus_variety)
+	print(flag_role_priority)
 		
 		
 func start_spin():
@@ -360,11 +361,11 @@ func table_logic(supposed_symbols, control_data, reel_pos, base_ID):
 		
 	if not valid_roles.is_empty():
 		var type = 0
-		if flag_priority.has(result_flag):
-			if bonus_state and flag_priority[result_flag].has(bonus_state):
-				type = flag_priority[result_flag][bonus_state][reel_pos]
+		if flag_combo_priority.has(result_flag):
+			if bonus_state and flag_combo_priority[result_flag].has(bonus_state):
+				type = flag_combo_priority[result_flag][bonus_state][reel_pos]
 			else:
-				type = flag_priority[result_flag]["default"][reel_pos]
+				type = flag_combo_priority[result_flag]["default"][reel_pos]
 		print("押したリール:{reel_pos}")
 		for s in supposed_symbols:
 			print("symbol:%s, Combo:%d, Payout:%d" % [s["symbol"], s["combo"], s["payout"]])
@@ -417,14 +418,14 @@ func control_logic(supposed_symbols, valid_role, reel_pos):
 		if not current_valid_roles.is_empty():
 			valid_roles = current_valid_roles
 			var type = 0
-			if flag_priority.has(result_flag):
-				if bonus_state and flag_priority[result_flag].has(bonus_state):
-					type = flag_priority[result_flag][bonus_state][reel_pos]
+			if flag_combo_priority.has(result_flag):
+				if bonus_state and flag_combo_priority[result_flag].has(bonus_state):
+					type = flag_combo_priority[result_flag][bonus_state][reel_pos]
 				else:
-					type = flag_priority[result_flag]["default"][reel_pos]
+					type = flag_combo_priority[result_flag]["default"][reel_pos]
 			print("押したリール:%d" %reel_pos)
 			for s in supposed_symbols:
-				print("symbol:%s, Combo:%d, Payout:%d" % [s["symbol"], s["combo"], s["payout"]])
+				print("symbol:%s, Combo:%d, Payout:%d, priority:%d" % [s["symbol"], s["combo"], s["payout"], s["priority"]])
 			supposed_symbols.sort_custom(sorting_symbols.bind(type))
 			valid_roles = current_valid_roles.filter(
 				func(row): return row["pattern"][reel_pos] == supposed_symbols[0]["symbol"]
@@ -565,7 +566,8 @@ func load_data_from_db():
 	control_table = Database.control_table
 	vac_pattern = Database.vac_pattern
 	pattern_priority = Database.pattern_priority
-	flag_priority = Database.flag_priority
+	flag_role_priority = Database.flag_role_priority
+	flag_combo_priority = Database.flag_combo_priority
 	JAC_data = Database.JAC_data
 	RT_data = Database.RT_data
 	RT_pattern = Database.RT_pattern
