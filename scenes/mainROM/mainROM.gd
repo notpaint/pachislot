@@ -375,7 +375,6 @@ func table_logic(supposed_symbols, control_data, reel_pos, base_ID):
 				type = flag_combo_priority[result_flag][bonus_state][reel_pos]
 			else:
 				type = flag_combo_priority[result_flag]["default"][reel_pos]
-		print("押したリール:{reel_pos}")
 		for s in supposed_symbols:
 			print("symbol:%s, Combo:%d, Payout:%d" % [s["symbol"], s["combo"], s["payout"]])
 		supposed_symbols.sort_custom(sorting_symbols.bind(type))
@@ -438,13 +437,12 @@ func control_logic(supposed_symbols, valid_role, reel_pos):
 					type = flag_combo_priority[result_flag][bonus_state][reel_pos]
 				else:
 					type = flag_combo_priority[result_flag]["default"][reel_pos]
-			print("押したリール:%d" %reel_pos)
 			supposed_symbols.sort_custom(sorting_symbols.bind(type))
 			var selected_symbol = supposed_symbols[0]["symbol"]
 			valid_roles = current_valid_roles.filter(
 				func(row): return row["pattern"][reel_pos] == selected_symbol
 			)
-			# print(supposed_symbols)
+			print(supposed_symbols)
 			return(supposed_symbols[0]["slide"])
 
 
@@ -591,9 +589,6 @@ func vac_control_logic(supposed_symbols, reel_pos):
 				return slide
 	
 	return 4
-			
-
-	
 
 
 #フラグデータ読み込み

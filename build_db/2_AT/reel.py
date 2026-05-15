@@ -130,14 +130,14 @@ role_data = [
      )
     ),
 
-    ('Replay_A', 0, 3, 
+    ('middleReplay', 0, 3, 
       create_multi_pattern(
           (rep_any, "rep_2", rep_any)
       ),
       None
       ),
 
-    ('Replay_B', 0, 3,
+    ('fakeReplay', 0, 3,
      create_multi_pattern(
          (rep_any, "cherry", "r7"),
          (rep_any, "blank", "r7"),
@@ -147,28 +147,36 @@ role_data = [
      None
      ),
 
-    ('Replay_C', 0, 3,
+    ('middleRed7', 0, 3,
      create_multi_pattern(
          ("r7", "r7", "r7")
      ),
      None
      ),
 
-    ('Replay_D', 0, 3,
+    ('upwardRed7', 0, 3,
      create_multi_pattern(
-         ("rep_1", "r7", "bell_1")
+         ("rep_1", "r7", bell_any),
+         ("rep_1", "blank", bell_any),
+         ("rep_1", "bar", bell_any),
+         ("rep_1", "cherry", bell_any),
      ),
      None
      ),
 
-    ('Replay_E', 0 ,3,
+    ('middleBlue7', 0 ,3,
      create_multi_pattern(
-         ("b7", "b7", "b7")
+         ("b7", "b7", "b7"),
+         ("b7", rep_any, rep_any),
+         ("b7", "b7", rep_any),
+         (rep_any, "b7", "b7"),
+         (rep_any, rep_any, "b7"),
+         ("b7", rep_any, "b7")
      ),
      None
      ),
 
-    ('Replay_F', 0 , 3,
+    ('upperBlue7', 0 , 3,
      create_multi_pattern(
          ("suica", "r7", "r7")
      ),
@@ -250,7 +258,27 @@ role_pattern_priority = {
             ]
         }
     },
-    "Replay_B": {
+    "upwardRed7": {
+        "default": {
+            1: [
+                {"reel_ID": 17, "priority": 2, "route": "valid"},
+            ]
+        }
+    },
+    "middleBlue7": {
+        "default": {
+            0: [
+                {"reel_ID": 18, "priority": 2, "route": "valid"}
+            ],
+            1: [
+                {"reel_ID": 18, "priority": 2, "route": "valid"}
+            ],
+            2: [
+                {"reel_ID": 18, "priority": 2, "route": "valid"}
+            ]
+        }
+    },
+    "fakeReplay": {
         "default": {
             1: [
                 {"reel_ID": 17, "priority": 2, "route": "valid"}
@@ -384,15 +412,15 @@ flag_role_map = [
     },
     {
         "flag": "r7_Replay",
-        "roles": ["Replay_A", "Replay_B", "Replay_C", "Replay_D"]
+        "roles": ["middleReplay", "fakeReplay", "middleRed7", "upwardRed7"]
     },
     {
         "flag": "b7_Replay",
-        "roles": ["Replay_A", "Replay_B", "Replay_E", "Replay_F"]
+        "roles": ["middleReplay", "fakeReplay", "middleBlue7", "upperBlue7"]
     },
     {
         "flag": "fake_Replay",
-        "roles": ["Replay_A", "Replay_B"]
+        "roles": ["middleReplay", "fakeReplay"]
     },
     {
         "flag": "Cherry_A",
@@ -427,60 +455,60 @@ flag_role_priority = {
     "r7_Replay" : {
         "default" : {
             0 : {
-                "Replay_A" : 1,
-                "Replay_B" : 0,
-                "Replay_C" : 0,
-                "Replay_D" : 2
+                "middleReplay" : 1,
+                "fakeReplay" : 0,
+                "middleRed7" : 0,
+                "upwardRed7" : 2
             },
             1 : {
-                "Replay_A" : 1,
-                "Replay_B" : 0,
-                "Replay_C" : 0,
-                "Replay_D" : 2
+                "middleReplay" : 1,
+                "fakeReplay" : 0,
+                "middleRed7" : 0,
+                "upwardRed7" : 2
             },
             2 : {
-                "Replay_A" : 0,
-                "Replay_B" : 1,
-                "Replay_C" : 3,
-                "Replay_D" : 2
+                "middleReplay" : 0,
+                "fakeReplay" : 1,
+                "middleRed7" : 3,
+                "upwardRed7" : 2
             }
         }
     },
     "b7_Replay" : {
         "default" : {
             0 : {
-                "Replay_A" : 1,
-                "Replay_B" : 0,
-                "Replay_E" : 2,
-                "Replay_F" : 0
+                "middleReplay" : 2,
+                "fakeReplay" : 0,
+                "middleBlue7" : 3,
+                "upperBlue7" : 1
             },
             1 : {
-                "Replay_A" : 1,
-                "Replay_B" : 0,
-                "Replay_E" : 0,
-                "Replay_F" : 0
+                "middleReplay" : 1,
+                "fakeReplay" : 0,
+                "middleBlue7" : 0,
+                "upperBlue7" : 0
             },
             2 : {
-                "Replay_A" : 0,
-                "Replay_B" : 0,
-                "Replay_E" : 1,
-                "Replay_F" : 2
+                "middleReplay" : 0,
+                "fakeReplay" : 0,
+                "middleBlue7" : 1,
+                "upperBlue7" : 2
             }
         }
     },
     "fake_Replay" : {
         "default" :{
             0 : {
-                "Replay_A" : 1,
-                "Replay_B" : 0
+                "middleReplay" : 1,
+                "fakeReplay" : 0
             },
             1 : {
-                "Replay_A" : 1,
-                "Replay_B" : 0
+                "middleReplay" : 1,
+                "fakeReplay" : 0
             },
             2 : {
-                "Replay_A" : 0,
-                "Replay_B" : 1
+                "middleReplay" : 0,
+                "fakeReplay" : 1
             }
         }
     }
