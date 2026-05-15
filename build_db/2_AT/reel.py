@@ -139,7 +139,9 @@ role_data = [
 
     ('Replay_B', 0, 3,
      create_multi_pattern(
-         (bell_any, bell_any, "r7"),
+         (rep_any, "cherry", "r7"),
+         (rep_any, "blank", "r7"),
+         (rep_any, "bar", "r7"),
          (rep_any, "r7", "r7")
      ),
      None
@@ -154,7 +156,21 @@ role_data = [
 
     ('Replay_D', 0, 3,
      create_multi_pattern(
-         (rep_any, "r7", rep_any)
+         ("rep_1", "r7", "bell_1")
+     ),
+     None
+     ),
+
+    ('Replay_E', 0 ,3,
+     create_multi_pattern(
+         ("b7", "b7", "b7")
+     ),
+     None
+     ),
+
+    ('Replay_F', 0 , 3,
+     create_multi_pattern(
+         ("suica", "r7", "r7")
      ),
      None
      ),
@@ -234,6 +250,13 @@ role_pattern_priority = {
             ]
         }
     },
+    "Replay_B": {
+        "default": {
+            1: [
+                {"reel_ID": 17, "priority": 2, "route": "valid"}
+            ]
+        }
+    },
     "SBB": {
         "default": {
             1: [
@@ -252,9 +275,9 @@ flag_data_3bet = [
     {"name": 'upperBell', "weight": 3277},
     {"name": 'downBell', 'weight': 3277},
     {"name": '321Bell', 'weight':0},
-    {"name": 'Replay_r7', "weight": 4000},
-    {"name": 'vac', "weight": 188},
-    {"name": 'Replay_r7', "weight": 4978},
+    {"name": 'r7_Replay', "weight": 4000},
+    {"name": 'b7_Replay', "weight": 188},
+    {"name": 'fake_Replay', "weight": 4978},
     {"name": 'middleSuica', "weight": 188},
     {"name": 'Cherry_A', "weight": 655},
     {"name": 'Cherry_B', "weight": 655},
@@ -291,7 +314,7 @@ flag_data_normal = {
 
 RT_map = {
     'RT1' : {
-        "vac" : "Replay_r7"
+        "vac" : "r7_Replay"
     }
 }
 
@@ -360,8 +383,16 @@ flag_role_map = [
         "roles": ["downBell"]
     },
     {
-        "flag": "Replay_r7",
+        "flag": "r7_Replay",
         "roles": ["Replay_A", "Replay_B", "Replay_C", "Replay_D"]
+    },
+    {
+        "flag": "b7_Replay",
+        "roles": ["Replay_A", "Replay_B", "Replay_E", "Replay_F"]
+    },
+    {
+        "flag": "fake_Replay",
+        "roles": ["Replay_A", "Replay_B"]
     },
     {
         "flag": "Cherry_A",
@@ -393,7 +424,7 @@ flag_combo_priority = {
 }
 
 flag_role_priority = {
-    "Replay_r7" : {
+    "r7_Replay" : {
         "default" : {
             0 : {
                 "Replay_A" : 1,
@@ -405,13 +436,51 @@ flag_role_priority = {
                 "Replay_A" : 1,
                 "Replay_B" : 0,
                 "Replay_C" : 0,
-                "Replay_D" : 0
+                "Replay_D" : 2
             },
             2 : {
                 "Replay_A" : 0,
                 "Replay_B" : 1,
-                "Replay_C" : 2,
-                "Replay_D" : 0
+                "Replay_C" : 3,
+                "Replay_D" : 2
+            }
+        }
+    },
+    "b7_Replay" : {
+        "default" : {
+            0 : {
+                "Replay_A" : 1,
+                "Replay_B" : 0,
+                "Replay_E" : 2,
+                "Replay_F" : 0
+            },
+            1 : {
+                "Replay_A" : 1,
+                "Replay_B" : 0,
+                "Replay_E" : 0,
+                "Replay_F" : 0
+            },
+            2 : {
+                "Replay_A" : 0,
+                "Replay_B" : 0,
+                "Replay_E" : 1,
+                "Replay_F" : 2
+            }
+        }
+    },
+    "fake_Replay" : {
+        "default" :{
+            0 : {
+                "Replay_A" : 1,
+                "Replay_B" : 0
+            },
+            1 : {
+                "Replay_A" : 1,
+                "Replay_B" : 0
+            },
+            2 : {
+                "Replay_A" : 0,
+                "Replay_B" : 1
             }
         }
     }

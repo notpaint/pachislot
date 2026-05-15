@@ -11,7 +11,7 @@ var flag_table : Dictionary = {}
 var all_roles : Dictionary = {}
 var control_table : Dictionary = {}
 var vac_pattern : Dictionary = {}
-var pattern_priority : Dictionary = {}
+var pattern_ID_priority : Dictionary = {}
 var flag_role_priority: Dictionary = {}
 var flag_combo_priority : Dictionary = {}
 var JAC_data : Dictionary = {}
@@ -153,6 +153,7 @@ func _unhandled_input(event):
 
 func print_to_console():
 	print(flag_role_priority)
+	# print(pattern_priority)
 		
 		
 func start_spin():
@@ -307,14 +308,15 @@ func get_supposed_symbols(base_ID, reel_pos):
 			"kind" : 0,
 			"combo" : 0,
 			"payout" : 0,
-			"priority" : 0,
+			"role_priority": 0,
+			"pattern_priority" : 0,
 			"count_roles" : []
 		}
 		supposed_symbols.append(data)
 	return(supposed_symbols)
 
 
-func scoring_symbols(supposed_symbol_data, kind, payout, priority, role):
+func scoring_symbols(supposed_symbol_data, kind, payout, r_priority, p_priority, role):
 	
 	if not role in supposed_symbol_data["count_roles"]:
 		supposed_symbol_data["count_roles"].append(role)
@@ -328,8 +330,10 @@ func scoring_symbols(supposed_symbol_data, kind, payout, priority, role):
 	if supposed_symbol_data["payout"] < payout:
 		supposed_symbol_data["payout"] = payout
 
-	var current_priority = supposed_symbol_data["priority"]
-	supposed_symbol_data["priority"] = max(current_priority, priority)
+	var current_role_priority = supposed_symbol_data["role_priority"]
+	supposed_symbol_data["role_priority"] = max(current_role_priority, r_priority)
+	var current_pattern_priority = supposed_symbol_data["pattern_priority"]
+	supposed_symbol_data["pattern_priority"] = max(current_pattern_priority, p_priority)
 	
 
 func table_logic(supposed_symbols, control_data, reel_pos, base_ID):
@@ -341,7 +345,8 @@ func table_logic(supposed_symbols, control_data, reel_pos, base_ID):
 		var kind = row["kind"]
 		var payout = row["payout"]
 		var pattern_list = row["pattern"]
-		var priority = 0
+		var role_priority = 0
+		var pattern_priority = 0
 
 		var supposed_symbol_data = supposed_symbols[slide]
 		var supposed_symbol = supposed_symbol_data["symbol"]
@@ -349,16 +354,20 @@ func table_logic(supposed_symbols, control_data, reel_pos, base_ID):
 		for valid_pattern in pattern_list:
 			var target_symbol = valid_pattern[reel_pos]
 			if target_symbol == supposed_symbol:
-				scoring_symbols(supposed_symbol_data, kind, payout, priority, role)
+				role_priority = get_role_priority(result_flag, reel_pos, role)
+				scoring_symbols(supposed_symbol_data, kind, payout, role_priority, pattern_priority, role)
 				var pattern = valid_pattern
 				var data = {
 					"role": role,
 					"pattern" : pattern,
 					"kind" : kind,
-					"payout": payout
+					"payout": payout,
+					"role_priority": role_priority,
+					"pattern_priority": pattern_priority
 				}
 				valid_roles.append(data)
 		
+
 	if not valid_roles.is_empty():
 		var type = 0
 		if flag_combo_priority.has(result_flag):
@@ -370,6 +379,10 @@ func table_logic(supposed_symbols, control_data, reel_pos, base_ID):
 		for s in supposed_symbols:
 			print("symbol:%s, Combo:%d, Payout:%d" % [s["symbol"], s["combo"], s["payout"]])
 		supposed_symbols.sort_custom(sorting_symbols.bind(type))
+		var selected_symbol = supposed_symbols[0]["symbol"]
+		valid_roles = valid_roles.filter(
+			func(row): return row["pattern"][reel_pos] == selected_symbol
+		)
 		return(supposed_symbols[0]["slide"])
 	
 	var miss_slides : Array = []
@@ -403,14 +416,16 @@ func control_logic(supposed_symbols, valid_role, reel_pos):
 				var supposed_symbol_data = supposed_symbols[i]
 				var target_ID = supposed_symbol_data["target_ID"]
 				if supposed_symbol_data["symbol"] == valid_symbol:
-					var priority = get_pattern_priority(role, reel_pos, target_ID, "valid")
-					scoring_symbols(supposed_symbol_data, kind, payout, priority, role)
+					var role_priority = get_role_priority(result_flag, reel_pos, role)
+					var pattern_priority = get_pattern_priority(role, reel_pos, target_ID, "valid")
+					scoring_symbols(supposed_symbol_data, kind, payout, role_priority, pattern_priority, role)
 					var data = {
 						"role": role,
 						"pattern": valid_pattern,
 						"kind": kind,
 						"payout": payout,
-						"priority": priority
+						"role_priority": role_priority,
+						"pattern_priority": pattern_priority
 					}
 					current_valid_roles.append(data)
 
@@ -424,11 +439,10 @@ func control_logic(supposed_symbols, valid_role, reel_pos):
 				else:
 					type = flag_combo_priority[result_flag]["default"][reel_pos]
 			print("押したリール:%d" %reel_pos)
-			for s in supposed_symbols:
-				print("symbol:%s, Combo:%d, Payout:%d, priority:%d" % [s["symbol"], s["combo"], s["payout"], s["priority"]])
 			supposed_symbols.sort_custom(sorting_symbols.bind(type))
+			var selected_symbol = supposed_symbols[0]["symbol"]
 			valid_roles = current_valid_roles.filter(
-				func(row): return row["pattern"][reel_pos] == supposed_symbols[0]["symbol"]
+				func(row): return row["pattern"][reel_pos] == selected_symbol
 			)
 			# print(supposed_symbols)
 			return(supposed_symbols[0]["slide"])
@@ -493,30 +507,53 @@ func dodge_invalid_role(supposed_symbols, reel_pos):
 			return(i)
 	return(4)
 
-
-func get_pattern_priority(role, reel_pos, target_ID, route):
-	if not pattern_priority.has(role):
+func get_role_priority(current_flag, reel_pos, role):
+	print(role)
+	if not flag_role_priority.has(current_flag):
 		return 0
 	
 	var state = bonus_state
-	if state == null or not pattern_priority[role].has(bonus_state):
+	if state == null or not flag_role_priority[current_flag].has(bonus_state):
 		state = "default"
 	
-	if not pattern_priority[role].has(state):
+	if not flag_role_priority[current_flag].has(state):
 		return 0
-	if not pattern_priority[role][state].has(reel_pos):
+	if not flag_role_priority[current_flag][state].has(reel_pos):
 		return 0
-	if not pattern_priority[role][state][reel_pos].has(route):
-		return 0
-	if not pattern_priority[role][state][reel_pos][route].has(target_ID):
+	if not flag_role_priority[current_flag][state][reel_pos].has(role):
 		return 0
 
-	var priority = pattern_priority[role][state][reel_pos][route][target_ID]
+	var priority = flag_role_priority[current_flag][state][reel_pos][role]
+	return priority
+
+func get_pattern_priority(role, reel_pos, target_ID, route):
+	if not pattern_ID_priority.has(role):
+		return 0
+	
+	var state = bonus_state
+	if state == null or not pattern_ID_priority[role].has(bonus_state):
+		state = "default"
+	
+	if not pattern_ID_priority[role].has(state):
+		return 0
+	if not pattern_ID_priority[role][state].has(reel_pos):
+		return 0
+	if not pattern_ID_priority[role][state][reel_pos].has(route):
+		return 0
+	if not pattern_ID_priority[role][state][reel_pos][route].has(target_ID):
+		return 0
+
+	var priority = pattern_ID_priority[role][state][reel_pos][route][target_ID]
 	return priority
 
 func sorting_symbols(x, y, type):
 	if x["kind"] != y["kind"]:
 		return x["kind"] > y["kind"]
+	if x["kind"] == 3:
+		if x["role_priority"] != y["role_priority"]:
+			return x["role_priority"] > y["role_priority"]
+		if x["pattern_priority"] != y["pattern_priority"]:
+			return x["pattern_priority"] > y["pattern_priority"]
 	if type == 1:
 		if x["combo"] != y["combo"]:
 			return x["combo"] > y["combo"]
@@ -527,8 +564,10 @@ func sorting_symbols(x, y, type):
 			return x["payout"] > y["payout"]
 		if x["combo"] != y["combo"]:
 			return x["combo"] > y["combo"]
-	if x["priority"] != y["priority"]:
-		return x["priority"] > y["priority"]
+	if x["role_priority"] != y["role_priority"]:
+		return x["role_priority"] > y["role_priority"]
+	if x["pattern_priority"] != y["pattern_priority"]:
+		return x["pattern_priority"] > y["pattern_priority"]
 	return x["slide"] < y["slide"]
 
 func vac_control_logic(supposed_symbols, reel_pos):
@@ -565,7 +604,7 @@ func load_data_from_db():
 	bonus_variety = Database.bonus_variety
 	control_table = Database.control_table
 	vac_pattern = Database.vac_pattern
-	pattern_priority = Database.pattern_priority
+	pattern_ID_priority = Database.pattern_ID_priority
 	flag_role_priority = Database.flag_role_priority
 	flag_combo_priority = Database.flag_combo_priority
 	JAC_data = Database.JAC_data

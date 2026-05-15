@@ -16,5 +16,7 @@ Replay_A,L_middleRep,C_middleRep,R_middleRep
 Replay_B,L_middleRep,C_middleRep,R_r7
 Replay_C,L_middleRep,C_middleRep,R_r7
 Replay_D,L_middleRep,C_middleRep,R_middleBell
+Replay_E,L_b7,C_middleRep,R_b7
+Replay_F,L_b7,C_middleRep,R_r7
 ,,,
 SBB,L_SBB,C_SBB,R_SBB

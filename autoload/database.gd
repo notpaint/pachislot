@@ -10,7 +10,7 @@ var flag_table : Dictionary = {}
 var all_roles : Dictionary = {}
 var control_table : Dictionary = {}
 var vac_pattern : Dictionary = {}
-var pattern_priority: Dictionary = {}
+var pattern_ID_priority: Dictionary = {}
 var flag_role_priority: Dictionary = {}
 var flag_combo_priority : Dictionary = {}
 var JAC_data : Dictionary = {}
@@ -209,15 +209,15 @@ func load_pattern_priority_table():
 		var reel_ID = int(row["reel_ID"])
 		var priority = int(row["priority"])
 		var route = row["route"]
-		if not pattern_priority.has(role):
-			pattern_priority[role] = {}
-		if not pattern_priority[role].has(bonus_state):
-			pattern_priority[role][bonus_state] = {}
-		if not pattern_priority[role][bonus_state].has(reel_pos):
-			pattern_priority[role][bonus_state][reel_pos] = {}
-		if not pattern_priority[role][bonus_state][reel_pos].has(route):
-			pattern_priority[role][bonus_state][reel_pos][route] = {}
-		pattern_priority[role][bonus_state][reel_pos][route][reel_ID] = priority
+		if not pattern_ID_priority.has(role):
+			pattern_ID_priority[role] = {}
+		if not pattern_ID_priority[role].has(bonus_state):
+			pattern_ID_priority[role][bonus_state] = {}
+		if not pattern_ID_priority[role][bonus_state].has(reel_pos):
+			pattern_ID_priority[role][bonus_state][reel_pos] = {}
+		if not pattern_ID_priority[role][bonus_state][reel_pos].has(route):
+			pattern_ID_priority[role][bonus_state][reel_pos][route] = {}
+		pattern_ID_priority[role][bonus_state][reel_pos][route][reel_ID] = priority
 
 func load_flag_role_priority():
 	var order = """
