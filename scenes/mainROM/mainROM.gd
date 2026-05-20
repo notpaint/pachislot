@@ -24,6 +24,7 @@ var reel_table : Array = [[],[],[]]
 var current_reel : Array = [[],[],[]]
 var miss_patterns: Array = []
 var current_control_table : Array = []
+var current_role_priority : Dictionary = {}
 var valid_roles : Array = []
 
 var medal_sum : int = 1000:
@@ -152,7 +153,7 @@ func _unhandled_input(event):
 		print_to_console()
 
 func print_to_console():
-	print(flag_role_priority)
+	print(current_role_priority)
 	# print(pattern_priority)
 		
 		
@@ -174,6 +175,7 @@ func clear_current_data():
 	current_reel = [[],[],[]]
 	result_flag = "None"
 	valid_roles = []
+	current_role_priority = {}
 	miss_patterns = []
 	result_roles = []
 
@@ -267,7 +269,7 @@ func try_stop_reel(reel_pos):
 	var base_ID = posmod(raw_ID, pattern_sum)
 	var slide = 0
 	var supposed_symbols : Array = get_supposed_symbols(base_ID, reel_pos)
-
+	
 	if is_spinning[0] and is_spinning[1] and is_spinning[2]:
 		if result_roles.is_empty():
 			slide = current_control_table[0]["slide"][reel_pos][base_ID]
@@ -330,14 +332,15 @@ func scoring_symbols(supposed_symbol_data, kind, payout, r_priority, p_priority,
 	if supposed_symbol_data["payout"] < payout:
 		supposed_symbol_data["payout"] = payout
 
-	var current_role_priority = supposed_symbol_data["role_priority"]
-	supposed_symbol_data["role_priority"] = max(current_role_priority, r_priority)
+	var role_priority = supposed_symbol_data["role_priority"]
+	supposed_symbol_data["role_priority"] = max(role_priority, r_priority)
 	var current_pattern_priority = supposed_symbol_data["pattern_priority"]
 	supposed_symbol_data["pattern_priority"] = max(current_pattern_priority, p_priority)
 	
 
 func table_logic(supposed_symbols, control_data, reel_pos, base_ID):
 	valid_roles.clear()
+	create_role_priority(result_flag, reel_pos)
 
 	for row in control_data:
 		var role = row["role"]
@@ -354,7 +357,7 @@ func table_logic(supposed_symbols, control_data, reel_pos, base_ID):
 		for valid_pattern in pattern_list:
 			var target_symbol = valid_pattern[reel_pos]
 			if target_symbol == supposed_symbol:
-				role_priority = get_role_priority(result_flag, reel_pos, role)
+				role_priority = get_role_priority(role)
 				scoring_symbols(supposed_symbol_data, kind, payout, role_priority, pattern_priority, role)
 				var pattern = valid_pattern
 				var data = {
@@ -375,8 +378,6 @@ func table_logic(supposed_symbols, control_data, reel_pos, base_ID):
 				type = flag_combo_priority[result_flag][bonus_state][reel_pos]
 			else:
 				type = flag_combo_priority[result_flag]["default"][reel_pos]
-		for s in supposed_symbols:
-			print("symbol:%s, Combo:%d, Payout:%d" % [s["symbol"], s["combo"], s["payout"]])
 		supposed_symbols.sort_custom(sorting_symbols.bind(type))
 		var selected_symbol = supposed_symbols[0]["symbol"]
 		valid_roles = valid_roles.filter(
@@ -405,7 +406,6 @@ func control_logic(supposed_symbols, valid_role, reel_pos):
 	if not valid_role.is_empty():
 		var current_valid_roles : Array = []
 		for row in valid_role:
-			print(row["pattern"])
 			var role = row["role"]
 			var kind = row["kind"]
 			var payout = row["payout"]
@@ -415,7 +415,7 @@ func control_logic(supposed_symbols, valid_role, reel_pos):
 				var supposed_symbol_data = supposed_symbols[i]
 				var target_ID = supposed_symbol_data["target_ID"]
 				if supposed_symbol_data["symbol"] == valid_symbol:
-					var role_priority = get_role_priority(result_flag, reel_pos, role)
+					var role_priority = get_role_priority(role)
 					var pattern_priority = get_pattern_priority(role, reel_pos, target_ID, "valid")
 					scoring_symbols(supposed_symbol_data, kind, payout, role_priority, pattern_priority, role)
 					var data = {
@@ -442,7 +442,6 @@ func control_logic(supposed_symbols, valid_role, reel_pos):
 			valid_roles = current_valid_roles.filter(
 				func(row): return row["pattern"][reel_pos] == selected_symbol
 			)
-			print(supposed_symbols)
 			return(supposed_symbols[0]["slide"])
 
 
@@ -505,23 +504,27 @@ func dodge_invalid_role(supposed_symbols, reel_pos):
 			return(i)
 	return(4)
 
-func get_role_priority(current_flag, reel_pos, role):
-	print(role)
+func create_role_priority(current_flag, reel_pos):
 	if not flag_role_priority.has(current_flag):
-		return 0
-	
+		return
+
 	var state = bonus_state
 	if state == null or not flag_role_priority[current_flag].has(bonus_state):
 		state = "default"
 	
 	if not flag_role_priority[current_flag].has(state):
-		return 0
+		return
+	
 	if not flag_role_priority[current_flag][state].has(reel_pos):
-		return 0
-	if not flag_role_priority[current_flag][state][reel_pos].has(role):
+		return
+	
+	current_role_priority = flag_role_priority[current_flag][state][reel_pos]
+
+func get_role_priority(role):
+	if not current_role_priority.has(role):
 		return 0
 
-	var priority = flag_role_priority[current_flag][state][reel_pos][role]
+	var priority = current_role_priority[role]
 	return priority
 
 func get_pattern_priority(role, reel_pos, target_ID, route):
@@ -699,7 +702,8 @@ func stop_reels(slide, current_pixel, raw_ID, reel_pos):
 	var target_pixel = raw_ID * pattern_scale
 
 	# print(slide)
-
+	print("slide:", slide, " current:", current_pixel, " target:", target_pixel, " reel_length:", reel_length)
+	
 	target_pixel += (slide * pattern_scale)
 	var target_speed : float = abs(target_pixel - current_pixel) / current_spin_speed[reel_pos]
 	active_tweens[reel_pos] = create_tween()

@@ -154,31 +154,70 @@ role_data = [
      None
      ),
 
+    ('middleRed7miss', 0 ,3,
+     create_multi_pattern(
+         ("r7", "cherry", "r7"),
+         ("r7", "blank", "r7"),
+         ("r7", "bar", "r7"),
+         ("r7", "r7", rep_any),
+         ("suica", "r7", "bar")
+     ),
+     None
+    ),
+
     ('upwardRed7', 0, 3,
      create_multi_pattern(
-         ("rep_1", "r7", bell_any),
-         ("rep_1", "blank", bell_any),
-         ("rep_1", "bar", bell_any),
-         ("rep_1", "cherry", bell_any),
+         ("rep_1", "r7", "bell_1")
+     ),
+     None
+     ),
+
+    ('upwardRed7miss', 0, 3,
+     create_multi_pattern(
+         ("rep_1", "blank", "bell_1"),
+         ("rep_1", "bar", "bell_1"),
+         ("rep_1", "cherry", "bell_1")
      ),
      None
      ),
 
     ('middleBlue7', 0 ,3,
      create_multi_pattern(
-         ("b7", "b7", "b7"),
-         ("b7", rep_any, rep_any),
-         ("b7", "b7", rep_any),
-         (rep_any, "b7", "b7"),
-         (rep_any, rep_any, "b7"),
-         ("b7", rep_any, "b7")
+         ("b7", "b7", "b7")
      ),
      None
      ),
 
-    ('upperBlue7', 0 , 3,
+    ('middleBlue7miss',0 ,3,
+     create_multi_pattern(
+        ("b7", rep_any, rep_any),
+        ("b7", "b7", rep_any),
+        (rep_any, "b7", "b7"),
+        (rep_any, rep_any, "b7"),
+        ("b7", rep_any, "b7")
+     ),
+     None,
+    ),
+
+    ('upperBlue7', 0, 3,
      create_multi_pattern(
          ("suica", "r7", "r7")
+     ),
+     None
+     ),
+
+    ('upperBlue7miss', 0, 3,
+     create_multi_pattern(
+         ("suica", "blank", "r7"),
+         ("suica", "bar", "r7"),
+         ("suica", "cherry", "r7")
+     ),
+     None
+     ),
+
+    ('middleRB', 0, 3,
+     create_multi_pattern(
+         ("r7", "r7", "bar")
      ),
      None
      ),
@@ -311,7 +350,8 @@ flag_data_3bet = [
     {"name": 'Cherry_B', "weight": 655},
     {"name": 'downSuica', "weight": 820},
     {"name": 'vac', "weight": 13107},
-    {"name": 'vac', "weight": 35046}
+    {"name": 'vac', "weight": 35046},
+    {"name": 'RB_Replay', "weight": 0}
 ]
 
 flag_data_1bet = [
@@ -412,11 +452,15 @@ flag_role_map = [
     },
     {
         "flag": "r7_Replay",
-        "roles": ["middleReplay", "fakeReplay", "middleRed7", "upwardRed7"]
+        "roles": ["middleReplay", "fakeReplay", "middleRed7", "middleRed7miss"]
     },
     {
         "flag": "b7_Replay",
-        "roles": ["middleReplay", "fakeReplay", "middleBlue7", "upperBlue7"]
+        "roles": ["middleReplay", "fakeReplay", "middleBlue7", "middleBlue7miss", "upperBlue7", "upperBlue7miss"]
+    },
+    {
+        "flag": "RB_Replay",
+        "roles": ["middleReplay", "fakeReplay", "middleRed7", "middleRed7miss", "middleRB"]
     },
     {
         "flag": "fake_Replay",
@@ -452,50 +496,6 @@ flag_combo_priority = {
 }
 
 flag_role_priority = {
-    "r7_Replay" : {
-        "default" : {
-            0 : {
-                "middleReplay" : 1,
-                "fakeReplay" : 0,
-                "middleRed7" : 0,
-                "upwardRed7" : 2
-            },
-            1 : {
-                "middleReplay" : 1,
-                "fakeReplay" : 0,
-                "middleRed7" : 0,
-                "upwardRed7" : 2
-            },
-            2 : {
-                "middleReplay" : 0,
-                "fakeReplay" : 1,
-                "middleRed7" : 3,
-                "upwardRed7" : 2
-            }
-        }
-    },
-    "b7_Replay" : {
-        "default" : {
-            0 : {
-                "middleReplay" : 2,
-                "fakeReplay" : 0,
-                "middleBlue7" : 3,
-                "upperBlue7" : 1
-            },
-            1 : {
-                "middleReplay" : 1,
-                "fakeReplay" : 0,
-                "middleBlue7" : 0,
-                "upperBlue7" : 0
-            },
-            2 : {
-                "middleReplay" : 0,
-                "fakeReplay" : 0,
-                "middleBlue7" : 1,
-                "upperBlue7" : 2
-            }
-        }
-    },
     "fake_Replay" : {
         "default" :{
             0 : {
@@ -509,6 +509,84 @@ flag_role_priority = {
             2 : {
                 "middleReplay" : 0,
                 "fakeReplay" : 1
+            }
+        }
+    },
+    "r7_Replay" : {
+        "default" : {
+            0 : {
+                "middleReplay" : 1,
+                "fakeReplay" : 0,
+                "middleRed7" : 0,
+                "upwardRed7" : 2,
+                "upwardRed7miss" : 2
+            },
+            1 : {
+                "middleReplay" : 1,
+                "fakeReplay" : 0,
+                "middleRed7" : 0,
+                "upwardRed7" : 2,
+                "upwardRed7miss" : 0
+            },
+            2 : {
+                "middleReplay" : 1,
+                "fakeReplay" : 0,
+                "middleRed7" : 3,
+                "upwardRed7" : 0,
+                "upwardRed7miss" : 0
+            }
+        }
+    },
+    "b7_Replay" : {
+        "default" : {
+            0 : {
+                "middleReplay" : 3,
+                "fakeReplay" : 0,
+                "middleBlue7" : 4,
+                "middleBlue7miss": 2,
+                "upperBlue7" : 2,
+                "upperBlue7miss" : 1
+            },
+            1 : {
+                "middleReplay" : 2,
+                "fakeReplay" : 0,
+                "middleBlue7" : 0,
+                "middleBlue7miss": 0,
+                "upperBlue7" : 1,
+                "upperBlue7miss" : 1
+            },
+            2 : {
+                "middleReplay" : 0,
+                "fakeReplay" : 0,
+                "middleBlue7" : 1,
+                "middleBlue7miss": 1,
+                "upperBlue7" : 2,
+                "upperBlue7miss" : 2
+            }
+        }
+    },
+    "RB_Replay" : {
+        "default" : {
+            0 : {
+                "middleReplay" : 1,
+                "fakeReplay" : 0,
+                "middleRed7" : 0,
+                "middleRed7miss" : 0,
+                "middleRB" : 0
+            },
+            1 : {
+                "middleReplay" : 1,
+                "fakeReplay" : 0,
+                "middleRed7" : 0,
+                "middleRed7miss" : 1,
+                "middleRB" : 2
+            },
+            2 : {
+                "middleReplay" : 1,
+                "fakeReplay" : 0,
+                "middleRed7" : 2,
+                "middleRed7miss" : 1,
+                "middleRB" : 0
             }
         }
     }
