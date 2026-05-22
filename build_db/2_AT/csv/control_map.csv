@@ -24,4 +24,7 @@ upperBlue7,L_b7,C_r7,R_r7
 upperBlue7miss,L_b7,C_r7,R_r7
 middleRB,L_middleRep,C_r7,R_r7
 ,,,
+SReplay1,L_middleSuica,C_middleBell,R_middleRep
+SReplay2,L_middleBell,C_middleBell,R_middleRep
+,,,
 SBB,L_SBB,C_SBB,R_SBB

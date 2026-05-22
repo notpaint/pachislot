@@ -137,6 +137,20 @@ role_data = [
       None
       ),
 
+    ('SReplay1', 0, 3,
+     create_multi_pattern(
+         ("suica", bell_any, rep_any)
+     ),
+     None
+     ),
+
+    ('SReplay2', 0, 3,
+     create_multi_pattern(
+         (bell_any, bell_any, rep_any)
+     ),
+     None
+     ),
+
     ('fakeReplay', 0, 3,
      create_multi_pattern(
          (rep_any, "cherry", "r7"),
@@ -351,7 +365,8 @@ flag_data_3bet = [
     {"name": 'downSuica', "weight": 820},
     {"name": 'vac', "weight": 13107},
     {"name": 'vac', "weight": 35046},
-    {"name": 'RB_Replay', "weight": 0}
+    {"name": 'RB_Replay', "weight": 0},
+    {"name": 'SReplay', "weight": 0}
 ]
 
 flag_data_1bet = [
@@ -463,6 +478,10 @@ flag_role_map = [
         "roles": ["middleReplay", "fakeReplay", "middleRed7", "middleRed7miss", "middleRB"]
     },
     {
+        "flag": "SReplay",
+        "roles": ["middleReplay", "SReplay1", "SReplay2"]
+    },
+    {
         "flag": "fake_Replay",
         "roles": ["middleReplay", "fakeReplay"]
     },
@@ -560,7 +579,7 @@ flag_role_priority = {
                 "fakeReplay" : 0,
                 "middleBlue7" : 1,
                 "middleBlue7miss": 1,
-                "upperBlue7" : 2,
+                "upperBlue7" : 3,
                 "upperBlue7miss" : 2
             }
         }
@@ -587,6 +606,20 @@ flag_role_priority = {
                 "middleRed7" : 2,
                 "middleRed7miss" : 1,
                 "middleRB" : 0
+            }
+        }
+    },
+    "SReplay" : {
+        "default" : {
+            0 : {
+                "middleReplay" : 2,
+                "SReplay1" : 1,
+                "SReplay2" : 0
+            },
+            2 : {
+                "middleReplay" : 2,
+                "SReplay1" : 0,
+                "SReplay2" : 1
             }
         }
     }

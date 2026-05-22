@@ -24,7 +24,7 @@ func connect_signal():
 	if mainROM:
 		mainROM.medal_bet.connect(change_medals)
 		mainROM.now_RT.connect(change_RT)
-		mainROM.now_bonus.connect(change_bonus)
+		mainROM.bonus_prized.connect(change_bonus)
 		mainROM.spin_start.connect(clear_weight)
 	if flaglist:
 		load_weight.connect(Callable(flaglist, "_on_load_weight"))

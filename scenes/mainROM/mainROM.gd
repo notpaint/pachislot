@@ -84,7 +84,7 @@ var current_bonus : String = "None":
 		if current_bonus == value:
 			return
 		current_bonus = value
-		now_bonus.emit(value)
+		bonus_prized.emit(value)
 		Datahub.current_bonus = value
 
 var RT_game : int = 0
@@ -99,7 +99,7 @@ signal flag(result_flag)
 signal prized(reel_result)
 signal spin_start()
 signal bonus_est(bonus_state)
-signal now_bonus(current_bonus)
+signal bonus_prized(current_bonus)
 signal now_RT(current_RT)
 signal medal_bet(bet_medals)
 signal medal_number(medal_sum)
@@ -153,7 +153,8 @@ func _unhandled_input(event):
 		print_to_console()
 
 func print_to_console():
-	print(current_role_priority)
+	print(current_bonus_payout)
+	# print(current_role_priority)
 	# print(pattern_priority)
 		
 		
@@ -404,6 +405,8 @@ func table_logic(supposed_symbols, control_data, reel_pos, base_ID):
 
 func control_logic(supposed_symbols, valid_role, reel_pos):
 	if not valid_role.is_empty():
+		if current_role_priority.is_empty():
+			create_role_priority(result_flag, reel_pos)
 		var current_valid_roles : Array = []
 		for row in valid_role:
 			var role = row["role"]
@@ -506,6 +509,7 @@ func dodge_invalid_role(supposed_symbols, reel_pos):
 
 func create_role_priority(current_flag, reel_pos):
 	if not flag_role_priority.has(current_flag):
+		current_role_priority = {"__none__": true}
 		return
 
 	var state = bonus_state
@@ -513,6 +517,7 @@ func create_role_priority(current_flag, reel_pos):
 		state = "default"
 	
 	if not flag_role_priority[current_flag].has(state):
+		current_role_priority = {"__none__": true}
 		return
 	
 	if not flag_role_priority[current_flag][state].has(reel_pos):
