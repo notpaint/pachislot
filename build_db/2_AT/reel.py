@@ -62,19 +62,134 @@ role_data = [
      None
      ),
 
+    
+    ('missBell', 1, 2,
+     create_multi_pattern(
+         (rep_any, bell_any, bell_any)
+     ),
+     None
+     ),
+
+    ('dummyBell_1', 1, 2,
+     create_multi_pattern(
+         (rep_any, "suica", "suica")
+     ),
+     None
+    ),
+
+    ('dummyBell_2', 1, 2,
+     create_multi_pattern(
+         ("blank", bell_any, "cherry"),
+         ("blank", bell_any, "blank"),
+         ("blank", bell_any, "bar")
+     ),
+     None
+    ),
+
+    ('dummyBell_3', 1, 2,
+     create_multi_pattern(
+        ("b7", bell_any, "cherry"),
+        ("b7", bell_any, "blank"),
+        ("b7", bell_any, "bar")
+     ),
+     None
+    ),
+
+    ('dummyBell_4', 1, 2,
+     create_multi_pattern(
+         ("suica", bell_any, "cherry"),
+         ("suica", bell_any, "bar"),
+         ("suica", bell_any, "blank")
+     ),
+     None
+    ),
+
+    ('dummyBell_5', 1, 2,
+     create_multi_pattern(
+         ("suica", bell_any, "suica")
+     ),
+     None
+    ),
+
+    ('dummyBell_6', 1, 2,
+     create_multi_pattern(
+        (rep_any, "r7", "cherry"),
+        (rep_any, "r7", "bar"),
+        (rep_any, "r7", "blank")
+     ),
+     None
+    ),
+
+    ('dummyBell_7', 1, 2,
+     create_multi_pattern(
+        ("b7", "blank", "cherry"),
+        ("b7", "blank", "bar"),
+        ("b7", "blank", "blank")
+     ),
+     None
+    ),
+
+    ("dummyBell_8", 1, 2,
+     create_multi_pattern(
+         ("blank", "cherry", bell_any),
+         ("blank", "bar", bell_any),
+         ("blank", "blank", bell_any)
+     ),
+     None
+     ),
+
+    ("dummyBell_9", 1, 2,
+     create_multi_pattern(
+         ("b7", "cherry", bell_any),
+         ("b7", "bar", bell_any),
+         ("b7", "blank", bell_any)
+     ),
+     None
+     ),
+
+    ("dummyBell_10", 1, 2,
+     create_multi_pattern(
+         ("suica", "cherry", bell_any), 
+         ("suica", "bar", bell_any), 
+         ("suica", "blank", bell_any)
+     ),
+     None
+     ),
+
+    ("dummyBell_11", 1, 2,
+     create_multi_pattern(
+         ("cherry", "cherry", bell_any),
+         ("cherry", "bar", bell_any),
+         ("cherry", "blank", bell_any)
+     ),
+     None
+    ),
+
+    ("dummyBell_12", 1, 2,
+     create_multi_pattern(
+         ("suica", "cherry", "cherry"),
+         ("suica", "bar", "cherry"),
+         ("suica", "blank", "cherry")
+     ),
+     None
+    ),
+
+    ("dummyBell_13", 1, 2,
+     create_multi_pattern(
+         (rep_any, rep_any, bell_any)
+     ),
+     None
+     ),
+
     ('Cherry_A', 2, 2,
        create_multi_pattern(
         ("bar", "bar", bell_any),
         ("bar", "cherry", bell_any),
         ("bar", "suica", bell_any),
-        ("bar", "r7", bell_any),
-        ("blank", "bar", bell_any),
-        ("blank", "cherry", bell_any),
-        ("blank", "suica", bell_any),
-        ("blank", "r7", bell_any)
+        ("bar", "r7", bell_any)
        ),
        create_multi_pattern(
-           (rep_any, "rep_2", bell_any)
+        (rep_any, "rep_2", bell_any)
        )
        ),
 
@@ -92,17 +207,7 @@ role_data = [
          ("bar", "suica", "suica"),
          ("bar", "suica", "r7"),
          ("bar", "suica", "bar"),
-         ("bar", "rep_2", "bar"),
-         ("blank", "bar", "suica"),
-         ("blank", "bar", "r7"),
-         ("blank", "bar", "blank"),
-         ("blank", "bar", "rep_1"),
-         ("blank", "cherry", "suica"),
-         ("blank", "cherry", "bar"),
-         ("blank", "cherry", "r7"),
-         ("blank", "suica", "suica"),
-         ("blank", "suica", "bar"),
-         ("blank", "suica", "r7")
+         ("bar", "rep_2", "bar")
      ),
      create_multi_pattern(
          (rep_any, "rep_2", bell_any)
@@ -139,14 +244,14 @@ role_data = [
 
     ('SReplay1', 0, 3,
      create_multi_pattern(
-         ("suica", bell_any, rep_any)
+         ("suica", rep_any, rep_any)
      ),
      None
      ),
 
     ('SReplay2', 0, 3,
      create_multi_pattern(
-         (bell_any, bell_any, rep_any)
+         (bell_any, rep_any, bell_any)
      ),
      None
      ),
@@ -250,7 +355,6 @@ vac_pattern = [
     create_multi_pattern(
         (rep_any, rep_any, "r7"),
         (rep_any, rep_any, "bar"),
-        (rep_any, rep_any, "blank"),
         (rep_any, rep_any, "cherry"),
         ("rep_2", "bar", "bar"),
         ("rep_2", "bar", "cherry"),
@@ -355,6 +459,9 @@ flag_data_3bet = [
     {"name": 'middleBell', "weight": 0},
     {"name": 'upperBell', "weight": 3277},
     {"name": 'downBell', 'weight': 3277},
+    {"name": '213Bell', 'weight':0},
+    {"name": '312Bell', 'weight':0},
+    {"name": '231Bell', 'weight':0},
     {"name": '321Bell', 'weight':0},
     {"name": 'r7_Replay', "weight": 4000},
     {"name": 'b7_Replay', "weight": 188},
@@ -365,8 +472,7 @@ flag_data_3bet = [
     {"name": 'downSuica', "weight": 820},
     {"name": 'vac', "weight": 13107},
     {"name": 'vac', "weight": 35046},
-    {"name": 'RB_Replay', "weight": 0},
-    {"name": 'SReplay', "weight": 0}
+    {"name": 'RB_Replay', "weight": 0}
 ]
 
 flag_data_1bet = [
@@ -466,6 +572,22 @@ flag_role_map = [
         "roles": ["downBell"]
     },
     {
+        "flag" : "213Bell",
+        "roles": ["middleBell", "missBell", "dummyBell_1", "dummyBell_2", "dummyBell_3", "dummyBell_4"]
+    },
+    {
+        "flag": "312Bell",
+        "roles": ["middleBell", "missBell", "dummyBell_4", "dummyBell_5", "dummyBell_6", "dummyBell_7"]
+    },
+    {
+        "flag": "231Bell",
+        "roles": ["middleBell", "missBell", "dummyBell_1", "dummyBell_8", "dummyBell_9", "dummyBell_10"]
+    },
+    {
+        "flag": "321Bell",
+        "roles": ["middleBell", "missBell", "dummyBell_10", "dummyBell_11", "dummyBell_12", "dummyBell_13"]
+    },
+    {
         "flag": "r7_Replay",
         "roles": ["middleReplay", "fakeReplay", "middleRed7", "middleRed7miss"]
     },
@@ -509,12 +631,43 @@ flag_role_map = [
 ]
 
 flag_combo_priority = {
+    "213Bell" : {
+        "default" : [1, 0, 1]
+    },
+    "312Bell" : {
+        "default" : [1, 0, 1]
+    },
+    "231Bell" : {
+        "default": [1, 1, 0]
+    },
     "321Bell" : {
-        "default" : [1, 1, 0]
+        "default": [1, 1, 0]
     }
 }
 
 flag_role_priority = {
+    "213Bell" : {
+        "default" : {
+            0 : {
+                "missBell" : 1
+            },
+
+            2: {
+                "missBell" : 1
+                }
+        }
+    },
+    "312Bell" : {
+        "default" : {
+            0 : {
+                "missBell" : 1
+            },
+
+            2 : {
+                "missBell" : 1
+            }
+        }
+    },
     "fake_Replay" : {
         "default" :{
             0 : {
