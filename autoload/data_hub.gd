@@ -12,6 +12,7 @@ var force_flag : String = "None"
 var bonus_state
 var current_RT : String = "RT0"
 var current_bonus : String = "None"
+var current_JAC : String = "None"
 var bet_medals : int = 0
 
 signal _result_flag(flag)

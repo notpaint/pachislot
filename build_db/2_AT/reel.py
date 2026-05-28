@@ -113,9 +113,9 @@ role_data = [
 
     ('dummyBell_6', 1, 2,
      create_multi_pattern(
-        (rep_any, "r7", "cherry"),
-        (rep_any, "r7", "bar"),
-        (rep_any, "r7", "blank")
+        (rep_any, "b7", "cherry"),
+        (rep_any, "b7", "bar"),
+        (rep_any, "b7", "blank")
      ),
      None
     ),
@@ -536,7 +536,7 @@ JAC_data = {
 
 bonus_data = {
     'SBB' : {
-        "max_payout" : 300,
+        "max_payout" : 10,
         "JACIN_type" : "RB1",
         "JAC_nums" : json.dumps(JAC_SBB),
         "before_RT" : None,
@@ -565,7 +565,7 @@ flag_role_map = [
      },
     {
         "flag": "upperBell",
-        "roles": ["upperBell"]
+        "roles": ["upperBell", "SBB"]
     },
     {
         "flag": "downBell",
@@ -658,6 +658,28 @@ flag_role_priority = {
         }
     },
     "312Bell" : {
+        "default" : {
+            0 : {
+                "missBell" : 1
+            },
+
+            2 : {
+                "missBell" : 1
+            }
+        }
+    },
+    "231Bell" : {
+        "default" : {
+            0 : {
+                "missBell" : 1
+            },
+
+            2 : {
+                "missBell" : 1
+            }
+        }
+    },
+    "321Bell" : {
         "default" : {
             0 : {
                 "missBell" : 1

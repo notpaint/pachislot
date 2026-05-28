@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://c6kdejl5wqyw3" path="res://scenes/analysis/analysis.tscn" id="3_h2yge"]
 [ext_resource type="PackedScene" uid="uid://bkon8sbn4bepv" path="res://scenes/debug/debug.tscn" id="4_lquwl"]
 [ext_resource type="PackedScene" uid="uid://c70j8ea87e5ew" path="res://scenes/UI/UI.tscn" id="6_272bh"]
+[ext_resource type="PackedScene" uid="uid://b07jnjpltpv5q" path="res://scenes/display/display.tscn" id="7_5vw27"]
 [ext_resource type="PackedScene" uid="uid://qy8yhhsv2mwt" path="res://scenes/effects/effects.tscn" id="7_272bh"]
 
 [node name="main" type="Node2D" unique_id=531150307]
@@ -16,9 +17,11 @@
 [node name="analysis" parent="." unique_id=1302851162 instance=ExtResource("3_h2yge")]
 
 [node name="debug" parent="." unique_id=234602057 instance=ExtResource("4_lquwl")]
-position = Vector2i(2000, 127)
+position = Vector2i(596, 92)
 size = Vector2i(800, 600)
 
 [node name="UI" parent="." unique_id=122271127 instance=ExtResource("6_272bh")]
 
 [node name="effects" parent="." unique_id=1805229761 instance=ExtResource("7_272bh")]
+
+[node name="display" parent="." unique_id=1635776591 instance=ExtResource("7_5vw27")]

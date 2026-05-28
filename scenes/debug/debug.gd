@@ -8,6 +8,7 @@ extends Control
 var current_bet : int = 0
 var current_RT : String = "RT0"
 var current_bonus : String = "None"
+var current_JAC : String = "None"
 
 var weight_table = {}
 var current_weight_table = {}
@@ -17,6 +18,7 @@ signal load_weight(value: Dictionary)
 
 func _ready():
 	weight_table = Database.weight_table
+	print(weight_table)
 	connect_signal()
 
 
@@ -24,8 +26,9 @@ func connect_signal():
 	if mainROM:
 		mainROM.medal_bet.connect(change_medals)
 		mainROM.now_RT.connect(change_RT)
-		mainROM.bonus_prized.connect(change_bonus)
+		# mainROM.bonus_prized.connect(change_bonus)
 		mainROM.spin_start.connect(clear_weight)
+		mainROM.now_JAC.connect(change_JAC)
 	if flaglist:
 		load_weight.connect(Callable(flaglist, "_on_load_weight"))
 		var pop = flaglist.get_popup()
@@ -95,19 +98,23 @@ func change_RT(RT):
 	current_RT = RT
 	_load_weight_table()
 
-func change_bonus(bonus):
-	current_bonus = bonus
+# func change_bonus(bonus):
+# 	current_bonus = bonus
+# 	_load_weight_table()
+
+func change_JAC(JAC):
+	current_JAC = JAC
 	_load_weight_table()
 
 func _load_weight_table():
-	if not weight_table.has(current_bonus):
+	if not weight_table.has(current_JAC):
 		return null
-	if not weight_table[current_bonus].has(current_RT):
+	if not weight_table[current_JAC].has(current_RT):
 		return null
-	if not weight_table[current_bonus][current_RT].has(current_bet):
+	if not weight_table[current_JAC][current_RT].has(current_bet):
 		return null
 
-	current_weight_table = weight_table[current_bonus][current_RT][current_bet]
+	current_weight_table = weight_table[current_JAC][current_RT][current_bet]
 
 	load_weight.emit(current_weight_table)
 

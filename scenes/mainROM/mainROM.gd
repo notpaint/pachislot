@@ -49,6 +49,10 @@ var max_spin_speed : float = (reel_rpm / 60.0) * reel_length
 var acceleration : float = 6500
 var current_spin_speed : Array = [0.0, 0.0, 0.0]
 
+var wait_time : int = 4100
+var is_waiting : bool = false
+var last_spin_time : int = 0
+
 var active_tweens : Array[Tween] = [null, null, null]
 
 var result_flag : String = "None": #当選フラグ
@@ -69,7 +73,13 @@ var bonus_state:  #成立中ボーナス
 		bonus_est.emit(value)
 		Datahub.bonus_state = value
 
-var current_JAC : String= "None" #JAC状態
+var current_JAC : String= "None": #JAC状態
+	set(value):
+		if current_JAC == value:
+			return
+		current_JAC = value
+		now_JAC.emit(value)
+		Datahub.current_JAC = value
 
 var current_RT : String = "RT0":
 	set(value):
@@ -77,7 +87,7 @@ var current_RT : String = "RT0":
 			return
 		current_RT = value
 		now_RT.emit(value)
-		Datahub.bonus_state = value
+		Datahub.current_RT = value
 
 var current_bonus : String = "None":
 	set(value):
@@ -85,6 +95,7 @@ var current_bonus : String = "None":
 			return
 		current_bonus = value
 		bonus_prized.emit(value)
+		print(value)
 		Datahub.current_bonus = value
 
 var RT_game : int = 0
@@ -101,6 +112,7 @@ signal spin_start()
 signal bonus_est(bonus_state)
 signal bonus_prized(current_bonus)
 signal now_RT(current_RT)
+signal now_JAC(current_JAC)
 signal medal_bet(bet_medals)
 signal medal_number(medal_sum)
 
@@ -153,18 +165,33 @@ func _unhandled_input(event):
 		print_to_console()
 
 func print_to_console():
-	print(current_bonus_payout)
+	print(current_bonus)
 	# print(current_role_priority)
 	# print(pattern_priority)
 		
 		
 func start_spin():
 
+	if not can_spin():
+		return
+	
+	is_waiting = true
+
 	clear_current_data()
 	generate_flag()
 	generate_role_list()
 
 	current_control_table = create_control_data(result_roles)
+	
+	var current_time = Time.get_ticks_msec()
+	var elapsed_time = current_time - last_spin_time
+
+	if last_spin_time > 0 and elapsed_time < wait_time:
+		var wait = wait_time - elapsed_time
+		await get_tree().create_timer(wait / 1000.0).timeout
+
+	last_spin_time = Time.get_ticks_msec()
+	is_waiting = false
 
 	for i in range (3):
 		is_spinning[i] = true
@@ -182,6 +209,8 @@ func clear_current_data():
 
 
 func can_spin():
+	if is_waiting:
+		return false
 	if is_spinning.has(true):
 		return false
 	if bet_medals == 0:
@@ -884,6 +913,7 @@ func end_bonus():
 		start_RT(after_RT)
 	
 	print("%s IS END" % [current_bonus])
+	bonus_state = null
 	current_bonus = "None"
 	current_JAC = "None"
 	max_bonus_payout = 0
