@@ -1,8 +1,13 @@
-import sqlite3
 from pathlib import Path
-import csv
 import itertools
 import json
+import sys
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
+from builder.build_config import MainBuildConfig
+from builder.main_builder import build_main
 
 #%%
 
@@ -196,21 +201,20 @@ role_data = [
     ('Cherry_B', 2, 2,
      create_multi_pattern(
          ("bar", "bar", "suica"),
-         ("bar", "bar", "r7"),
+         ("bar", "bar", "b7"),
          ("bar", "bar", "rep_1"),
          ("bar", "r7", "suica"),
          ("bar", "r7", "bar"),
          ("bar", "r7", "b7"),
          ("bar", "cherry", "suica"),
          ("bar", "cherry", "bar"),
-         ("bar", "cherry", "r7"),
+         ("bar", "cherry", "b7"),
          ("bar", "suica", "suica"),
-         ("bar", "suica", "r7"),
+         ("bar", "suica", "b7"),
          ("bar", "suica", "bar"),
          ("bar", "rep_2", "bar")
      ),
      create_multi_pattern(
-         (rep_any, "rep_2", bell_any)
      )
      ),
 
@@ -411,7 +415,8 @@ role_pattern_priority = {
                 {"reel_ID": 19, "priority": 2, "route": "valid"}
             ],
             2: [
-                {"reel_ID": 14, "priority": 2, "route": "valid"}
+                {"reel_ID": 14, "priority": 2, "route": "valid"},
+                {"reel_ID": 18, "priority": 2, "route": "valid"}
             ]
         }
     },
@@ -817,23 +822,6 @@ HUD_flag_data = {
     "Cherry_A_with_BB1": "弱チェリー+BB1"
 }
 
-
-
-#%%
-
-dir = Path(__file__).resolve().parent
-csv_dir = dir / "csv"
-sql_path = dir / "sql" / "database_v2.sql"
-db_path = dir / "db" / "database_v2.db"
-
-slide_map_csv = csv_dir / "control_map.csv"
-
-reel_csv = {
-    0: csv_dir / "L_slide.csv",
-    1: csv_dir / "C_slide.csv",
-    2: csv_dir / "R_slide.csv"
-}
-
 #現在のフラグの内訳を表示
 def check():
     total = sum(d["weight"] for d in flag_data_3bet if d["name"])
@@ -855,345 +843,36 @@ def check():
 
     print(table)
 
+if __name__ == "__main__":
+    base_path = Path(__file__).resolve().parent
 
-#タグ付け
-def generate_flag_list(seq, RT_mode = None):
-    flag_list = []
-    for item in seq:
-        name = item["name"]
-        weight = item["weight"]
-        replace = item.get("replace", {})
-        if RT_mode is not None and RT_mode in replace:
-            name = replace[RT_mode]
-        flag_list.append({"name": name, "weight": weight})
-    return flag_list
+    config = MainBuildConfig(
+        base_path = base_path,
+        csv_path = base_path / "csv",
 
-def load_reel_csv(csv_path):
+        main_sql_path = base_path.parent / "sql" / "main.sql",
+        main_db_path = base_path.parent / "db" / "main.db",
 
-    reel_table = [[],[],[]]
+        role_data = role_data,
+        flag_data_normal = flag_data_normal,
+        flag_role_map = flag_role_map,
 
-    with open(csv_path, "r", encoding="UTF-8-SIG") as f:
-        reader = csv.DictReader(f)
+        vac_pattern = vac_pattern,
 
-        rows = list(reader)
+        JAC_data = JAC_data,
+        bonus_data = bonus_data,
 
-        for row in reversed(rows):
-            for val, name in row.items():
-                if val == "reel_ID": continue
-                reel_pos = int(val)
-                flag = name
-                reel_table[reel_pos].append(flag)
+        HUD_flag_data = HUD_flag_data,
+
+        RT_data = RT_data,
+        RT_pattern = RT_pattern,
+
+        flag_combo_priority = flag_combo_priority,
+        flag_role_priority = flag_role_priority,
+        role_pattern_priority = role_pattern_priority
+    )
     
-    return(reel_table)
-
-def load_slide_csv(csv_path, reel_pos):
-
-    slide_list = []
-
-    with open(csv_path, "r", encoding="UTF-8-SIG") as f:
-        reader = csv.DictReader(f)
-
-        rows = list(reader)
-
-        slide_data = {}
-
-        for row in reversed(rows):
-            for name, val in row.items():
-                if name == "reel_ID": continue
-                if name.startswith("#"): continue
-
-                if name not in slide_data:
-                    slide_data[name] = []
-                
-                try:
-                    slide_data[name].append(int(val))
-                except:
-                    print("error")
-        
-        for name, val in slide_data.items():
-            slide_list.append(
-                {"name" : name,
-                 "reel_pos" : reel_pos,
-                 "target" : val
-                 }
-            )
-
-    return(slide_list)
-
-def load_control_map(csv_path):
-    mapping = {}
-    with open(csv_path, "r", encoding="UTF-8-SIG") as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-            role = (row.get("role") or "").strip()
-            if not role or role.startswith("#"): continue
-
-            mapping[role] = {
-                0: row["L_reel"].strip(),
-                1: row["C_reel"].strip(),
-                2: row["R_reel"].strip()
-            }
-    return mapping
-
-                
-
-def apply_control_table(cursor, role_ID, reel_pos, slides):
-    for reel_ID, slide in enumerate(slides):
-        cursor.execute("""INSERT INTO control_table (role_id, reel_pos, reel_ID, slide)
-                       VALUES (?, ?, ?, ?)
-                       """, (role_ID, reel_pos, reel_ID, slide))
-
-def apply_vac_control_table(cursor, reel_pos, slides):
-    for reel_ID, slide in enumerate(slides):
-        cursor.execute("""INSERT INTO vac_control_table (reel_pos, reel_ID, slide)
-                       VALUES (?, ?, ?)
-                       """, (reel_pos, reel_ID, slide))
-
+    build_main(config)
 
 #%%
 
-def generate_flag_table(cursor):
-    for bonus_state, RT_list in flag_data_normal.items():
-        for RT_state, bet_list in RT_list.items():
-            for bet_state, weights in bet_list.items():
-                if RT_state != "None":
-                    current_RT = RT_state
-                else:
-                    current_RT = None
-                final_flags = generate_flag_list(weights, RT_mode = current_RT)
-
-                for item in final_flags:
-                    name = item["name"]
-                    weight = item["weight"]
-                    cursor.execute("INSERT OR IGNORE INTO flags (flag) VALUES (?)", (name,))
-                    cursor.execute("SELECT id FROM flags WHERE flag = (?)", (name,))
-                    flag_id = cursor.fetchone()[0]
-
-                    cursor.execute("""
-                                   INSERT OR IGNORE INTO flag_table 
-                                   (bonus_state, RT_state, bet_state, flag_id, weight)
-                                   VALUES (?, ?, ?, ? ,?)
-                                   """, (bonus_state, RT_state, bet_state, flag_id, weight))
-                
-
-def generate_flag_HUD(cursor):
-    for flag, flag_name in HUD_flag_data.items():
-        cursor.execute("SELECT id FROM flags WHERE flag = (?)", (flag,))
-        flag_row = cursor.fetchone()
-        if flag_row is None:
-            print(f"ERROR ON generate_flag_HUD() : {flag} DOES NOT EXIST IN flags")
-            continue
-        flag_ID = flag_row[0]
-        cursor.execute("""
-                       INSERT OR IGNORE INTO flag_HUD (flag_ID, flag_name)
-                       VALUES (?, ?)
-                       """, (flag_ID, flag_name))
-
-def generate_control_table(cursor):
-    cursor.executemany("""
-                       INSERT INTO roles (role, payout, kind, pattern, miss_pattern)
-                       VALUES (?, ?, ?, ?, ?)
-                       """, role_data)
-    
-    cursor.execute("SELECT role,id FROM roles")
-
-    role_dict = dict(cursor.fetchall())
-    control_map = load_control_map(slide_map_csv)
-
-    for reel_pos, csv_path in reel_csv.items():
-
-        slide_list = load_slide_csv(csv_path, reel_pos)
-
-        slide_dict = {}
-        for item in slide_list:
-            slide_dict[item["name"]] = item["target"]
-        
-        for role, reel in control_map.items():
-            role_control = reel[reel_pos]
-            if role_control not in slide_dict:
-                print(f"ERROR ON generate_control_table() : {role_control} DOES NOT EXIST IN {reel_pos}, {role}")
-                continue
-            slide = slide_dict[role_control]
-
-            if role == "vac":
-                apply_vac_control_table(cursor, reel_pos, slide)
-                continue
-
-            if role not in role_dict:
-                print(f"ERROR ON generate_control_table() : {role} DOES NOT EXIST")
-                continue
-
-            role_id = role_dict[role]
-            apply_control_table(cursor, role_id, reel_pos, slide)
-
-def generate_role_pattern_priority(cursor):
-    for role, bonus_data in role_pattern_priority.items():
-        cursor.execute("SELECT id FROM roles WHERE role = (?)", (role,))
-        role_row = cursor.fetchone()
-        if role_row is None:
-            print(f"ERROR ON generate_role_pattern_priority() : {role} DOES NOT EXIST")
-            continue
-        role_id = role_row[0]
-        for bonus, reel_data in bonus_data.items():
-            bonus_state = bonus
-            for reel, data in reel_data.items():
-                reel_pos = int(reel)
-                for item in data:
-                    reel_ID = int(item["reel_ID"])
-                    priority = int(item["priority"])
-                    route = item["route"]
-                    cursor.execute("""
-                                   INSERT OR IGNORE INTO role_pattern_priority (role_id, bonus_state, reel_pos, reel_ID, priority, route)
-                                   VALUES (? ,?, ?, ? ,? ,?)
-                                   """, (role_id, bonus_state, reel_pos, reel_ID, priority, route))
-
-
-def generate_flag_role_map(cursor):
-    for data in flag_role_map:
-        flag = data["flag"]
-        roles = data["roles"]
-        cursor.execute("SELECT id FROM flags WHERE flag = (?)", (flag,))
-        flag_row = cursor.fetchone()
-        if flag_row is None:
-            print(f"ERROR ON generate_flag_role_map() : {flag} DOES NOT EXIST")
-            continue
-        flag_ID = flag_row[0]
-        for role in roles:
-            cursor.execute("SELECT id FROM roles WHERE role = (?)", (role,))
-            role_row = cursor.fetchone()
-            if role_row is None:
-                print(f"ERROR ON generate_flag_role_map() : {role} DOES NOT EXIST")
-                continue
-            role_ID = role_row[0]
-            cursor.execute("""
-                           INSERT OR IGNORE INTO flag_role_map (flag_ID, role_ID)
-                           VALUES (?, ?)""", (flag_ID, role_ID))   
-
-
-def generate_flag_combo_priority(cursor):
-    for flag, bonus_data in flag_combo_priority.items():
-        cursor.execute("SELECT id FROM flags WHERE flag = (?)", (flag,))
-        flag_row = cursor.fetchone()
-        if flag_row is None:
-            print(f"ERROR ON generate_flag_combo_priority(): {flag} DOES NOT EXIST")
-            continue
-        flag_ID = flag_row[0]
-        for bonus, reel_data in bonus_data.items():
-            bonus_state = bonus
-            for reel_pos, priority in enumerate(reel_data):
-                cursor.execute("""
-                               INSERT OR IGNORE INTO flag_combo_priority (flag_ID, bonus_state, reel_pos, priority)
-                               VALUES(?, ?, ?, ?)""", (flag_ID, bonus_state, reel_pos, priority))
-
-
-def generate_flag_role_priority(cursor):
-    for flag, bonus_data in flag_role_priority.items():
-        cursor.execute("SELECT id FROM flags WHERE flag = (?)", (flag,))
-        flag_row = cursor.fetchone()
-        if flag_row is None:
-            print(f"ERROR ON flag_role_priority(): {flag} DOES NOT EXIST")
-            continue
-        flag_ID = flag_row[0]
-        for bonus, reel_data in bonus_data.items():
-            bonus_state = bonus
-            for reel, role_data in reel_data.items():
-                reel_pos = reel
-                for role, priority in role_data.items():
-                    cursor.execute("SELECT id FROM roles WHERE role = (?)", (role,))
-                    role_row = cursor.fetchone()
-                    if role_row is None:
-                        print(f"ERROR ON flag_role_priority(): {role} DOES NOT EXIST")
-                        continue
-                    role_ID = role_row[0]
-                    cursor.execute("""
-                                   INSERT OR IGNORE INTO flag_role_priority (flag_ID, bonus_state, reel_pos, role_ID, priority)
-                                   VALUES(?, ?, ?, ?, ?)""", (flag_ID, bonus_state, reel_pos, role_ID, priority))
-
-def generate_reel_table(cursor):
-    csv_path = csv_dir / "reel_table.csv"
-    reel_table = load_reel_csv(csv_path)
-    for reel_pos, item in enumerate(reel_table):
-        for reel_ID, design in enumerate(item):
-            cursor.execute("""INSERT OR IGNORE INTO reel_table (reel_pos, reel_id, reel_design)
-                           VALUES (?, ?, ?)""", (reel_pos, reel_ID, design))
-
-
-def generate_JAC_data(cursor):
-    for name, data in JAC_data.items():
-        prize_count = data["prize_count"]
-        play_count = data["play_count"]
-        play_bet = data["play_bet"]
-        cursor.execute("""INSERT OR IGNORE INTO JAC_data (name, prize_count, play_count, play_bet)
-                       VALUES (?, ?, ?, ?)""", (name, prize_count, play_count, play_bet))
-
-
-def generate_bonus_data(cursor):
-    for name, data in bonus_data.items():
-        max_payout = data["max_payout"]
-        JACIN_type = data["JACIN_type"]
-        JAC_nums = data["JAC_nums"]
-        before_RT = data["before_RT"]
-        after_RT = data["after_RT"]
-        cursor.execute("""INSERT OR IGNORE INTO bonus_data (name, max_payout, JACIN_type, JAC_nums, before_RT, after_RT)
-                       VALUES (?, ?, ?, ?, ?, ?)""", (name, max_payout, JACIN_type, JAC_nums, before_RT, after_RT))
-
-
-def generate_RT_data(cursor):
-    cursor.executemany("""INSERT OR IGNORE INTO RT_data (name, game, type)
-                    VALUES (?, ?, ?)""", (RT_data))
-    
-def generate_RT_pattern(cursor):
-    for RT, patterns in RT_pattern.items():
-        cursor.execute("SELECT id FROM RT_data WHERE name = (?)", (RT,))
-        RT_row = cursor.fetchone()
-        if RT_row is None:
-            print(f"ERROR")
-            continue
-        RT_id = RT_row[0]
-        for pattern in patterns:
-            cursor.execute("""INSERT OR IGNORE INTO RT_pattern (RT_id, pattern)
-                        VALUES (?, ?)""", (RT_id, pattern))
-        
-
-def generate_vac_pattern(cursor):
-    cursor.execute("""INSERT INTO vac_pattern (pattern) VALUES (?)""", vac_pattern)
-
-#%%
-
-if __name__=="__main__":
-
-    dir = Path(__file__).resolve().parent
-    csv_dir = dir / "csv"
-    sql_path = dir.parent / "database_v2.sql"
-    db_path = dir / "database_v2.db"
-
-    if db_path.exists():
-        try:
-            print("初期化完了")
-            db_path.unlink()
-        except PermissionError:
-            print("他のプログラムが使用中")
-            exit()
-
-    conn = sqlite3.connect(db_path)
-    cursor = conn.cursor()
-
-    with sql_path.open("r", encoding="UTF-8") as f:
-        conn.executescript(f.read())
-    
-    generate_control_table(cursor)
-    generate_role_pattern_priority(cursor)
-    generate_flag_table(cursor)
-    generate_flag_role_map(cursor)
-    generate_flag_combo_priority(cursor)
-    generate_flag_role_priority(cursor)
-    generate_reel_table(cursor)
-    generate_JAC_data(cursor)
-    generate_bonus_data(cursor)
-    generate_RT_data(cursor)
-    generate_RT_pattern(cursor)
-    generate_flag_HUD(cursor)
-    generate_vac_pattern(cursor)
-
-    conn.commit()
-    conn.close()

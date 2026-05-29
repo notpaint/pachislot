@@ -7,7 +7,7 @@ extends Control
 @onready var medal_sum = $"medal_sum"
 
 signal bet(value : int)
-signal bonus(value : int)
+signal bonus(value)
 signal spin()
 signal prized()
 signal bonus_prized(value : String)

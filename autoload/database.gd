@@ -1,7 +1,7 @@
 extends Node
 
 var db : SQLite
-var db_path = "database_v2.db"
+var db_path = "res://db/main.db"
 
 const pattern_sum : int = 21
 
