@@ -4,7 +4,6 @@
 [ext_resource type="Script" uid="uid://cmjo6u52vbx58" path="res://scenes/UI/UI.gd" id="1_thnqs"]
 [ext_resource type="Script" uid="uid://cxmncakshufhi" path="res://scenes/UI/bet_medals.gd" id="2_gl4co"]
 [ext_resource type="Texture2D" uid="uid://ht4jxfx8irfd" path="res://assets/images/UI/spritesheet.png" id="4_gl4co"]
-[ext_resource type="Script" uid="uid://be4fi6jlvrjcm" path="res://scenes/UI/parrot.gd" id="5_lj5up"]
 [ext_resource type="Texture2D" uid="uid://c3srd4eqsih8f" path="res://assets/images/UI/parrot_black.png" id="6_wgnrc"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_gl4co"]
@@ -130,11 +129,11 @@ theme_override_font_sizes/font_size = 50
 horizontal_alignment = 1
 
 [node name="parrot" type="AnimatedSprite2D" parent="UI" unique_id=1566777903]
+visible = false
 position = Vector2(0, 200)
 scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_0odk7")
 speed_scale = 5.0
-script = ExtResource("5_lj5up")
 
 [node name="Sprite2D" type="Sprite2D" parent="UI" unique_id=1131462909]
 visible = false

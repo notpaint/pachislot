@@ -3,9 +3,11 @@ extends AnimatedSprite2D
 var spin = false
 signal spin_started
 
-func _on_bonus(value):
+func _on_bonus_est(value):
     if not value:
         return
+    if not spin:
+        await spin_started
     self.play("default")
     # if value == "None":
     #     if not is_playing():
@@ -29,8 +31,11 @@ func _on_bonus_prized(value):
         frame = 0
 
 func _on_spin():
+    print(spin)
     spin = true
+    print(spin)
     spin_started.emit()
 
 func _on_prized():
+    print("prized")
     spin = false

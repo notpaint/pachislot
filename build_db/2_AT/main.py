@@ -851,7 +851,7 @@ if __name__ == "__main__":
         csv_path = base_path / "csv",
 
         main_sql_path = base_path.parent / "sql" / "main.sql",
-        main_db_path = base_path.parent / "db" / "main.db",
+        main_db_path = base_path.parent.parent/ "db" / "AT" / "main.db",
 
         role_data = role_data,
         flag_data_normal = flag_data_normal,
