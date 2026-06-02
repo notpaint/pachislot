@@ -1,7 +1,8 @@
 [gd_scene format=3 uid="uid://b1mb3sbayuwwg"]
 
+[ext_resource type="Texture2D" uid="uid://c3srd4eqsih8f" path="res://assets/images/UI/parrot_black.png" id="1_66k5d"]
 [ext_resource type="Texture2D" uid="uid://bconqf8kb6ahe" path="res://assets/images/UI/parrot.png" id="1_i1ao7"]
-[ext_resource type="Script" uid="uid://be4fi6jlvrjcm" path="res://scenes/UI/parrot.gd" id="2_i1ao7"]
+[ext_resource type="Script" uid="uid://be4fi6jlvrjcm" path="res://scenes/body/UI/parrot.gd" id="2_i1ao7"]
 [ext_resource type="Texture2D" uid="uid://cuewhqjjwujg2" path="res://assets/images/UI/reverseparrot.png" id="3_66k5d"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_75m15"]
@@ -162,6 +163,11 @@ animations = [{
 
 [node name="A" type="Node2D" unique_id=62441826]
 
+[node name="parrot_off" type="Sprite2D" parent="." unique_id=1620758063]
+position = Vector2(243, 105)
+scale = Vector2(2.3, 2.3)
+texture = ExtResource("1_66k5d")
+
 [node name="parrot" type="AnimatedSprite2D" parent="." unique_id=1513814029]
 position = Vector2(250, 55)
 scale = Vector2(2.3, 2.3)
@@ -170,7 +176,7 @@ speed_scale = 5.0
 script = ExtResource("2_i1ao7")
 
 [node name="reverse_parrot" type="AnimatedSprite2D" parent="." unique_id=2021596194]
-position = Vector2(1000, 55)
+position = Vector2(1010, 55)
 scale = Vector2(2.3, 2.3)
 sprite_frames = SubResource("SpriteFrames_t33g3")
 speed_scale = 5.0

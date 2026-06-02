@@ -813,11 +813,16 @@ HUD_role_data = {
 HUD_flag_data = {
     "middleBell": "中段ベル",
     "upperBell": "上段ベル",
-    "Replay_A": "中段リプレイ",
+    "downBell": "右下がりベル",
+    "middleReplay": "中段リプレイ",
+    "r7_Replay": "赤7リプレイ",
+    "b7_Replay": "青7リプレイ",
+    "fake_Replay": "フェイクリプレイ",
     "Cherry_A": "弱チェリー",
+    "Cherry_B": "強チェリー",
     "downSuica": "右下がりスイカ",
-    "BB1": "BB1",
-    "RB1": "RB1",
+    "middleSuica": "中段スイカ",
+    "RB": "RB",
     "SBB": "超BB",
     "Cherry_A_with_BB1": "弱チェリー+BB1"
 }

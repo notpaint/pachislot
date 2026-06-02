@@ -18,7 +18,6 @@ signal load_weight(value: Dictionary)
 
 func _ready():
 	weight_table = Database.weight_table
-	print(weight_table)
 	connect_signal()
 
 

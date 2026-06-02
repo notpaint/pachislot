@@ -1,0 +1,101 @@
+[gd_scene format=3 uid="uid://cwsebe3rj3wrk"]
+
+[ext_resource type="Script" uid="uid://ckasi0h2d33su" path="res://scenes/body/HUD/HUD.gd" id="1_c0cnr"]
+
+[node name="HUD" type="CanvasLayer" unique_id=636280993]
+offset = Vector2(1500, 0)
+transform = Transform2D(1, 0, 0, 1, 1500, 0)
+
+[node name="HUD" type="Control" parent="." unique_id=227198013]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_c0cnr")
+
+[node name="info" type="PanelContainer" parent="HUD" unique_id=1260329532]
+layout_mode = 0
+offset_right = 660.0
+offset_bottom = 146.0
+
+[node name="info" type="HBoxContainer" parent="HUD/info" unique_id=1788027666]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="est" type="VBoxContainer" parent="HUD/info/info" unique_id=773901035]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HUD/info/info/est" unique_id=1738692154]
+layout_mode = 2
+theme_override_font_sizes/font_size = 52
+text = "成立中"
+
+[node name="Label2" type="Label" parent="HUD/info/info/est" unique_id=1456996462]
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+text = "ー"
+horizontal_alignment = 1
+
+[node name="now" type="VBoxContainer" parent="HUD/info/info" unique_id=1473324546]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HUD/info/info/now" unique_id=1431792376]
+layout_mode = 2
+theme_override_font_sizes/font_size = 52
+text = "作動中"
+
+[node name="Label2" type="Label" parent="HUD/info/info/now" unique_id=1166534242]
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+text = "ー"
+horizontal_alignment = 1
+
+[node name="rt" type="VBoxContainer" parent="HUD/info/info" unique_id=53119738]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HUD/info/info/rt" unique_id=137043638]
+layout_mode = 2
+theme_override_font_sizes/font_size = 52
+text = "RT"
+
+[node name="flag_name" type="RichTextLabel" parent="HUD" unique_id=534987250]
+layout_mode = 0
+offset_top = 146.0
+offset_right = 714.0
+offset_bottom = 260.0
+theme_override_font_sizes/normal_font_size = 40
+bbcode_enabled = true
+
+[node name="result_roles" type="VBoxContainer" parent="HUD" unique_id=369957832]
+layout_mode = 0
+offset_top = 200.0
+offset_right = 40.0
+offset_bottom = 240.0
+
+[node name="reel_result_UI" type="HBoxContainer" parent="HUD" unique_id=845910839]
+visible = false
+layout_mode = 0
+offset_top = 110.0
+offset_right = 419.0
+offset_bottom = 207.0
+
+[node name="L_symbol" type="TextureRect" parent="HUD/reel_result_UI" unique_id=1981899567]
+custom_minimum_size = Vector2(137.5, 97)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="C_symbol" type="TextureRect" parent="HUD/reel_result_UI" unique_id=99072634]
+custom_minimum_size = Vector2(137.5, 97)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="R_symbol" type="TextureRect" parent="HUD/reel_result_UI" unique_id=1913535237]
+custom_minimum_size = Vector2(137.5, 97)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Control" type="Control" parent="HUD" unique_id=229931722]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0

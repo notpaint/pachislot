@@ -15,7 +15,7 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 [application]
 
 config/name="slot"
-run/main_scene="uid://crig6x6kwjswk"
+run/main_scene="uid://dxv8r6xb5xon7"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 

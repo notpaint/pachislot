@@ -11,18 +11,21 @@ var HUD_data : Dictionary
 	$reel_result_UI/R_symbol
 ]
 
-
 @onready var mainROM = $"../../mainROM"
 @onready var flag_name = $flag_name
-@onready var result_role = $"result_role"
+@onready var result_roles = $result_roles
+@onready var est_bonus = $"info/info/est/Label2"
+@onready var now_bonus = $"info/info/now/Label2"
 
 func _ready():
 	HUD_data = Database.HUD_data
 	if mainROM:
 		mainROM.flag.connect(_on_flaged)
+		mainROM.roles.connect(_on_roles)
 		mainROM.prized.connect(_on_prized)
 		mainROM.spin_start.connect(_on_spin_start)
 		mainROM.bonus_est.connect(_on_bonus_est)
+		mainROM.bonus_prized.connect(_on_bonus_prized)
 
 func _on_prized(reel_result):
 	for i in range(3):
@@ -44,9 +47,35 @@ func _on_flaged(result_flag):
 	else:
 		flag_name.text = result_flag
 
+func _on_roles(value):
+	for child in result_roles.get_children():
+		child.queue_free()
+	for i in value.size():
+		var role_name = value[i]["role"]
+		var display_name = role_name
+		if HUD_data.has(role_name):
+			display_name = HUD_data[role_name]
+		var label := Label.new()
+		label.text = display_name
+		result_roles.add_child(label)
+
 func _on_spin_start():
 	for i in range(3):
 		reel_result_image[i].texture = null
 
 func _on_bonus_est(bonus):
-	result_role.text = bonus if bonus else ""
+	if HUD_data.has(bonus):
+		var display_name = HUD_data[bonus]
+		est_bonus.text = display_name
+	else:
+		est_bonus.text = bonus if bonus else "ー"
+
+func _on_bonus_prized(bonus):
+	if HUD_data.has(bonus):
+		var display_name = HUD_data[bonus]
+		now_bonus.text = display_name
+	else:
+		if bonus == "None":
+			now_bonus.text = "ー"
+		else:
+			now_bonus.text = bonus if bonus else "ー"

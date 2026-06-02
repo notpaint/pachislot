@@ -3,7 +3,6 @@ extends Control
 @onready var mainROM = $"../../mainROM"
 
 @onready var bet_medals = $"bet_medals"
-@onready var parrot = $"parrot"
 @onready var medal_sum = $"medal_sum"
 
 signal bet(value : int)
@@ -28,15 +27,6 @@ func _ready():
             mainROM.bonus_prized.connect(_on_bonus_prized)
     if bet_medals and bet_medals.has_method("_on_bet"):
         bet.connect(Callable(bet_medals, "_on_bet"))
-    if parrot:
-        if parrot.has_method("_on_bonus"):
-            bonus.connect(Callable(parrot, "_on_bonus"))
-        if parrot.has_method("_on_spin"):
-            spin.connect(Callable(parrot, "_on_spin"))
-        if parrot.has_method("_on_prized"):
-            prized.connect(Callable(parrot, "_on_prized"))
-        if parrot.has_method("_on_bonus_prized"):
-            bonus_prized.connect(Callable(parrot, "_on_bonus_prized"))
 
 
 func _on_medal_bet(value):
@@ -51,7 +41,7 @@ func _on_bonus_est(value):
 func _on_spin_start():
     spin.emit()
 
-func _on_prized():
+func _on_prized(value):
     prized.emit()
 
 func _on_bonus_prized(value):

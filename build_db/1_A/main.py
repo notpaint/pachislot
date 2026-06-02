@@ -296,11 +296,13 @@ flag_data_3bet = [
     {"name": 'Cherry_A', "weight": 655},
     {"name": 'Cherry_B', "weight": 655},
     {"name": 'downSuica', "weight": 820},
+    {"name": 'middleReplay', "weight": 0},
     {"name": 'RB', "weight": 0},
     {"name": 'redBB', "weight": 0},
     {"name": 'blueBB', "weight": 0},
     {"name": 'vac', "weight": 13107},
     {"name": 'vac', "weight": 35046},
+    {"name": "r7suica", "weight": 0}
 ]
 
 flag_data_1bet = [
@@ -436,6 +438,10 @@ flag_role_map = [
 
     },
     {
+        "flag": "middleReplay",
+        "roles": ["middleReplay"]
+    },
+    {
         "flag": "RB",
         "roles": ["RB"]
     },
@@ -446,6 +452,10 @@ flag_role_map = [
     {
         "flag": "blueBB",
         "roles": ["blueBB"]
+    },
+    {
+        "flag": "r7suica",
+        "roles": ["downSuica", "redBB"]
     }
 ]
 
@@ -457,17 +467,21 @@ flag_role_priority = {
 
 
 HUD_role_data = {
-    "upperBell": {"name": "上段ベル"}
+    "upperBell": "上段ベル",
 }
 
 HUD_flag_data = {
     "middleBell": "中段ベル",
     "upperBell": "上段ベル",
-    "Replay_A": "中段リプレイ",
+    "downBell": "右下がりベル",
+    "middleReplay": "中段リプレイ",
     "Cherry_A": "弱チェリー",
+    "Cherry_B": "強チェリー",
     "downSuica": "右下がりスイカ",
-    "BB1": "BB1",
-    "RB1": "RB1",
+    "middleSuica": "強スイカ",
+    "RB": "RB",
+    "redBB": "赤BB",
+    "blueBB": "青BB",
     "SBB": "超BB",
     "Cherry_A_with_BB1": "弱チェリー+BB1"
 }

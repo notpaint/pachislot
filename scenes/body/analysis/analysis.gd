@@ -12,7 +12,7 @@ var flag_result : String
 @onready var mainROM = $"../mainROM"
 
 func _ready():
-	var relay_path = ProjectSettings.globalize_path("res://scenes/analysis/relay.exe")
+	var relay_path = ProjectSettings.globalize_path("res://scenes/body/analysis/relay.exe")
 	relay_pid = OS.create_process(relay_path, [])
 	udp.set_dest_address(target_IP, target_port)
 

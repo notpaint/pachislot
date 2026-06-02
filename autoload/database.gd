@@ -1,7 +1,12 @@
 extends Node
 
 var db : SQLite
-var db_path = "res://db/main.db"
+
+var db_path = ""
+var db_path_dict = {
+	"A": "res://db/A/main.db",
+	"AT": "res://db/AT/main.db"
+}
 
 const pattern_sum : int = 21
 
@@ -23,9 +28,23 @@ var reel_table : Array = [[],[],[]]
 var HUD_data : Dictionary = {"vac": "ハズレ"}
 
 func _ready():
+	if db_path == "":
+		db_path = db_path_dict["A"]
+
+func load_db(version):
+	if not db_path_dict.has(version):
+		print("!!! Failed to load database for version ", version, ". Defaulting to A !!!")
+		version = "A"
+
+	if db:
+		db.close_db()
+	clear_data()
+
+	db_path = db_path_dict[version]
 	db = SQLite.new()
 	db.path = db_path
 	db.open_db()
+
 	load_data_from_db()
 
 func load_data_from_db():
@@ -43,6 +62,23 @@ func load_data_from_db():
 	load_reel_table()
 	load_HUD_data()
 	load_vac_pattern()
+
+func clear_data():
+	weight_table.clear()
+	flag_table.clear()
+	control_table.clear()
+	pattern_ID_priority.clear()
+	flag_role_priority.clear()
+	flag_combo_priority.clear()
+	all_roles.clear()
+	JAC_data.clear()
+	RT_data.clear()
+	RT_pattern.clear()
+	bonus_data.clear()
+	bonus_variety.clear()
+	reel_table = [[],[],[]]
+	HUD_data = {"vac": "ハズレ"}
+	vac_pattern.clear()
 
 #weight_table(フラグの確率表)作成
 #{"weight_state":[{"flag", "weight"}]}

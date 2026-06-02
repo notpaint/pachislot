@@ -1,0 +1,34 @@
+[gd_scene format=3 uid="uid://bkh121atcpn7j"]
+
+[ext_resource type="PackedScene" uid="uid://bkon8sbn4bepv" path="res://scenes/body/debug/debug.tscn" id="1_b1trv"]
+[ext_resource type="PackedScene" uid="uid://dgo8yji46qgjq" path="res://scenes/body/mainROM/main_rom.tscn" id="2_lsmun"]
+[ext_resource type="PackedScene" uid="uid://cwsebe3rj3wrk" path="res://scenes/body/HUD/hud.tscn" id="3_a17gy"]
+[ext_resource type="PackedScene" uid="uid://c6kdejl5wqyw3" path="res://scenes/body/analysis/analysis.tscn" id="4_k5gax"]
+[ext_resource type="PackedScene" uid="uid://c70j8ea87e5ew" path="res://scenes/body/UI/UI.tscn" id="5_8yn5v"]
+[ext_resource type="PackedScene" uid="uid://qy8yhhsv2mwt" path="res://scenes/body/effects/effects.tscn" id="6_is24f"]
+[ext_resource type="PackedScene" uid="uid://b1mb3sbayuwwg" path="res://scenes/body/display/A.tscn" id="7_ug7sh"]
+[ext_resource type="Script" uid="uid://busj3os64g011" path="res://scenes/body/display/display_A.gd" id="8_jshh8"]
+
+[node name="body" type="Node" unique_id=502036008]
+
+[node name="debug" parent="." unique_id=234602057 instance=ExtResource("1_b1trv")]
+position = Vector2i(732, 92)
+size = Vector2i(800, 600)
+
+[node name="mainROM" parent="." unique_id=1739790333 instance=ExtResource("2_lsmun")]
+metadata/_edit_lock_ = true
+
+[node name="HUD" parent="." unique_id=636280993 instance=ExtResource("3_a17gy")]
+offset = Vector2(1260, 0)
+transform = Transform2D(1, 0, 0, 1, 1260, 0)
+
+[node name="analysis" parent="." unique_id=1302851162 instance=ExtResource("4_k5gax")]
+
+[node name="UI" parent="." unique_id=122271127 instance=ExtResource("5_8yn5v")]
+
+[node name="effects" parent="." unique_id=1805229761 instance=ExtResource("6_is24f")]
+
+[node name="display" type="Node2D" parent="." unique_id=2085006750]
+
+[node name="A" parent="display" unique_id=62441826 instance=ExtResource("7_ug7sh")]
+script = ExtResource("8_jshh8")

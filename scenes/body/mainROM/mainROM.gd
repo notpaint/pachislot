@@ -63,7 +63,12 @@ var result_flag : String = "None": #当選フラグ
 		flag.emit(value)
 		Datahub.result_flag = value
 		
-var result_roles : Array = []
+var result_roles : Array = []:
+	set(value):
+		if result_roles == value:
+			return
+		result_roles = value
+		roles.emit(value)
 
 var bonus_state:  #成立中ボーナス
 	set(value):
@@ -95,7 +100,6 @@ var current_bonus : String = "None":
 			return
 		current_bonus = value
 		bonus_prized.emit(value)
-		print(value)
 		Datahub.current_bonus = value
 
 var RT_game : int = 0
@@ -107,6 +111,7 @@ var max_bonus_payout : int = 0
 var current_bonus_payout : int = 0
 
 signal flag(result_flag)
+signal roles(result_roles)
 signal prized(reel_result)
 signal spin_start()
 signal bonus_est(bonus_state)
@@ -231,10 +236,12 @@ func generate_flag():
 
 
 func generate_role_list():
+	var temp_roles : Array = []
 	if result_flag == "vac":
 		if bonus_state:
 			var current_est_bonus = all_roles[bonus_state]
-			result_roles.append(current_est_bonus)
+			temp_roles.append(current_est_bonus)
+			result_roles = temp_roles
 		return
 	var result_flag_table = flag_table[result_flag]
 	for role in result_flag_table:
@@ -247,11 +254,13 @@ func generate_role_list():
 				continue
 			if bonus_state:
 				continue
-		result_roles.append(role)
+		temp_roles.append(role)
 	
 	if bonus_state:
 		var current_est_bonus = all_roles[bonus_state]
-		result_roles.append(current_est_bonus)
+		temp_roles.append(current_est_bonus)
+
+	result_roles = temp_roles
 
 
 func maxbet():
@@ -818,9 +827,6 @@ func role_prize(matched_role):
 			pass
 		3: #リプレイ
 			bet_medals = 3
-
-
-
 
 func get_matched_role(reel_result):
 	for role in all_roles:

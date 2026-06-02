@@ -1,0 +1,37 @@
+[gd_scene format=3 uid="uid://dxv8r6xb5xon7"]
+
+[ext_resource type="Script" uid="uid://omens04mw81f" path="res://scenes/title/select.gd" id="1_5vtrw"]
+
+[node name="Node" type="Node" unique_id=1471543358]
+
+[node name="select" type="Control" parent="." unique_id=165538532]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1920.0
+offset_bottom = 1080.0
+script = ExtResource("1_5vtrw")
+
+[node name="list" type="VBoxContainer" parent="select" unique_id=1451431764]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -240.0
+offset_top = -135.0
+offset_right = 240.0
+offset_bottom = 135.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 64
+
+[node name="A" type="Button" parent="select/list" unique_id=677126996]
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+text = "A"
+
+[node name="AT" type="Button" parent="select/list" unique_id=306886113]
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+text = "AT"
