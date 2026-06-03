@@ -12,7 +12,7 @@
 [node name="body" type="Node" unique_id=502036008]
 
 [node name="debug" parent="." unique_id=234602057 instance=ExtResource("1_b1trv")]
-position = Vector2i(732, 92)
+position = Vector2i(452, 36)
 size = Vector2i(800, 600)
 
 [node name="mainROM" parent="." unique_id=1739790333 instance=ExtResource("2_lsmun")]

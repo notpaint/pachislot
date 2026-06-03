@@ -14,6 +14,7 @@ var HUD_data : Dictionary
 @onready var mainROM = $"../../mainROM"
 @onready var flag_name = $flag_name
 @onready var result_roles = $result_roles
+@onready var roles = $"result_roles/roles"
 @onready var est_bonus = $"info/info/est/Label2"
 @onready var now_bonus = $"info/info/now/Label2"
 
@@ -48,7 +49,7 @@ func _on_flaged(result_flag):
 		flag_name.text = result_flag
 
 func _on_roles(value):
-	for child in result_roles.get_children():
+	for child in roles.get_children():
 		child.queue_free()
 	for i in value.size():
 		var role_name = value[i]["role"]
@@ -57,7 +58,7 @@ func _on_roles(value):
 			display_name = HUD_data[role_name]
 		var label := Label.new()
 		label.text = display_name
-		result_roles.add_child(label)
+		roles.add_child(label)
 
 func _on_spin_start():
 	for i in range(3):

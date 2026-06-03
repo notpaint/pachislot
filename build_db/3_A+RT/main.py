@@ -128,14 +128,21 @@ role_data = [
       None
       ),
 
-    ('SReplay1', 0, 3,
+    ('SReplay', 0, 3,
+     create_multi_pattern(
+         ("bar", "rep_2", bell_any)
+     ),
+     None
+     ),
+
+    ('TReplay1', 0, 3,
      create_multi_pattern(
          ("suica", rep_any, rep_any)
      ),
      None
      ),
 
-    ('SReplay2', 0, 3,
+    ('TReplay2', 0, 3,
      create_multi_pattern(
          (bell_any, rep_any, bell_any)
      ),
@@ -288,19 +295,19 @@ role_pattern_priority = {
 
 
 # [{'フラグ名', '確率', 'RT状態'}]
+#リプレイは下限8978個
 flag_data_3bet = [
-    {"name": 'middleBell', "weight": 0},
     {"name": 'upperBell', "weight": 3277},
     {"name": 'downBell', 'weight': 3277},
     {"name": 'middleSuica', "weight": 188},
     {"name": 'Cherry_A', "weight": 655},
     {"name": 'Cherry_B', "weight": 655},
     {"name": 'downSuica', "weight": 820},
-    {"name": 'middleReplay', "weight": 0},
+    {"name": 'middleReplay', "weight": 8978, "replace": {"RT4": "SReplay"}},
     {"name": 'RB', "weight": 0},
     {"name": 'redBB', "weight": 0},
     {"name": 'blueBB', "weight": 0},
-    {"name": 'vac', "weight": 13107},
+    {"name": 'vac', "weight": 12640},
     {"name": 'vac', "weight": 35046},
     {"name": "r7suica", "weight": 0}
 ]
@@ -322,7 +329,9 @@ flag_data_normal = {
     "None": {
         "RT0": flag_data_bet,
         "RT1": flag_data_bet,
-        "RT2": flag_data_bet
+        "RT2": flag_data_bet,
+        "RT3": flag_data_bet,
+        "RT4": flag_data_bet
     },
     "RB1": {
         "RT0" : {
@@ -340,16 +349,19 @@ RT_map = {
 #('RT名', 継続ゲーム数, rank{0 = RT0, 1 = ボーナス後or入賞系無限RT, 2 = 入賞系有限RT, 3 = ボーナス成立中RT})
 RT_data = {
     ('RT0', None, 0),#基底RT
-    ('RT1', 30, 1),#BB1終了後RT
+    ('RT1', 30, 2),#入賞系有限RT
     ('RT2', None, 1),#入賞系無限RT
-    ('RT3', 30, 2),#入賞系有限RT
-    ('BB1', None, 3)#BB1成立中RT
+    ('RT3', 30, 1),#BB1終了後RT
+    ('RT4', None, 3)#BB1成立中RT
 }
 
 RT_pattern = {
+    "RT1": [create_multi_pattern(
+        (bell_any, rep_any, bell_any)
+    )],
     "RT2": [create_multi_pattern(
-        (rep_any, bell_any, bell_any)
-    )]
+        ("suica", rep_any, rep_any)
+    )],
 }
 
 
@@ -376,8 +388,8 @@ bonus_data = {
         "max_payout" : 10,
         "JACIN_type" : "RB1",
         "JAC_nums" : json.dumps(JAC_SBB),
-        "before_RT" : None,
-        "after_RT" : "RT0"
+        "before_RT" : "RT4",
+        "after_RT" : "RT3"
     },
     'blueBB': {
         "max_payout" : 5,
@@ -441,6 +453,14 @@ flag_role_map = [
         "roles": ["middleReplay"]
     },
     {
+        "flag": "SReplay",
+        "roles": ["middleReplay", "SReplay"]
+    },
+    {
+        "flag": "TReplay1",
+        "roles": ["middleReplay", "TReplay1"]
+    },
+    {
         "flag": "RB",
         "roles": ["RB"]
     },
@@ -462,6 +482,22 @@ flag_combo_priority = {
 }
 
 flag_role_priority = {
+    # "SReplay" : {
+    #     "default": {
+    #         0 : {
+    #             "middleReplay" : 0,
+    #             "SReplay" : 1
+    #         },
+    #         1 : {
+    #             "middleReplay" : 0,
+    #             "SReplay" : 0
+    #         },
+    #         2 : {
+    #             "middleReplay" : 0,
+    #             "SReplay" : 1
+    #         }
+    #     }
+    # }
 }
 
 
@@ -477,6 +513,7 @@ HUD_flag_data = {
     "Cherry_A": "弱チェリー",
     "Cherry_B": "強チェリー",
     "downSuica": "右下がりスイカ",
+    "SReplay": "リーチ目リプレイ",
     "middleSuica": "強スイカ",
     "RB": "RB",
     "redBB": "赤BB",
@@ -514,7 +551,7 @@ if __name__ == "__main__":
         csv_path = base_path / "csv",
 
         main_sql_path = base_path.parent / "sql" / "main.sql",
-        main_db_path = base_path.parent.parent/ "db" / "A" / "main.db",
+        main_db_path = base_path.parent.parent/ "db" / "A+RT" / "main.db",
 
         role_data = role_data,
         flag_data_normal = flag_data_normal,
@@ -536,3 +573,6 @@ if __name__ == "__main__":
     )
     
     build_main(config)
+    check()
+
+

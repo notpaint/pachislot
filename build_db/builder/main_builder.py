@@ -304,6 +304,8 @@ def generate_vac_pattern(cursor, config):
     cursor.execute("""INSERT INTO vac_pattern (pattern) VALUES (?)""", config.vac_pattern)
 
 def build_main(config):
+    config.main_db_path.parent.mkdir(parents=True, exist_ok=True)
+
     if config.main_db_path.exists():
         config.main_db_path.unlink()
 

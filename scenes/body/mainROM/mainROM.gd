@@ -4,7 +4,7 @@ const pattern_scale : float = 215.0
 const pattern_sum : int = 21
 const reel_length : float = pattern_scale * pattern_sum
 const pattern_per : float = 1.0 / pattern_sum
-const reel_rpm : float = 80.0
+const reel_rpm : float = 80.0 #80.0
 
 var weight_table : Dictionary = {}
 var flag_table : Dictionary = {}
@@ -46,7 +46,7 @@ var is_spinning = [false, false, false]
 var can_stop_reel : Array = [false, false, false]
 
 var max_spin_speed : float = (reel_rpm / 60.0) * reel_length
-var acceleration : float = 6500
+var acceleration : float = 6500 #6500
 var current_spin_speed : Array = [0.0, 0.0, 0.0]
 
 var wait_time : int = 4100 #4100
@@ -128,12 +128,17 @@ signal medal_number(medal_sum)
 @onready var reels = [L_reel, C_reel, R_reel]
 
 func _ready():
+	randomize()
 	connect_to_debug()
 	load_data_from_db()
 
 
 #回転処理
 func _process(delta: float):
+
+	if is_spinning[0] and delta > 0.018:
+		print("warning : frame drop detected. delta =", delta)
+
 	for i in range(3):
 		if is_spinning[i] and (active_tweens[i] == null or not active_tweens[i].is_running()):
 			current_spin_speed[i] = move_toward(current_spin_speed[i], max_spin_speed, acceleration * delta)
@@ -170,7 +175,7 @@ func _unhandled_input(event):
 		print_to_console()
 
 func print_to_console():
-	print(current_bonus)
+	print(bonus_data)
 	# print(current_role_priority)
 	# print(pattern_priority)
 		
@@ -691,10 +696,11 @@ func select_flags(value):
 
 #乱数生成
 func drawing():
-	var loop_duration : int = 65536 * 2
-	var current_time = Time.get_ticks_usec()
-	var current_value: float = current_time % loop_duration
-	var result_value = int(current_value / 2)
+	# var loop_duration : int = 65536 * 2
+	# var current_time = Time.get_ticks_usec()
+	# var current_value: float = current_time % loop_duration
+	# var result_value = int(current_value / 2)]
+	var result_value = randi() % 65536
 	return(result_value)
 
 

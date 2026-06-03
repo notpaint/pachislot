@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://omens04mw81f" path="res://scenes/title/select.gd" id="1_5vtrw"]
 
-[node name="Node" type="Node" unique_id=1471543358]
+[node name="title" type="Node" unique_id=1471543358]
 
 [node name="select" type="Control" parent="." unique_id=165538532]
 layout_mode = 3
@@ -10,6 +10,7 @@ anchors_preset = 0
 offset_right = 1920.0
 offset_bottom = 1080.0
 script = ExtResource("1_5vtrw")
+metadata/_edit_lock_ = true
 
 [node name="list" type="VBoxContainer" parent="select" unique_id=1451431764]
 layout_mode = 1
@@ -35,3 +36,29 @@ text = "A"
 layout_mode = 2
 theme_override_font_sizes/font_size = 64
 text = "AT"
+
+[node name="A_RT" type="Button" parent="select/list" unique_id=1142579548]
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+text = "A+RT
+"
+
+[node name="resolution" type="VBoxContainer" parent="select" unique_id=111455113]
+layout_mode = 0
+offset_right = 300.0
+offset_bottom = 200.0
+
+[node name="1080p" type="Button" parent="select/resolution" unique_id=1479877763]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "1080p"
+
+[node name="720p" type="Button" parent="select/resolution" unique_id=270957982]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "720p"
+
+[node name="Label" type="Label" parent="select" unique_id=1493629924]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0

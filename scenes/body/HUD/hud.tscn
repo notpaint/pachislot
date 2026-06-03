@@ -64,11 +64,15 @@ offset_bottom = 260.0
 theme_override_font_sizes/normal_font_size = 40
 bbcode_enabled = true
 
-[node name="result_roles" type="VBoxContainer" parent="HUD" unique_id=369957832]
+[node name="result_roles" type="HBoxContainer" parent="HUD" unique_id=1413038289]
 layout_mode = 0
-offset_top = 200.0
-offset_right = 40.0
-offset_bottom = 240.0
+offset_top = 260.0
+offset_right = 620.0
+offset_bottom = 580.0
+
+[node name="roles" type="VBoxContainer" parent="HUD/result_roles" unique_id=369957832]
+custom_minimum_size = Vector2(620, 320)
+layout_mode = 2
 
 [node name="reel_result_UI" type="HBoxContainer" parent="HUD" unique_id=845910839]
 visible = false

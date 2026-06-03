@@ -5,7 +5,8 @@ var db : SQLite
 var db_path = ""
 var db_path_dict = {
 	"A": "res://db/A/main.db",
-	"AT": "res://db/AT/main.db"
+	"AT": "res://db/AT/main.db",
+	"A+RT": "res://db/A+RT/main.db"
 }
 
 const pattern_sum : int = 21
@@ -40,7 +41,24 @@ func load_db(version):
 		db.close_db()
 	clear_data()
 
-	db_path = db_path_dict[version]
+	var res_path = db_path_dict[version]
+	var user_path = ""
+
+	if OS.has_feature("editor"):
+		user_path = res_path
+	else:
+		var exe_dir = OS.get_executable_path().get_base_dir()
+		var db_folder = exe_dir + "/db"
+		if not DirAccess.dir_exists_absolute(db_folder):
+			DirAccess.make_dir_absolute(db_folder)
+		var version_folder = db_folder + "/" + version
+		if not DirAccess.dir_exists_absolute(version_folder):
+			DirAccess.make_dir_absolute(version_folder)
+		user_path = version_folder + "/" + "main.db"
+
+		DirAccess.copy_absolute(res_path, user_path)
+
+	db_path = user_path
 	db = SQLite.new()
 	db.path = db_path
 	db.open_db()

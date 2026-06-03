@@ -571,7 +571,7 @@ flag_role_map = [
      },
     {
         "flag": "upperBell",
-        "roles": ["upperBell"]
+        "roles": ["upperBell", "SBB"]
     },
     {
         "flag": "downBell",
@@ -595,15 +595,23 @@ flag_role_map = [
     },
     {
         "flag": "r7_Replay",
-        "roles": ["middleReplay", "fakeReplay", "middleRed7", "middleRed7miss", "middleRB"]
+        "roles": ["middleReplay", "fakeReplay", "middleRed7", "middleRed7miss"]
     },
     {
         "flag": "b7_Replay",
         "roles": ["middleReplay", "fakeReplay", "middleBlue7", "middleBlue7miss", "upperBlue7", "upperBlue7miss"]
     },
     {
+        "flag": "RB_Replay",
+        "roles": ["middleReplay", "fakeReplay", "middleRed7", "middleRed7miss", "middleRB"]
+    },
+    {
+        "flag": "SReplay",
+        "roles": ["middleReplay", "SReplay1", "SReplay2"]
+    },
+    {
         "flag": "fake_Replay",
-        "roles": ["middleReplay", "fakeReplay", "middleRB", "middleRed7miss"]
+        "roles": ["middleReplay", "fakeReplay"]
     },
     {
         "flag": "Cherry_A",
@@ -693,18 +701,15 @@ flag_role_priority = {
         "default" :{
             0 : {
                 "middleReplay" : 1,
-                "middleRB" : 0,
                 "fakeReplay" : 0
             },
             1 : {
                 "middleReplay" : 1,
-                "middleRB" : 2,
                 "fakeReplay" : 0
             },
             2 : {
-                "middleReplay" : 1,
-                "middleRB" : 0,
-                "fakeReplay" : 2
+                "middleReplay" : 0,
+                "fakeReplay" : 1
             }
         }
     },
@@ -714,19 +719,22 @@ flag_role_priority = {
                 "middleReplay" : 1,
                 "fakeReplay" : 0,
                 "middleRed7" : 0,
-                "middleRB" : 0
+                "upwardRed7" : 2,
+                "upwardRed7miss" : 2
             },
             1 : {
-                "middleReplay" : 2,
-                "fakeReplay" : 1,
+                "middleReplay" : 1,
+                "fakeReplay" : 0,
                 "middleRed7" : 0,
-                "middleRB" : 3
+                "upwardRed7" : 2,
+                "upwardRed7miss" : 0
             },
             2 : {
-                "middleReplay" : 2,
-                "fakeReplay" : 1,
+                "middleReplay" : 1,
+                "fakeReplay" : 0,
                 "middleRed7" : 3,
-                "middleRB" : 0
+                "upwardRed7" : 0,
+                "upwardRed7miss" : 0
             }
         }
     },
@@ -850,7 +858,7 @@ if __name__ == "__main__":
         csv_path = base_path / "csv",
 
         main_sql_path = base_path.parent / "sql" / "main.sql",
-        main_db_path = base_path.parent.parent/ "db" / "AT" / "main.db",
+        main_db_path = base_path.parent.parent/ "db" / "ART" / "main.db",
 
         role_data = role_data,
         flag_data_normal = flag_data_normal,

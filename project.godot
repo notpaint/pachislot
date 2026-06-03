@@ -17,6 +17,7 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 config/name="slot"
 run/main_scene="uid://dxv8r6xb5xon7"
 config/features=PackedStringArray("4.6", "Forward Plus")
+run/max_fps=60
 config/icon="res://icon.svg"
 
 [autoload]
@@ -29,8 +30,12 @@ Datahub="*uid://bk3o6v2v2670w"
 window/size/viewport_width=1920
 window/size/viewport_height=1080
 window/subwindows/embed_subwindows=false
-window/stretch/mode="canvas_items"
+window/stretch/mode="viewport"
+window/stretch/aspect="expand"
 window/per_pixel_transparency/allowed=true
+window/vsync/vsync_mode=0
+window/size/width=1280
+window/size/height=720
 
 [editor_plugins]
 
@@ -96,4 +101,6 @@ debug_popup={
 
 [rendering]
 
-renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="forward_plus"
+2d/snap/snap_2d_transforms_to_pixel=true
+2d/snap/snap_2d_vertices_to_pixel=true
