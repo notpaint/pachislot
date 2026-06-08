@@ -9,6 +9,8 @@ sys.path.insert(0, str(ROOT))
 from builder.build_config import MainBuildConfig
 from builder.main_builder import build_main
 
+from sub import sub_config
+
 #%%
 
 def get_combo(L, C, R):
@@ -370,6 +372,7 @@ bonus_data = {
         "JACIN_type" : "RB1",
         "JAC_nums" : None,
         "before_RT" : None,
+        "present_RT": "RT0",
         "after_RT" : "RT0"
     },
     'redBB': {
@@ -377,6 +380,7 @@ bonus_data = {
         "JACIN_type" : "RB1",
         "JAC_nums" : json.dumps(JAC_SBB),
         "before_RT" : None,
+        "present_RT": "RT0",
         "after_RT" : "RT0"
     },
     'blueBB': {
@@ -384,6 +388,7 @@ bonus_data = {
         "JACIN_type" : "RB1",
         "JAC_nums" : json.dumps(JAC_SBB),
         "before_RT" : None,
+        "present_RT": "RT0",
         "after_RT" : "RT0"
     }
 }

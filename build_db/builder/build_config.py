@@ -45,3 +45,18 @@ class MainBuildConfig:
             1: self.csv_path / "C_slide.csv",
             2: self.csv_path / "R_slide.csv"
         }
+    
+@dataclass
+class SubBuildConfig:
+    base_path: Path
+
+    main_db_path: Path
+
+    sub_sql_path: Path
+    sub_db_path: Path
+
+    SE: dict
+    bonus_music: dict
+
+    RT_music: dict = field(default_factory=dict)
+    AT_music: dict = field(default_factory=dict)

@@ -33,8 +33,12 @@ func _ready():
 		db_path = db_path_dict["A"]
 
 func load_db(version):
+	load_main_db(version)
+	sub.load_sub_db(version)
+
+func load_main_db(version):
 	if not db_path_dict.has(version):
-		print("!!! Failed to load database for version ", version, ". Defaulting to A !!!")
+		print("!!! Failed to load main.db for version ", version, ". Defaulting to A !!!")
 		version = "A"
 
 	if db:

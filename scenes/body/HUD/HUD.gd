@@ -15,11 +15,13 @@ var HUD_data : Dictionary
 @onready var flag_name = $flag_name
 @onready var result_roles = $result_roles
 @onready var roles = $"result_roles/roles"
-@onready var est_bonus = $"info/info/est/Label2"
-@onready var now_bonus = $"info/info/now/Label2"
+@onready var est_bonus = $"info/info/est/status"
+@onready var now_bonus = $"info/info/now/status"
+@onready var RT_name = $"info/info/rt/status/name"
+@onready var RT_count = $"info/info/rt/status/count"
 
 func _ready():
-	HUD_data = Database.HUD_data
+	HUD_data = main.HUD_data
 	if mainROM:
 		mainROM.flag.connect(_on_flaged)
 		mainROM.roles.connect(_on_roles)
@@ -27,6 +29,7 @@ func _ready():
 		mainROM.spin_start.connect(_on_spin_start)
 		mainROM.bonus_est.connect(_on_bonus_est)
 		mainROM.bonus_prized.connect(_on_bonus_prized)
+		mainROM.now_RT.connect(_on_now_RT)
 
 func _on_prized(reel_result):
 	for i in range(3):
@@ -80,3 +83,10 @@ func _on_bonus_prized(bonus):
 			now_bonus.text = "ー"
 		else:
 			now_bonus.text = bonus if bonus else "ー"
+
+func _on_now_RT(RT):
+	if RT == "None" or RT == "":
+		RT_name.text = "RT0"
+	else:
+		RT_name.text = RT
+	

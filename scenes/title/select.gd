@@ -22,21 +22,21 @@ func _on_A_pressed():
 	if loading:
 		return
 	loading = true
-	Database.load_db("A")
+	main.load_db("A")
 	get_tree().change_scene_to_file("res://scenes/body/body.tscn")
 
 func _on_AT_pressed():
 	if loading:
 		return
 	loading = true
-	Database.load_db("AT")
+	main.load_db("AT")
 	get_tree().change_scene_to_file("res://scenes/body/body.tscn")
 
 func _on_A_RT_pressed():
 	if loading:
 		return
 	loading = true
-	Database.load_db("A+RT")
+	main.load_db("A+RT")
 	get_tree().change_scene_to_file("res://scenes/body/body.tscn")
 
 func _on_highres_pressed():

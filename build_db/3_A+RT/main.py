@@ -9,6 +9,9 @@ sys.path.insert(0, str(ROOT))
 from builder.build_config import MainBuildConfig
 from builder.main_builder import build_main
 
+from builder.sub_builder import build_sub
+from sub import sub_config
+
 #%%
 
 def get_combo(L, C, R):
@@ -186,6 +189,8 @@ role_data = [
          ("rep_2", "suica", "bell_1"),
          ("rep_2", "b7", "r7"),
          ("rep_2", "bar", "r7"),
+         ("b7", "suica", "cherry"),
+         ("b7", "suica", "b7"),
          (bell_any, suica_group, "suica"),
          (bell_any, suica_group, rep_any)
      )
@@ -297,19 +302,40 @@ role_pattern_priority = {
 # [{'フラグ名', '確率', 'RT状態'}]
 #リプレイは下限8978個
 flag_data_3bet = [
-    {"name": 'upperBell', "weight": 3277},
-    {"name": 'downBell', 'weight': 3277},
-    {"name": 'middleSuica', "weight": 188},
-    {"name": 'Cherry_A', "weight": 655},
-    {"name": 'Cherry_B', "weight": 655},
-    {"name": 'downSuica', "weight": 820},
-    {"name": 'middleReplay', "weight": 8978, "replace": {"RT4": "SReplay"}},
-    {"name": 'RB', "weight": 0},
-    {"name": 'redBB', "weight": 0},
+    {"name": 'upperBell', "weight": 1639},
+    {"name": 'downBell', 'weight': 1639},
+
+    {"name": 'Cherry_A', "weight": 328},
+    {"name": 'Cherry_A_with_redBB', "weight": 14},
+    {"name": 'Cherry_A_with_RB', "weight": 14},
+
+    {"name": 'downSuica', "weight": 410},
+    {"name": 'middleSuica', "weight": 0},
+
+    {"name": 'middleReplay', "weight": 4489, "replace": {"RT3": "TReplay1", "RT4": "SReplay"}},
+
+    {"name": 'vac', "weight": 13295},
+    {"name": 'RB', "weight": 197},
+    {"name": 'redBB', "weight": 197},
     {"name": 'blueBB', "weight": 0},
-    {"name": 'vac', "weight": 12640},
-    {"name": 'vac', "weight": 35046},
-    {"name": "r7suica", "weight": 0}
+
+    {"name": 'upperBell', "weight": 1639},
+    {"name": 'downBell', 'weight': 1639},
+
+    {"name": 'Cherry_A', "weight": 328},
+    {"name": 'Cherry_A_with_redBB', "weight": 14},
+    {"name": 'Cherry_A_with_RB', "weight": 14},
+
+    {"name": 'downSuica', "weight": 410},
+    {"name": 'middleSuica', "weight": 0},
+
+    {"name": 'middleReplay', "weight": 4489, "replace": {"RT3": "TReplay1", "RT4": "SReplay"}},
+
+    {"name": 'vac', "weight": 34387},
+    {"name": 'RB', "weight": 197},
+    {"name": 'redBB', "weight": 197},
+    {"name": 'blueBB', "weight": 0}
+
 ]
 
 flag_data_1bet = [
@@ -382,13 +408,15 @@ bonus_data = {
         "JACIN_type" : "RB1",
         "JAC_nums" : None,
         "before_RT" : None,
+        "present_RT": None,
         "after_RT" : "RT0"
     },
     'redBB': {
         "max_payout" : 10,
         "JACIN_type" : "RB1",
         "JAC_nums" : json.dumps(JAC_SBB),
-        "before_RT" : "RT4",
+        "before_RT" : None,
+        "present_RT": None,
         "after_RT" : "RT3"
     },
     'blueBB': {
@@ -396,6 +424,7 @@ bonus_data = {
         "JACIN_type" : "RB1",
         "JAC_nums" : json.dumps(JAC_SBB),
         "before_RT" : None,
+        "present_RT": None,
         "after_RT" : "RT0"
     }
 }
@@ -482,22 +511,22 @@ flag_combo_priority = {
 }
 
 flag_role_priority = {
-    # "SReplay" : {
-    #     "default": {
-    #         0 : {
-    #             "middleReplay" : 0,
-    #             "SReplay" : 1
-    #         },
-    #         1 : {
-    #             "middleReplay" : 0,
-    #             "SReplay" : 0
-    #         },
-    #         2 : {
-    #             "middleReplay" : 0,
-    #             "SReplay" : 1
-    #         }
-    #     }
-    # }
+    "TReplay1" : {
+        "default": {
+            0 : {
+                "middleReplay" : 1,
+                "TReplay1" : 0
+            },
+            1 : {
+                "middleReplay" : 1,
+                "TReplay1" : 0
+            },
+            2 : {
+                "middleReplay" : 0,
+                "TReplay1" : 1
+            }
+        }
+    }
 }
 
 
@@ -573,6 +602,8 @@ if __name__ == "__main__":
     )
     
     build_main(config)
+
+    build_sub(sub_config)
     check()
 
 

@@ -441,7 +441,12 @@ func table_logic(supposed_symbols, control_data, reel_pos, base_ID):
 
 	if not miss_slides.is_empty():
 		miss_slides.sort()
-		return(miss_slides[0])
+		var slide = miss_slides[0]
+		var selected_symbol = supposed_symbols[slide]["symbol"]
+		miss_patterns = miss_patterns.filter(
+			func(pattern): return pattern[reel_pos] == selected_symbol
+		)
+		return(slide)
 
 	return(4)
 
@@ -498,7 +503,13 @@ func control_logic(supposed_symbols, valid_role, reel_pos):
 			var miss = all_roles[role]["miss_pattern"]
 			if miss:
 				for pattern in miss:
-					ghosts.append(pattern)
+					var valid_ghost = true
+					for i in range(reel_pos):
+						if pattern[i] != current_reel[i] and not current_reel[i].is_empty():
+							valid_ghost = false
+							break
+					if valid_ghost:
+						ghosts.append(pattern)
 		if not ghosts.is_empty():
 			return(miss_route(supposed_symbols, ghosts, reel_pos))
 	
@@ -519,8 +530,15 @@ func miss_route(supposed_symbols, ghosts, reel_pos):
 				miss_slides.append(i)
 				current_miss_patterns.append(miss_pattern)
 	if not current_miss_patterns.is_empty():
-		miss_patterns = current_miss_patterns
-		return(miss_slides[0])
+		var slide = miss_slides[0]
+		var selected_symbol = supposed_symbols[slide]["symbol"]
+
+		miss_patterns = current_miss_patterns.filter(
+			func(pattern): return pattern[reel_pos] == selected_symbol
+		)
+
+		return(slide)
+	miss_patterns = []
 	
 	return(dodge_invalid_role(supposed_symbols, reel_pos))
 
@@ -644,20 +662,20 @@ func vac_control_logic(supposed_symbols, reel_pos):
 
 #フラグデータ読み込み
 func load_data_from_db():
-	weight_table = Database.weight_table
-	flag_table = Database.flag_table
-	all_roles = Database.all_roles
-	bonus_variety = Database.bonus_variety
-	control_table = Database.control_table
-	vac_pattern = Database.vac_pattern
-	pattern_ID_priority = Database.pattern_ID_priority
-	flag_role_priority = Database.flag_role_priority
-	flag_combo_priority = Database.flag_combo_priority
-	JAC_data = Database.JAC_data
-	RT_data = Database.RT_data
-	RT_pattern = Database.RT_pattern
-	bonus_data = Database.bonus_data
-	reel_table = Database.reel_table
+	weight_table = main.weight_table
+	flag_table = main.flag_table
+	all_roles = main.all_roles
+	bonus_variety = main.bonus_variety
+	control_table = main.control_table
+	vac_pattern = main.vac_pattern
+	pattern_ID_priority = main.pattern_ID_priority
+	flag_role_priority = main.flag_role_priority
+	flag_combo_priority = main.flag_combo_priority
+	JAC_data = main.JAC_data
+	RT_data = main.RT_data
+	RT_pattern = main.RT_pattern
+	bonus_data = main.bonus_data
+	reel_table = main.reel_table
 
 #デバッグデータベース接続
 func connect_to_debug():

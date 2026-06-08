@@ -17,13 +17,14 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 config/name="slot"
 run/main_scene="uid://dxv8r6xb5xon7"
 config/features=PackedStringArray("4.6", "Forward Plus")
-run/max_fps=60
+run/max_fps=120
 config/icon="res://icon.svg"
 
 [autoload]
 
-Database="*uid://r6sw4rn3726c"
+main="*uid://r6sw4rn3726c"
 Datahub="*uid://bk3o6v2v2670w"
+sub="*uid://22aurmn63jqh"
 
 [display]
 

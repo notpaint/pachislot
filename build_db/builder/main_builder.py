@@ -1,6 +1,5 @@
 import sqlite3
 import csv
-import sqlite3
 
 def generate_flag_list(seq, RT_mode = None):
     flag_list = []
@@ -278,9 +277,10 @@ def generate_bonus_data(cursor, config):
         JACIN_type = data["JACIN_type"]
         JAC_nums = data["JAC_nums"]
         before_RT = data["before_RT"]
+        present_RT = data["present_RT"]
         after_RT = data["after_RT"]
-        cursor.execute("""INSERT OR IGNORE INTO bonus_data (name, max_payout, JACIN_type, JAC_nums, before_RT, after_RT)
-                       VALUES (?, ?, ?, ?, ?, ?)""", (name, max_payout, JACIN_type, JAC_nums, before_RT, after_RT))
+        cursor.execute("""INSERT OR IGNORE INTO bonus_data (name, max_payout, JACIN_type, JAC_nums, before_RT, present_RT, after_RT)
+                       VALUES (?, ?, ?, ?, ?, ?, ?)""", (name, max_payout, JACIN_type, JAC_nums, before_RT, present_RT, after_RT))
 
 
 def generate_RT_data(cursor, config):

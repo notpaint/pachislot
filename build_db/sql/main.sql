@@ -28,11 +28,13 @@ CREATE TABLE JAC_data(
 );
 
 CREATE TABLE bonus_data(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT,
     max_payout INT,
     JACIN_type TEXT,
     JAC_nums TEXT,
     before_RT TEXT,
+    present_RT TEXT,
     after_RT TEXT
 );
 

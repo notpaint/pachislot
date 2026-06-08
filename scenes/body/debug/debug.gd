@@ -17,7 +17,7 @@ var current_weight_table = {}
 signal load_weight(value: Dictionary)
 
 func _ready():
-	weight_table = Database.weight_table
+	weight_table = main.weight_table
 	connect_signal()
 
 
