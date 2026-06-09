@@ -8,6 +8,7 @@ var db_path_dict = {
 	"AT": "res://db/AT/sub.db",
 	"A+RT": "res://db/A+RT/sub.db"
 }
+var current_version: String
 
 var bonus_music: Dictionary = {}
 
@@ -20,6 +21,8 @@ func load_sub_db(version):
     if not db_path_dict.has(version):
         print("!!! Failed to load sub.db for version ", version, ". Defaulting to A !!!")
         version = "A"
+    
+    current_version = version
 
     if db:
         db.close_db()
@@ -57,16 +60,22 @@ func load_data_from_db():
     print(bonus_music)
 
 func generate_bonus_music():
-    db.query("SELECT bonus, jingle, track_name, start, loop, end, next FROM bonus_music")
+    db.query("SELECT bonus, stop, jingle, rule, track_name, start, loop, end, next FROM bonus_music")
     var results = db.query_result
 
     for row in results:
         var bonus = row["bonus"]
+        var stop_json = row["stop"]
+        stop_json = JSON.parse_string(stop_json)
         var jingle = row["jingle"]
+        var rule_array = row["rule"]
+        rule_array = JSON.parse_string(rule_array)
         var track_name = row["track_name"]
         if not bonus_music.has(bonus):
             bonus_music[bonus] = {
+                "stop": stop_json,
                 "jingle": jingle,
+                "rule": rule_array,
                 "tracks": {}
             }
 
@@ -76,3 +85,5 @@ func generate_bonus_music():
             "end": row["end"],
             "next": row["next"]
         }
+
+        

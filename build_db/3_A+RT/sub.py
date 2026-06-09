@@ -1,6 +1,4 @@
 from pathlib import Path
-import itertools
-import json
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -23,7 +21,19 @@ SE = {
 
 bonus_music = {
     "RB" : {
+        "stop":{
+            0: None,
+            1: None,
+            2: None
+        },
         "jingle": None,
+        "rule": [
+            {
+                "priority": 0,
+                "track": "main",
+                "cond": "default"
+            }
+        ],
         "tracks": {
             "main": {
                 "start": "res://assets/music/shake2/RB/REG_start.ogg",
@@ -33,7 +43,24 @@ bonus_music = {
         }
     },
     "redBB": {
+        "stop":{
+            0: None,
+            1: None,
+            2: None
+        },
         "jingle": "res://assets/SE/shake2/BB_jingle.ogg",
+        "rule": [
+            {
+                "priority": 0,
+                "track": "first_part1",
+                "cond": "default"
+            },
+            {
+                "priority": 1,
+                "track": "second",
+                "cond": "now_RT == true"
+            }
+        ],
         "tracks":{
             "first_part1": {
                 "start": "res://assets/music/shake2/redBB/I_love_you_baby/part1/I_love_you_baby_start_part1.ogg",

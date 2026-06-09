@@ -9,6 +9,7 @@ sys.path.insert(0, str(ROOT))
 from builder.build_config import MainBuildConfig
 from builder.main_builder import build_main
 
+from builder.sub_builder import build_sub
 from sub import sub_config
 
 #%%
@@ -149,10 +150,12 @@ role_data = [
          ("r7", "r7", "bar")
      ),
      create_multi_pattern(
+         ("rep_1", "r7", "r7"),
          ("rep_2", "bar", "r7"),
          ("rep_2", "b7", "r7"),
          (bell_any, suica_group, "suica"),
-         (bell_any, suica_group, rep_any)
+         (bell_any, suica_group, rep_any),
+         ("r7", "r7", "blank")
      ),
     ),
 

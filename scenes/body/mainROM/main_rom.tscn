@@ -13,9 +13,9 @@ clip_contents = true
 custom_minimum_size = Vector2(1260, 639)
 layout_mode = 3
 anchors_preset = 0
-offset_top = 213.0
+offset_top = 215.0
 offset_right = 1260.0
-offset_bottom = 852.0
+offset_bottom = 854.0
 
 [node name="L_reel" type="Node2D" parent="window" unique_id=1352300546]
 
@@ -66,3 +66,21 @@ centered = false
 position = Vector2(0, -9030)
 texture = ExtResource("4_70mst")
 centered = false
+
+[node name="L_reel_window" type="Line2D" parent="." unique_id=1970926767]
+position = Vector2(0, 215)
+points = PackedVector2Array(0, 0, 0, 639, 420, 639, 420, 0, 0, 0)
+width = 8.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="C_reel_window" type="Line2D" parent="." unique_id=1212797244]
+position = Vector2(420, 215)
+points = PackedVector2Array(0, 0, 0, 639, 420, 639, 420, 0, 0, 0)
+width = 8.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="R_reel_window" type="Line2D" parent="." unique_id=559359542]
+position = Vector2(840, 215)
+points = PackedVector2Array(0, 0, 0, 639, 420, 639, 420, 0, 0, 0)
+width = 8.0
+default_color = Color(0, 0, 0, 1)

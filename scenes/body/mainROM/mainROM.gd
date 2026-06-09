@@ -21,7 +21,7 @@ var bonus_data : Dictionary = {}
 var bonus_variety : Array = []
 
 var reel_table : Array = [[],[],[]]
-var current_reel : Array = [[],[],[]]
+var current_reel : Array = ["", "" ,""]
 var miss_patterns: Array = []
 var current_control_table : Array = []
 var current_role_priority : Dictionary = {}
@@ -120,6 +120,7 @@ signal now_RT(current_RT)
 signal now_JAC(current_JAC)
 signal medal_bet(bet_medals)
 signal medal_number(medal_sum)
+signal reel_stopped(current_reel)
 
 @onready var L_reel = $window/L_reel
 @onready var C_reel = $window/C_reel
@@ -210,7 +211,7 @@ func start_spin():
 
 
 func clear_current_data():
-	current_reel = [[],[],[]]
+	current_reel = ["", "", ""]
 	result_flag = "None"
 	valid_roles = []
 	current_role_priority = {}
@@ -786,6 +787,8 @@ func stop_reels(slide, current_pixel, raw_ID, reel_pos):
 
 	if active_tweens[reel_pos]:
 		active_tweens[reel_pos].kill()
+
+	reel_stopped.emit(current_reel)
 	
 	if not is_spinning[0] and not is_spinning[1] and not is_spinning[2]:
 		while Input.is_anything_pressed():

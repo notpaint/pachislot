@@ -1,4 +1,5 @@
 import sqlite3
+import json
 
 def generate_SE(corsor, config):
     pass
@@ -9,7 +10,9 @@ def generate_bonus_music(cursor_main, cursor_sub, config):
         if cursor_main.fetchone() is None:
             print(f"ERROR on generate_bonus_music: {bonus} does not exists in main.db")
             continue
+        stop = json.dumps(music_data.get("stop"))
         jingle = music_data.get("jingle")
+        rule = json.dumps(music_data.get("rule"))
         tracks = music_data.get("tracks", {})
         for track_name, track_info in tracks.items():
             start = track_info.get("start")
@@ -17,9 +20,9 @@ def generate_bonus_music(cursor_main, cursor_sub, config):
             end = track_info.get("end")
             next = track_info.get("next")
 
-            cursor_sub.execute("""INSERT OR IGNORE INTO bonus_music(bonus, jingle, track_name, start, loop, end, next)
-                           VALUES(?, ?, ?, ?, ?, ?, ?)
-                           """, (bonus, jingle, track_name, start, loop, end, next))
+            cursor_sub.execute("""INSERT OR IGNORE INTO bonus_music(bonus, stop, jingle, rule, track_name, start, loop, end, next)
+                           VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)
+                           """, (bonus, stop, jingle, rule, track_name, start, loop, end, next))
             
 def build_sub(config):
 

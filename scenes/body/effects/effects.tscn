@@ -1,12 +1,106 @@
 [gd_scene format=3 uid="uid://qy8yhhsv2mwt"]
 
-[ext_resource type="Script" uid="uid://dyrqrc1calxh1" path="res://scenes/body/effects/sound.gd" id="1_4wp5r"]
+[ext_resource type="Script" uid="uid://dyrqrc1calxh1" path="res://scenes/body/effects/audio.gd" id="1_4wp5r"]
+[ext_resource type="Script" uid="uid://c4yn8q6pvbsat" path="res://scenes/body/effects/effects.gd" id="1_6ruq1"]
 [ext_resource type="Script" uid="uid://bi21r6otx53a0" path="res://scenes/body/effects/music.gd" id="2_f0rvd"]
+[ext_resource type="PackedScene" uid="uid://dgo8yji46qgjq" path="res://scenes/body/mainROM/main_rom.tscn" id="3_m2pnc"]
+[ext_resource type="Shader" uid="uid://dhrp8cb0e31l6" path="res://scenes/body/effects/test.gdshader" id="4_6ruq1"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_voxqf"]
+shader = ExtResource("4_6ruq1")
+shader_parameter/speed = 2.0
+
+[sub_resource type="Gradient" id="Gradient_voxqf"]
+offsets = PackedFloat32Array(0, 0.33333334, 0.6666667, 1)
+colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0)
+metadata/_snap_count = 3
+metadata/_snap_enabled = true
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_6ruq1"]
+gradient = SubResource("Gradient_voxqf")
+use_hdr = true
 
 [node name="Effects" type="Node" unique_id=1805229761]
+script = ExtResource("1_6ruq1")
 
-[node name="sound" type="Node" parent="." unique_id=1886538669]
+[node name="audio" type="Node" parent="." unique_id=1886538669]
 script = ExtResource("1_4wp5r")
 
-[node name="music" type="AudioStreamPlayer" parent="sound" unique_id=1325923433]
+[node name="bonus" type="AudioStreamPlayer" parent="audio" unique_id=1325923433]
 script = ExtResource("2_f0rvd")
+
+[node name="reel_light" type="Node" parent="." unique_id=1083910793]
+
+[node name="L_reel_light" type="Line2D" parent="reel_light" unique_id=745687035]
+visible = false
+z_index = 1
+material = SubResource("ShaderMaterial_voxqf")
+position = Vector2(0, 215)
+points = PackedVector2Array(0, 300, 0, 0, 0, 639, 420, 639, 420, 0, 0, 0, 0, 300)
+width = 8.0
+default_color = Color(1, 1, 0, 1)
+texture = SubResource("GradientTexture1D_6ruq1")
+texture_mode = 2
+
+[node name="C_reel_light" type="Line2D" parent="reel_light" unique_id=579244433]
+visible = false
+z_index = 1
+material = SubResource("ShaderMaterial_voxqf")
+position = Vector2(420, 215)
+points = PackedVector2Array(0, 300, 0, 0, 0, 639, 420, 639, 420, 0, 0, 0, 0, 300)
+width = 7.0
+default_color = Color(1, 1, 0, 1)
+texture = SubResource("GradientTexture1D_6ruq1")
+texture_mode = 2
+
+[node name="R_reel_light" type="Line2D" parent="reel_light" unique_id=400474974]
+visible = false
+z_index = 1
+material = SubResource("ShaderMaterial_voxqf")
+position = Vector2(840, 215)
+points = PackedVector2Array(0, 300, 0, 0, 0, 639, 420, 639, 420, 0, 0, 0, 0, 300)
+width = 7.0
+default_color = Color(1, 1, 0, 1)
+texture = SubResource("GradientTexture1D_6ruq1")
+texture_mode = 2
+
+[node name="all_reel_light" type="Line2D" parent="reel_light" unique_id=1943178352]
+visible = false
+z_index = 1
+material = SubResource("ShaderMaterial_voxqf")
+position = Vector2(0, 215)
+points = PackedVector2Array(630, 0, 0, 0, 0, 639, 1260, 639, 1260, 0, 0, 0, 630, 0)
+width = 7.0
+default_color = Color(1, 1, 0, 1)
+texture = SubResource("GradientTexture1D_6ruq1")
+texture_mode = 2
+
+[node name="order_navi" type="Node2D" parent="." unique_id=1735075571]
+position = Vector2(0, 854)
+
+[node name="L_reel" type="Label" parent="order_navi" unique_id=1113268139]
+offset_left = 195.0
+offset_top = 100.0
+offset_right = 232.0
+offset_bottom = 188.0
+theme_override_font_sizes/font_size = 64
+text = "1"
+
+[node name="C_reel" type="Label" parent="order_navi" unique_id=689870695]
+offset_left = 620.0
+offset_top = 100.0
+offset_right = 657.0
+offset_bottom = 188.0
+theme_override_font_sizes/font_size = 64
+text = "1"
+
+[node name="R_reel" type="Label" parent="order_navi" unique_id=1558658569]
+offset_left = 1040.0
+offset_top = 100.0
+offset_right = 1077.0
+offset_bottom = 188.0
+theme_override_font_sizes/font_size = 64
+text = "1"
+
+[node name="mainROM" parent="." unique_id=1739790333 instance=ExtResource("3_m2pnc")]
+visible = false
