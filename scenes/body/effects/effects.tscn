@@ -3,7 +3,6 @@
 [ext_resource type="Script" uid="uid://dyrqrc1calxh1" path="res://scenes/body/effects/audio.gd" id="1_4wp5r"]
 [ext_resource type="Script" uid="uid://c4yn8q6pvbsat" path="res://scenes/body/effects/effects.gd" id="1_6ruq1"]
 [ext_resource type="Script" uid="uid://bi21r6otx53a0" path="res://scenes/body/effects/music.gd" id="2_f0rvd"]
-[ext_resource type="PackedScene" uid="uid://dgo8yji46qgjq" path="res://scenes/body/mainROM/main_rom.tscn" id="3_m2pnc"]
 [ext_resource type="Shader" uid="uid://dhrp8cb0e31l6" path="res://scenes/body/effects/test.gdshader" id="4_6ruq1"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_voxqf"]
@@ -28,6 +27,9 @@ script = ExtResource("1_4wp5r")
 
 [node name="bonus" type="AudioStreamPlayer" parent="audio" unique_id=1325923433]
 script = ExtResource("2_f0rvd")
+
+[node name="SE" type="AudioStreamPlayer" parent="audio" unique_id=281881813]
+max_polyphony = 5
 
 [node name="reel_light" type="Node" parent="." unique_id=1083910793]
 
@@ -101,6 +103,3 @@ offset_right = 1077.0
 offset_bottom = 188.0
 theme_override_font_sizes/font_size = 64
 text = "1"
-
-[node name="mainROM" parent="." unique_id=1739790333 instance=ExtResource("3_m2pnc")]
-visible = false

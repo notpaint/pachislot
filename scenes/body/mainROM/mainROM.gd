@@ -121,6 +121,7 @@ signal now_JAC(current_JAC)
 signal medal_bet(bet_medals)
 signal medal_number(medal_sum)
 signal reel_stopped(current_reel)
+signal JAC_IN()
 
 @onready var L_reel = $window/L_reel
 @onready var C_reel = $window/C_reel
@@ -912,7 +913,7 @@ func start_bonus(role):
 
 func start_JAC(JAC):
 	current_RT = "RT0"
-	print("JAC_IN")
+	JAC_IN.emit()
 	JAC_game = true
 	JAC_counter = JAC_data[JAC]["counter"].duplicate()
 	current_JAC = JAC

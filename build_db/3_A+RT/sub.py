@@ -8,14 +8,77 @@ from builder.build_config import SubBuildConfig
 from builder.sub_builder import build_sub
 
 SE = {
-    "bet": "res://assets/SE/shake2/bet.ogg",
-    "lever": None,
-    "reel_start" : {
-        "default": "res://assets/SE/shake2/start.ogg"
+    "bet": {
+        "rule": [
+            {
+                "priority": 0,
+                "track": "main",
+                "cond": "default"
+            }
+        ],
+        "sound": {
+            "main": "res://assets/SE/shake2/bet.ogg"
+        }
     },
-    "reel_stop": "res://assets/SE/shake2/stop.ogg",
+    "lever": {
+        "rule" : [
+            {
+                "priority": 0,
+                "track": "main",
+                "cond": "default"
+            }
+        ],
+        "sound": {
+            "main" : None
+        }
+    },
+    "reel_start": {
+        "rule" : [
+            {
+                "priority": 0,
+                "track": "main",
+                "cond": "default"
+            },
+            {
+                "priority": 1,
+                "track": "silent",
+                "cond": "current_bonus != 'None'"
+            }
+        ],
+        "sound": {
+            "main" : "res://assets/SE/shake2/start.ogg",
+            "silent": None
+        }
+    },
+    "reel_stop": {
+        "rule": [
+            {
+                "priority": 0,
+                "track": "main",
+                "cond": "default"
+            },
+            {
+                "priority": 1,
+                "track": "silent",
+                "cond": "current_bonus != 'None'"
+            }
+        ],
+        "sound": {
+            "main": "res://assets/SE/shake2/stop.ogg",
+            "silent": None
+        }
+    },
     "prize": {
-
+        "rule": [
+            {
+                "priority": 0,
+                "track": "main",
+                "cond": "default"
+            }
+        ],
+        "sound":{
+            "main": None
+        }
     }
 }
 
@@ -36,9 +99,8 @@ bonus_music = {
         ],
         "tracks": {
             "main": {
-                "start": "res://assets/music/shake2/RB/REG_start.ogg",
-                "loop": "res://assets/music/shake2/RB/REG_loop.ogg",
-                "end": "res://assets/music/shake2/RB/REG_end.ogg"
+                "start": "res://assets/music/shake2/RB/Twilight Highway_start.ogg",
+                "end": "res://assets/music/shake2/RB/Twilight_highway_end.ogg"
             }
         }
     },
@@ -63,19 +125,16 @@ bonus_music = {
         ],
         "tracks":{
             "first_part1": {
-                "start": "res://assets/music/shake2/redBB/I_love_you_baby/part1/I_love_you_baby_start_part1.ogg",
-                "loop": "res://assets/music/shake2/redBB/I_love_you_baby/part1/I_love_you_baby_loop_part1.ogg",
+                "start": "res://assets/music/shake2/redBB/I_love_you_baby/I_love_you_baby_part1.ogg",
                 "end": None,
                 "next": "first_part2"
                 },
             "first_part2" : {
-                "start": "res://assets/music/shake2/redBB/I_love_you_baby/part2/I_love_you_baby_start_part2.ogg",
-                "loop": "res://assets/music/shake2/redBB/I_love_you_baby/part2/I_love_you_baby_loop_part2.ogg",
+                "start": "res://assets/music/shake2/redBB/I_love_you_baby/I_love_you_baby_part2.ogg",
                 "end": "res://assets/music/shake2/redBB/I_love_you_baby/I_love_you_baby_end.ogg"
                 },
             "second": {
                 "start": "res://assets/music/shake2/redBB/Sense_or_reality/Sense_or_reality_start.ogg",
-                "loop": "res://assets/music/shake2/redBB/Sense_or_reality/Sense_or_reality_loop.ogg",
                 "end": "res://assets/music/shake2/redBB/Sense_or_reality/Sense_or_reality_end.ogg"
             }
         }
@@ -83,17 +142,34 @@ bonus_music = {
 }
 
 RT_music = {
-    "tracks": {
-        "part1": {
-            "start": "res://assets/music/shake2/RT/Into_the_real_start.ogg",
-            "loop": "res://assets/music/shake2/RT/Into_the_real_loop_part1.ogg",
-            "end": "res://assets/music/shake2/RT/Into_the_real_end.ogg",
-            "next": "part2"
-        },
-        "part2": {
-            "start": None,
-            "loop": "res://assets/music/shake2/RT/Into_the_real_loop_part2.ogg",
-            "end": "res://assets/music/shake2/RT/Into_the_real_end.ogg",
+    "RT2": {
+        "rule": [
+            {
+                "priority": 0,
+                "track": "main",
+                "cond": "default"
+            }
+        ],
+        "tracks": {
+            "main": {
+                "start": "res://assets/music/shake2/RT/Into_the_real_part2.ogg",
+                "end": "res://assets/music/shake2/RT/Into_the_real_end.ogg"
+            }
+        }
+    },
+    "RT3": {
+        "rule": [
+            {
+                "priority": 0,
+                "track": "main",
+                "cond": "default"
+            }
+        ],
+        "tracks": {
+            "main": {
+                "start": "res://assets/music/shake2/RT/Into_the_real_part1.ogg",
+                "end": "res://assets/music/shake2/RT/Into_the_real_end.ogg"
+            }
         }
     }
 }

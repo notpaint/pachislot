@@ -10,6 +10,7 @@ var db_path_dict = {
 }
 var current_version: String
 
+var SE_dict: Dictionary = {}
 var bonus_music: Dictionary = {}
 
 func _ready():
@@ -57,10 +58,28 @@ func clear_data():
 
 func load_data_from_db():
     generate_bonus_music()
-    print(bonus_music)
+    generate_SE_dict()
+    print(SE_dict)
+
+func generate_SE_dict():
+    db.query("SELECT name, rule, sound FROM SE")
+    var results = db.query_result
+
+    for row in results:
+        var item = row["name"]
+        var rule_json = row["rule"]
+        rule_json = JSON.parse_string(rule_json)
+        var sound_json = row["sound"]
+        sound_json = JSON.parse_string(sound_json)
+
+        if not SE_dict.has(item):
+            SE_dict[item] = {
+                "rule": rule_json,
+                "sound": sound_json
+            }
 
 func generate_bonus_music():
-    db.query("SELECT bonus, stop, jingle, rule, track_name, start, loop, end, next FROM bonus_music")
+    db.query("SELECT bonus, stop, jingle, rule, track_name, start, end, next FROM bonus_music")
     var results = db.query_result
 
     for row in results:
@@ -81,7 +100,6 @@ func generate_bonus_music():
 
         bonus_music[bonus]["tracks"][track_name] = {
             "start": row["start"],
-            "loop": row["loop"],
             "end": row["end"],
             "next": row["next"]
         }

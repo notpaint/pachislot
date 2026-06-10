@@ -361,7 +361,7 @@ flag_data_normal = {
     },
     "RB1": {
         "RT0" : {
-        1 : flag_data_JAC["RB1"]
+        3 : flag_data_JAC["RB1"]
         }
     }
 }
@@ -375,7 +375,7 @@ RT_map = {
 #('RT名', 継続ゲーム数, rank{0 = RT0, 1 = ボーナス後or入賞系無限RT, 2 = 入賞系有限RT, 3 = ボーナス成立中RT})
 RT_data = {
     ('RT0', None, 0),#基底RT
-    ('RT1', 30, 2),#入賞系有限RT
+    ('RT1', 20, 2),#入賞系有限RT
     ('RT2', None, 1),#入賞系無限RT
     ('RT3', 30, 1),#BB1終了後RT
     ('RT4', None, 3)#BB1成立中RT
@@ -383,10 +383,10 @@ RT_data = {
 
 RT_pattern = {
     "RT1": [create_multi_pattern(
-        (bell_any, rep_any, bell_any)
+        ("suica", rep_any, rep_any)
     )],
     "RT2": [create_multi_pattern(
-        ("suica", rep_any, rep_any)
+        (bell_any, rep_any, bell_any)
     )],
 }
 
@@ -396,9 +396,9 @@ JAC_SBB = [{"weight": 65535, "JAC_type" : "RB1"}]
 
 JAC_data = {
     'RB1' : {
-        "prize_count" : 8,
+        "prize_count" : 2,
         "play_count": 12,
-        "play_bet": 1
+        "play_bet": 3
     }
 }
 
@@ -412,10 +412,10 @@ bonus_data = {
         "after_RT" : "RT0"
     },
     'redBB': {
-        "max_payout" : 10,
+        "max_payout" : 50,
         "JACIN_type" : "RB1",
         "JAC_nums" : json.dumps(JAC_SBB),
-        "before_RT" : None,
+        "before_RT" : "RT4",
         "present_RT": None,
         "after_RT" : "RT3"
     },
