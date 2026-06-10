@@ -15,7 +15,6 @@ def generate_bonus_music(cursor_main, cursor_sub, config):
         if cursor_main.fetchone() is None:
             print(f"ERROR on generate_bonus_music: {bonus} does not exists in main.db")
             continue
-        stop = json.dumps(music_data.get("stop"))
         jingle = music_data.get("jingle")
         rule = json.dumps(music_data.get("rule"))
         tracks = music_data.get("tracks", {})
@@ -24,9 +23,9 @@ def generate_bonus_music(cursor_main, cursor_sub, config):
             end = track_info.get("end")
             next = track_info.get("next")
 
-            cursor_sub.execute("""INSERT OR IGNORE INTO bonus_music(bonus, stop, jingle, rule, track_name, start, end, next)
-                           VALUES(?, ?, ?, ?, ?, ?, ?, ?)
-                           """, (bonus, stop, jingle, rule, track_name, start, end, next))
+            cursor_sub.execute("""INSERT OR IGNORE INTO bonus_music(bonus, jingle, rule, track_name, start, end, next)
+                           VALUES(?, ?, ?, ?, ?, ?, ?)
+                           """, (bonus, jingle, rule, track_name, start, end, next))
             
 def generate_RT_music(cursor_main, cursor_sub, config):
     for RT, music_data in config.RT_music.items():

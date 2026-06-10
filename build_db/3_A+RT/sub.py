@@ -84,11 +84,6 @@ SE = {
 
 bonus_music = {
     "RB" : {
-        "stop":{
-            0: None,
-            1: None,
-            2: None
-        },
         "jingle": None,
         "rule": [
             {
@@ -105,11 +100,6 @@ bonus_music = {
         }
     },
     "redBB": {
-        "stop":{
-            0: None,
-            1: None,
-            2: None
-        },
         "jingle": "res://assets/SE/shake2/BB_jingle.ogg",
         "rule": [
             {

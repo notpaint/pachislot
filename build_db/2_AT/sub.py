@@ -8,21 +8,91 @@ from builder.build_config import SubBuildConfig
 from builder.sub_builder import build_sub
 
 SE = {
-    "bet": "res://assets/SE/otoko/bet.ogg",
-    "lever": None,
-    "reel_start" : {
-        "default": "res://assets/SE/otoko/start.ogg"
+    "bet": {
+        "rule": [
+            {
+                "priority": 0,
+                "track": "main",
+                "cond": "default"
+            }
+        ],
+        "sound": {
+            "main": "res://assets/SE/otoko/bet.ogg"
+        }
     },
-    "reel_stop": "res://assets/SE/otoko/stop.ogg",
+    "lever": {
+        "rule" : [
+            {
+                "priority": 0,
+                "track": "main",
+                "cond": "default"
+            }
+        ],
+        "sound": {
+            "main" : None
+        }
+    },
+    "reel_start": {
+        "rule" : [
+            {
+                "priority": 0,
+                "track": "main",
+                "cond": "default"
+            }
+        ],
+        "sound": {
+            "main" : "res://assets/SE/otoko/start.ogg",
+            "silent": None
+        }
+    },
+    "reel_stop": {
+        "rule": [
+            {
+                "priority": 0,
+                "track": "main",
+                "cond": "default"
+            },
+            {
+                "priority": 1,
+                "track": "SBB",
+                "cond": "current_reel == ['r7', 'b7', 'r7']"
+            }
+        ],
+        "sound": {
+            "main": "res://assets/SE/otoko/stop.ogg",
+            "SBB": "res://assets/SE/otoko2/SBB_stopped.ogg"
+        }
+    },
     "prize": {
-
+        "rule": [
+            {
+                "priority": 0,
+                "track": "main",
+                "cond": "default"
+            }
+        ],
+        "sound":{
+            "main": None
+        }
     }
 }
 
 bonus_music = {
-    "jingle": None,
-    "tracks": {
-
+    "SBB": {
+        "jingle": "res://assets/SE/otoko2/SBB_jingle.ogg",
+        "rule": [
+            {
+                "priority": 0,
+                "track": "main",
+                "cond": "default"
+            }
+        ],
+        "tracks":{
+            "main": {
+                "start": "res://assets/music/otoko2/SBB/SBB_start.ogg",
+                "end": "res://assets/music/otoko2/SBB/SBB_end.ogg",
+            }
+        }
     }
 }
 

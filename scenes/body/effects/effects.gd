@@ -8,6 +8,8 @@ extends Node
 var now_RT = false
 var current_bonus = "None"
 
+var current_reel
+
 var jac_counter: int = 0
 
 signal medal_bet()
@@ -59,6 +61,7 @@ func _on_medal_bet(value):
 	# medal_bet.emit(value)
 
 func _on_reel_stopped(value):
+	current_reel = value
 	audio.play_reel_stop()
 
 func _on_now_RT(value):

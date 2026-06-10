@@ -8,22 +8,100 @@ from builder.build_config import SubBuildConfig
 from builder.sub_builder import build_sub
 
 SE = {
-    "bet": "res://assets/SE/otoko/bet.ogg",
-    "lever": None,
-    "reel_start" : {
-        "default": "res://assets/SE/otoko/start.ogg"
+    "bet": {
+        "rule": [
+            {
+                "priority": 0,
+                "track": "main",
+                "cond": "default"
+            }
+        ],
+        "sound": {
+            "main": "res://assets/SE/otoko/bet.ogg"
+        }
     },
-    "reel_stop": "res://assets/SE/otoko/stop.ogg",
+    "lever": {
+        "rule" : [
+            {
+                "priority": 0,
+                "track": "main",
+                "cond": "default"
+            }
+        ],
+        "sound": {
+            "main" : None
+        }
+    },
+    "reel_start": {
+        "rule" : [
+            {
+                "priority": 0,
+                "track": "main",
+                "cond": "default"
+            }
+        ],
+        "sound": {
+            "main" : "res://assets/SE/otoko/start.ogg",
+            "silent": None
+        }
+    },
+    "reel_stop": {
+        "rule": [
+            {
+                "priority": 0,
+                "track": "main",
+                "cond": "default"
+            }
+        ],
+        "sound": {
+            "main": "res://assets/SE/otoko/stop.ogg"
+        }
+    },
     "prize": {
-
+        "rule": [
+            {
+                "priority": 0,
+                "track": "main",
+                "cond": "default"
+            }
+        ],
+        "sound":{
+            "main": None
+        }
     }
 }
 
 bonus_music = {
     "RB": {
-        "jingle": None,
+        "jingle": "res://assets/SE/otoko/REG_jingle.ogg",
+        "rule": [
+            {
+                "priority": 0,
+                "track": "main",
+                "cond": "default"
+            }
+        ],
         "tracks": {
-
+            "main": {
+                "start": "res://assets/music/otoko/RB/RB_start.ogg",
+                "end": "res://assets/music/otoko/RB/RB_end.ogg"
+            }
+        }
+    },
+    "redBB": {
+        "jingle": "res://assets/SE/otoko/BB_jingle.ogg",
+        "rule": [
+            {
+                "priority": 0,
+                "track": "main",
+                "cond": "default"
+            }
+        ],
+        "tracks": {
+            "main": {
+                "start": "res://assets/music/otoko/BB/todoroki_start.ogg",
+                "end": "res://assets/music/otoko2/BB/todoroki_end.ogg",
+            }
         }
     }
 }

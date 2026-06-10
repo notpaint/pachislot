@@ -876,6 +876,7 @@ if __name__ == "__main__":
     )
     
     build_main(config)
+    build_sub(sub_config)
 
 #%%
 

@@ -20,11 +20,16 @@ func load_SE_dict():
 	SE_dict = sub.SE_dict.duplicate(true)
 	for item in SE_dict:
 		var SE_rules = SE_dict[item]["rule"]
+		SE_rules.sort_custom(sort_rules)
 		for rule in SE_rules:
 			if rule["cond"] != "default":
 				var expr = Expression.new()
 				expr.parse(rule["cond"])
 				rule["parsed"] = expr
+		for track_name in SE_dict[item]["sound"]:
+			var path = SE_dict[item]["sound"][track_name]
+			if path:
+				SE_dict[item]["sound"][track_name] = load(path)
 
 
 func load_bonus_music():
@@ -42,26 +47,27 @@ func play_bet(value):
 	if value != 0:
 		var bet_rules = SE_dict["bet"]["rule"]
 		var bet_track = get_track(bet_rules)
-		var bet_path = SE_dict["bet"]["sound"][bet_track]
-		if bet_path:
-			SE.stream = load(bet_path)
+		var bet_stream = SE_dict["bet"]["sound"][bet_track]
+		if bet_stream:
+			SE.stream = bet_stream
 			SE.play()
+
 
 func play_reel_stop():
 	var stop_rules = SE_dict["reel_stop"]["rule"]
 	var stop_track = get_track(stop_rules)
-	var stop_path = SE_dict["reel_stop"]["sound"][stop_track]
-	if stop_path:
-		SE.stream = load(stop_path)
+	var stop_stream = SE_dict["reel_stop"]["sound"][stop_track]
+	if stop_stream:
+		SE.stream = stop_stream
 		SE.play()
 
 
 func play_spin_start():
 	var start_rules = SE_dict["reel_start"]["rule"]
 	var start_track = get_track(start_rules)
-	var start_path = SE_dict["reel_start"]["sound"][start_track]
-	if start_path:
-		SE.stream = load(start_path)
+	var start_stream = SE_dict["reel_start"]["sound"][start_track]
+	if start_stream:
+		SE.stream = start_stream
 		SE.play()
 	
 
@@ -109,7 +115,6 @@ func play_bonus(value):
 		
 
 func get_track(rules):
-	rules.sort_custom(sort_rules)
 	for rule in rules:
 		var cond = rule["cond"]
 		
