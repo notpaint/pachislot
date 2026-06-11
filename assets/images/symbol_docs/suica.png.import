@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dhkm4lspd74lg"
-path="res://.godot/imported/C_reel.png-aa3cef91a71f74974895aa69437c34a7.ctex"
+uid="uid://dv23508w6bfw4"
+path="res://.godot/imported/suica.png-cc71f29f0b3a2801256bdc9436967ad9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/images/reel_image/C_reel.png"
-dest_files=["res://.godot/imported/C_reel.png-aa3cef91a71f74974895aa69437c34a7.ctex"]
+source_file="res://assets/images/symbol_docs/suica.png"
+dest_files=["res://.godot/imported/suica.png-cc71f29f0b3a2801256bdc9436967ad9.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dhkm4lspd74lg"
-path="res://.godot/imported/C_reel.png-aa3cef91a71f74974895aa69437c34a7.ctex"
+uid="uid://bxc8msg3fm5fa"
+path="res://.godot/imported/rep_1.png-f51ca2f095770fa60e4710114171dd16.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/images/reel_image/C_reel.png"
-dest_files=["res://.godot/imported/C_reel.png-aa3cef91a71f74974895aa69437c34a7.ctex"]
+source_file="res://assets/images/symbol_docs/rep_1.png"
+dest_files=["res://.godot/imported/rep_1.png-f51ca2f095770fa60e4710114171dd16.ctex"]
 
 [params]
 

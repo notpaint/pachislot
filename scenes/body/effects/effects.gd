@@ -33,7 +33,7 @@ func _ready():
 			mainROM.now_RT.connect(_on_now_RT)
 		if mainROM.has_signal("JAC_IN"):
 			mainROM.JAC_IN.connect(_on_JAC_IN)
-	reel_light.flash_all()
+	reel_light.v_flash()
 
 
 func _on_spin_start():

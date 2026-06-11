@@ -110,6 +110,7 @@ theme_override_font_sizes/font_size = 64
 text = "1"
 
 [node name="reel_light" type="Node2D" parent="." unique_id=89732523]
+visible = false
 script = ExtResource("6_fr24f")
 
 [node name="L_upper" type="ColorRect" parent="reel_light" unique_id=1622906407]
