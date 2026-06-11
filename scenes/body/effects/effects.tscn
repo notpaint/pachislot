@@ -4,6 +4,8 @@
 [ext_resource type="Script" uid="uid://c4yn8q6pvbsat" path="res://scenes/body/effects/effects.gd" id="1_6ruq1"]
 [ext_resource type="Script" uid="uid://bi21r6otx53a0" path="res://scenes/body/effects/music.gd" id="2_f0rvd"]
 [ext_resource type="Shader" uid="uid://dhrp8cb0e31l6" path="res://scenes/body/effects/test.gdshader" id="4_6ruq1"]
+[ext_resource type="PackedScene" uid="uid://dgo8yji46qgjq" path="res://scenes/body/mainROM/main_rom.tscn" id="4_fr24f"]
+[ext_resource type="Script" uid="uid://b4dwdd3eenx3f" path="res://scenes/body/effects/reel_light.gd" id="6_fr24f"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_voxqf"]
 shader = ExtResource("4_6ruq1")
@@ -31,9 +33,12 @@ script = ExtResource("2_f0rvd")
 [node name="SE" type="AudioStreamPlayer" parent="audio" unique_id=281881813]
 max_polyphony = 5
 
-[node name="reel_light" type="Node" parent="." unique_id=1083910793]
+[node name="mainROM" parent="." unique_id=1739790333 instance=ExtResource("4_fr24f")]
+visible = false
 
-[node name="L_reel_light" type="Line2D" parent="reel_light" unique_id=745687035]
+[node name="frame_light" type="Node" parent="." unique_id=1083910793]
+
+[node name="L_reel_light" type="Line2D" parent="frame_light" unique_id=745687035]
 visible = false
 z_index = 1
 material = SubResource("ShaderMaterial_voxqf")
@@ -44,7 +49,7 @@ default_color = Color(1, 1, 0, 1)
 texture = SubResource("GradientTexture1D_6ruq1")
 texture_mode = 2
 
-[node name="C_reel_light" type="Line2D" parent="reel_light" unique_id=579244433]
+[node name="C_reel_light" type="Line2D" parent="frame_light" unique_id=579244433]
 visible = false
 z_index = 1
 material = SubResource("ShaderMaterial_voxqf")
@@ -55,7 +60,7 @@ default_color = Color(1, 1, 0, 1)
 texture = SubResource("GradientTexture1D_6ruq1")
 texture_mode = 2
 
-[node name="R_reel_light" type="Line2D" parent="reel_light" unique_id=400474974]
+[node name="R_reel_light" type="Line2D" parent="frame_light" unique_id=400474974]
 visible = false
 z_index = 1
 material = SubResource("ShaderMaterial_voxqf")
@@ -66,7 +71,7 @@ default_color = Color(1, 1, 0, 1)
 texture = SubResource("GradientTexture1D_6ruq1")
 texture_mode = 2
 
-[node name="all_reel_light" type="Line2D" parent="reel_light" unique_id=1943178352]
+[node name="all_reel_light" type="Line2D" parent="frame_light" unique_id=1943178352]
 visible = false
 z_index = 1
 material = SubResource("ShaderMaterial_voxqf")
@@ -103,3 +108,66 @@ offset_right = 1077.0
 offset_bottom = 188.0
 theme_override_font_sizes/font_size = 64
 text = "1"
+
+[node name="reel_light" type="Node2D" parent="." unique_id=89732523]
+script = ExtResource("6_fr24f")
+
+[node name="L_upper" type="ColorRect" parent="reel_light" unique_id=1622906407]
+offset_left = 4.0
+offset_top = 219.0
+offset_right = 416.0
+offset_bottom = 429.0
+
+[node name="L_middle" type="ColorRect" parent="reel_light" unique_id=524051364]
+offset_left = 4.0
+offset_top = 429.0
+offset_right = 416.0
+offset_bottom = 640.0
+
+[node name="L_lower" type="ColorRect" parent="reel_light" unique_id=1891687478]
+offset_left = 4.0
+offset_top = 640.0
+offset_right = 416.0
+offset_bottom = 850.0
+
+[node name="C_upper" type="ColorRect" parent="reel_light" unique_id=132721965]
+offset_left = 424.0
+offset_top = 219.0
+offset_right = 836.0
+offset_bottom = 429.0
+
+[node name="C_middle" type="ColorRect" parent="reel_light" unique_id=2081703638]
+offset_left = 424.0
+offset_top = 429.0
+offset_right = 836.0
+offset_bottom = 640.0
+
+[node name="C_lower" type="ColorRect" parent="reel_light" unique_id=1936791922]
+offset_left = 424.0
+offset_top = 640.0
+offset_right = 836.0
+offset_bottom = 850.0
+
+[node name="R_upper" type="ColorRect" parent="reel_light" unique_id=788608798]
+offset_left = 844.0
+offset_top = 219.0
+offset_right = 1256.0
+offset_bottom = 429.0
+
+[node name="R_middle" type="ColorRect" parent="reel_light" unique_id=1137197617]
+offset_left = 844.0
+offset_top = 429.0
+offset_right = 1256.0
+offset_bottom = 640.0
+
+[node name="R_lower" type="ColorRect" parent="reel_light" unique_id=1822823713]
+offset_left = 844.0
+offset_top = 640.0
+offset_right = 1256.0
+offset_bottom = 850.0
+
+[node name="symbol_light" type="Node2D" parent="." unique_id=41919105]
+
+[node name="L_upper" type="Sprite2D" parent="symbol_light" unique_id=1870194030]
+
+[node name="L_middle" type="Sprite2D" parent="symbol_light" unique_id=1775336138]

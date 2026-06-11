@@ -2,8 +2,9 @@ extends Node
 
 @onready var mainROM = $"../mainROM"
 @onready var audio = $"audio"
-@onready var reel_light = $"reel_light"
+@onready var frame_light = $"frame_light"
 @onready var order_navi = $"order_navi"
+@onready var reel_light = $"reel_light"
 
 var now_RT = false
 var current_bonus = "None"
@@ -32,6 +33,8 @@ func _ready():
 			mainROM.now_RT.connect(_on_now_RT)
 		if mainROM.has_signal("JAC_IN"):
 			mainROM.JAC_IN.connect(_on_JAC_IN)
+	reel_light.flash_all()
+
 
 func _on_spin_start():
 	audio.play_spin_start()
