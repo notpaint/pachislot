@@ -22,6 +22,7 @@ var bonus_variety : Array = []
 
 var reel_table : Array = [[],[],[]]
 var current_reel : Array = ["", "" ,""]
+var current_reel_grid: Array = [["", "", ""], ["", "", ""], ["", "", ""]]
 var miss_patterns: Array = []
 var current_control_table : Array = []
 var current_role_priority : Dictionary = {}
@@ -120,7 +121,7 @@ signal now_RT(current_RT)
 signal now_JAC(current_JAC)
 signal medal_bet(bet_medals)
 signal medal_number(medal_sum)
-signal reel_stopped(current_reel)
+signal reel_stopped(current_reel, current_reel_grid)
 signal JAC_IN()
 
 @onready var L_reel = $window/L_reel
@@ -320,29 +321,38 @@ func try_stop_reel(reel_pos):
 		if result_roles.is_empty():
 			slide = current_control_table[0]["slide"][reel_pos][base_ID]
 			var target_ID = posmod(raw_ID + slide, pattern_sum)
-			current_reel[reel_pos] = reel_table[reel_pos][target_ID]
+			get_current_reel(reel_pos, target_ID)
 			stop_reels(slide,current_pixel ,raw_ID ,reel_pos)
 		else:
 			slide = table_logic(
 				supposed_symbols, current_control_table, reel_pos, base_ID
 				)
 			var target_ID = posmod(raw_ID + slide, pattern_sum)
-			current_reel[reel_pos] = reel_table[reel_pos][target_ID]
+			get_current_reel(reel_pos, target_ID)
 			stop_reels(slide,current_pixel ,raw_ID ,reel_pos)
 	else:
 		if result_roles.is_empty():
 			slide = vac_control_logic(supposed_symbols, reel_pos)
 			var target_ID = posmod(raw_ID + slide, pattern_sum)
-			current_reel[reel_pos] = reel_table[reel_pos][target_ID]
+			get_current_reel(reel_pos, target_ID)
 			stop_reels(slide,current_pixel ,raw_ID ,reel_pos)
 		else:
 			slide = control_logic(
 				supposed_symbols, valid_roles, reel_pos
 				)
 			var target_ID = posmod(raw_ID + slide, pattern_sum)
-			current_reel[reel_pos] = reel_table[reel_pos][target_ID]
+			get_current_reel(reel_pos, target_ID)
 			stop_reels(slide,current_pixel ,raw_ID ,reel_pos)
 
+func get_current_reel(reel_pos, target_ID):
+	var upperID = posmod(int(target_ID + 1), pattern_sum)
+	current_reel_grid[0][reel_pos] = reel_table[reel_pos][upperID]
+
+	current_reel_grid[1][reel_pos] = reel_table[reel_pos][target_ID]
+	current_reel[reel_pos] = reel_table[reel_pos][target_ID]
+
+	var lowerID = posmod(int(target_ID - 1), pattern_sum)
+	current_reel_grid[2][reel_pos] = reel_table[reel_pos][lowerID]
 
 func get_supposed_symbols(base_ID, reel_pos):
 	var supposed_symbols : Array = []
@@ -770,9 +780,6 @@ func stop_reels(slide, current_pixel, raw_ID, reel_pos):
 	var reel = reels[reel_pos]
 	var target_pixel = raw_ID * pattern_scale
 
-	# print(slide)
-	print("slide:", slide, " current:", current_pixel, " target:", target_pixel, " reel_length:", reel_length)
-	
 	target_pixel += (slide * pattern_scale)
 	var target_speed : float = abs(target_pixel - current_pixel) / current_spin_speed[reel_pos]
 	active_tweens[reel_pos] = create_tween()
@@ -789,7 +796,7 @@ func stop_reels(slide, current_pixel, raw_ID, reel_pos):
 	if active_tweens[reel_pos]:
 		active_tweens[reel_pos].kill()
 
-	reel_stopped.emit(current_reel)
+	reel_stopped.emit(current_reel, current_reel_grid)
 	
 	if not is_spinning[0] and not is_spinning[1] and not is_spinning[2]:
 		while Input.is_anything_pressed():

@@ -8,7 +8,9 @@ var db_path_dict = {
 	"AT": "res://db/AT/sub.db",
 	"A+RT": "res://db/A+RT/sub.db"
 }
+
 var current_version: String
+var order_scene_path: String
 
 var SE_dict: Dictionary = {}
 var bonus_music: Dictionary = {}
@@ -51,7 +53,19 @@ func load_sub_db(version):
     db.path = db_path
     db.open_db()
 
+    load_order_scene()
     load_data_from_db()
+
+func load_order_scene():
+    db.query("SELECT data FROM env WHERE name = 'order_scene_path'")
+    var results = db.query_result
+
+    if results:
+        var scene_path = results[0]["data"]
+        if scene_path:
+            order_scene_path = scene_path
+
+
 
 func clear_data():
     pass
@@ -59,7 +73,6 @@ func clear_data():
 func load_data_from_db():
     generate_bonus_music()
     generate_SE_dict()
-    print(SE_dict)
 
 func generate_SE_dict():
     db.query("SELECT name, rule, sound FROM SE")

@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://bo06535hwd5rs"]
+
+[ext_resource type="Script" uid="uid://bm03wylkeeqf4" path="res://scenes/body/effects/order_navi/at_order.gd" id="1_m5rab"]
+
+[node name="AT" type="Node" unique_id=1536722083]
+script = ExtResource("1_m5rab")

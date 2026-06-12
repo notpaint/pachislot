@@ -106,6 +106,10 @@ bonus_music = {
     }
 }
 
+env = {
+     "order_scene_path": None
+}
+
 base_path = Path(__file__).resolve().parent
 
 sub_config = SubBuildConfig(
@@ -118,4 +122,5 @@ sub_config = SubBuildConfig(
 
     SE = SE,
     bonus_music = bonus_music,
+    env = env
 )

@@ -1,3 +1,8 @@
+CREATE TABLE env(
+    name TEXT,
+    data TEXT
+);
+
 CREATE TABLE SE(
     name TEXT,
     rule TEXT,

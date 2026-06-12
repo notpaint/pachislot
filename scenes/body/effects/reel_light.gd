@@ -58,4 +58,4 @@ func stop_flash():
 		flash_tween.kill()
 
 	for rect in get_children():
-		rect.color = Color(0, 0, 0, 0)
+		rect.color.a = 0.0

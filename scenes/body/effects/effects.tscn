@@ -3,9 +3,11 @@
 [ext_resource type="Script" uid="uid://dyrqrc1calxh1" path="res://scenes/body/effects/audio.gd" id="1_4wp5r"]
 [ext_resource type="Script" uid="uid://c4yn8q6pvbsat" path="res://scenes/body/effects/effects.gd" id="1_6ruq1"]
 [ext_resource type="Script" uid="uid://bi21r6otx53a0" path="res://scenes/body/effects/music.gd" id="2_f0rvd"]
-[ext_resource type="Shader" uid="uid://dhrp8cb0e31l6" path="res://scenes/body/effects/test.gdshader" id="4_6ruq1"]
-[ext_resource type="PackedScene" uid="uid://dgo8yji46qgjq" path="res://scenes/body/mainROM/main_rom.tscn" id="4_fr24f"]
+[ext_resource type="Shader" uid="uid://dhrp8cb0e31l6" path="res://scenes/body/effects/reel_light.gdshader" id="4_6ruq1"]
+[ext_resource type="Script" uid="uid://d35dyw0svql3f" path="res://scenes/body/effects/order_navi/order_navi.gd" id="5_an7ao"]
+[ext_resource type="Script" uid="uid://dql0sp6ada15n" path="res://scenes/body/effects/symbol_light.gd" id="6_05fl1"]
 [ext_resource type="Script" uid="uid://b4dwdd3eenx3f" path="res://scenes/body/effects/reel_light.gd" id="6_fr24f"]
+[ext_resource type="Shader" uid="uid://brbv0ltu20sum" path="res://scenes/body/effects/symbol_light.gdshader" id="7_05fl1"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_voxqf"]
 shader = ExtResource("4_6ruq1")
@@ -21,6 +23,11 @@ metadata/_snap_enabled = true
 gradient = SubResource("Gradient_voxqf")
 use_hdr = true
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_05fl1"]
+resource_local_to_scene = true
+shader = ExtResource("7_05fl1")
+shader_parameter/flash_amount = 0.0
+
 [node name="Effects" type="Node" unique_id=1805229761]
 script = ExtResource("1_6ruq1")
 
@@ -32,9 +39,6 @@ script = ExtResource("2_f0rvd")
 
 [node name="SE" type="AudioStreamPlayer" parent="audio" unique_id=281881813]
 max_polyphony = 5
-
-[node name="mainROM" parent="." unique_id=1739790333 instance=ExtResource("4_fr24f")]
-visible = false
 
 [node name="frame_light" type="Node" parent="." unique_id=1083910793]
 
@@ -84,6 +88,7 @@ texture_mode = 2
 
 [node name="order_navi" type="Node2D" parent="." unique_id=1735075571]
 position = Vector2(0, 854)
+script = ExtResource("5_an7ao")
 
 [node name="L_reel" type="Label" parent="order_navi" unique_id=1113268139]
 offset_left = 195.0
@@ -168,7 +173,50 @@ offset_right = 1256.0
 offset_bottom = 850.0
 
 [node name="symbol_light" type="Node2D" parent="." unique_id=41919105]
+visible = false
+script = ExtResource("6_05fl1")
 
 [node name="L_upper" type="Sprite2D" parent="symbol_light" unique_id=1870194030]
+material = SubResource("ShaderMaterial_05fl1")
+position = Vector2(0, 215)
+centered = false
+
+[node name="C_upper" type="Sprite2D" parent="symbol_light" unique_id=1421140612]
+material = SubResource("ShaderMaterial_05fl1")
+position = Vector2(420, 215)
+centered = false
+
+[node name="R_upper" type="Sprite2D" parent="symbol_light" unique_id=32086007]
+material = SubResource("ShaderMaterial_05fl1")
+position = Vector2(840, 215)
+centered = false
 
 [node name="L_middle" type="Sprite2D" parent="symbol_light" unique_id=1775336138]
+material = SubResource("ShaderMaterial_05fl1")
+position = Vector2(0, 430)
+centered = false
+
+[node name="L_lower" type="Sprite2D" parent="symbol_light" unique_id=466704156]
+material = SubResource("ShaderMaterial_05fl1")
+position = Vector2(0, 645)
+centered = false
+
+[node name="C_middle" type="Sprite2D" parent="symbol_light" unique_id=1128087363]
+material = SubResource("ShaderMaterial_05fl1")
+position = Vector2(420, 430)
+centered = false
+
+[node name="C_lower" type="Sprite2D" parent="symbol_light" unique_id=1006846029]
+material = SubResource("ShaderMaterial_05fl1")
+position = Vector2(420, 645)
+centered = false
+
+[node name="R_middle" type="Sprite2D" parent="symbol_light" unique_id=1008713346]
+material = SubResource("ShaderMaterial_05fl1")
+position = Vector2(840, 430)
+centered = false
+
+[node name="R_lower" type="Sprite2D" parent="symbol_light" unique_id=292505851]
+material = SubResource("ShaderMaterial_05fl1")
+position = Vector2(840, 645)
+centered = false

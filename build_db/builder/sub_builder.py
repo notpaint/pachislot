@@ -42,6 +42,10 @@ def generate_RT_music(cursor_main, cursor_sub, config):
             cursor_sub.execute("""INSERT OR IGNORE INTO RT_music(RT, rule, track_name, start, end)
                                VALUES(?, ?, ?, ? ,?)
                                """, (RT, rule, track_name, start, end))
+            
+def generate_env(cursor_sub, config):
+    for name, data in config.env.items():
+        cursor_sub.execute("""INSERT OR IGNORE INTO env(name, data) VALUES(?, ?)""", (name, data))
 
             
 def build_sub(config):
@@ -61,6 +65,7 @@ def build_sub(config):
     generate_bonus_music(cursor_main, cursor_sub, config)
     generate_RT_music(cursor_main, cursor_sub, config)
     generate_SE(cursor_sub, config)
+    generate_env(cursor_sub, config)
 
     conn_sub.commit()
     conn_sub.close()

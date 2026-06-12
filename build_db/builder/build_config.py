@@ -57,6 +57,7 @@ class SubBuildConfig:
 
     SE: dict
     bonus_music: dict
+    env: dict
 
     RT_music: dict = field(default_factory=dict)
     AT_music: dict = field(default_factory=dict)

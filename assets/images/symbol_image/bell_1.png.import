@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://qd7yrbmc28ud"
-path="res://.godot/imported/R_reel.png-64e980280fddd04bf59483cb61425b48.ctex"
+uid="uid://dksx5iueqmkkb"
+path="res://.godot/imported/bell_1.png-8f85a6c93df1a88bd841ca4dc7609181.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/images/reel_image/R_reel.png"
-dest_files=["res://.godot/imported/R_reel.png-64e980280fddd04bf59483cb61425b48.ctex"]
+source_file="res://assets/images/symbol_image/bell_1.png"
+dest_files=["res://.godot/imported/bell_1.png-8f85a6c93df1a88bd841ca4dc7609181.ctex"]
 
 [params]
 

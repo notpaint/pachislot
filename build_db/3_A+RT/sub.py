@@ -164,6 +164,9 @@ RT_music = {
     }
 }
 
+env = {
+    "order_scene_path": "res://scenes/body/effects/order_navi/A+RT.tscn"
+}
 
 base_path = Path(__file__).resolve().parent
 
@@ -177,5 +180,7 @@ sub_config = SubBuildConfig(
 
     SE = SE,
     bonus_music = bonus_music,
-    RT_music = RT_music
+    RT_music = RT_music,
+
+    env = env
 )
