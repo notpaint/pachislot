@@ -96,6 +96,35 @@ bonus_music = {
     }
 }
 
+role_bonus = {
+    "downSuica" : {
+        "Normal": {
+            "bonus" : 0.1
+        }
+    },
+    "Cherry_A" : {
+        "Normal" : {
+            "bonus" : 1.0
+        }
+    },
+    "Cherry_B" : {
+        "Normal": {
+            "bonus": 33.3
+        }
+    },
+    "Special_A": {
+        "Normal": {
+            "bonus": 20.0
+        }
+    },
+    "Special_B": {
+        "Normal": {
+            "bonus": 20.0
+        }
+    }
+}
+
+
 AT_music = {
 
 }

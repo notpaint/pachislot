@@ -27,6 +27,7 @@ use_hdr = true
 resource_local_to_scene = true
 shader = ExtResource("7_05fl1")
 shader_parameter/flash_amount = 0.0
+shader_parameter/dark_amount = 0.0
 
 [node name="Effects" type="Node" unique_id=1805229761]
 script = ExtResource("1_6ruq1")
@@ -86,11 +87,11 @@ default_color = Color(1, 1, 0, 1)
 texture = SubResource("GradientTexture1D_6ruq1")
 texture_mode = 2
 
-[node name="order_navi" type="Node2D" parent="." unique_id=1735075571]
+[node name="order_assist" type="Node2D" parent="." unique_id=1735075571]
 position = Vector2(0, 854)
 script = ExtResource("5_an7ao")
 
-[node name="L_reel" type="Label" parent="order_navi" unique_id=1113268139]
+[node name="L_reel" type="Label" parent="order_assist" unique_id=1113268139]
 offset_left = 195.0
 offset_top = 100.0
 offset_right = 232.0
@@ -98,7 +99,7 @@ offset_bottom = 188.0
 theme_override_font_sizes/font_size = 64
 text = "1"
 
-[node name="C_reel" type="Label" parent="order_navi" unique_id=689870695]
+[node name="C_reel" type="Label" parent="order_assist" unique_id=689870695]
 offset_left = 620.0
 offset_top = 100.0
 offset_right = 657.0
@@ -106,7 +107,7 @@ offset_bottom = 188.0
 theme_override_font_sizes/font_size = 64
 text = "1"
 
-[node name="R_reel" type="Label" parent="order_navi" unique_id=1558658569]
+[node name="R_reel" type="Label" parent="order_assist" unique_id=1558658569]
 offset_left = 1040.0
 offset_top = 100.0
 offset_right = 1077.0
@@ -115,7 +116,6 @@ theme_override_font_sizes/font_size = 64
 text = "1"
 
 [node name="reel_light" type="Node2D" parent="." unique_id=89732523]
-visible = false
 script = ExtResource("6_fr24f")
 
 [node name="L_upper" type="ColorRect" parent="reel_light" unique_id=1622906407]
@@ -123,54 +123,63 @@ offset_left = 4.0
 offset_top = 219.0
 offset_right = 416.0
 offset_bottom = 429.0
+color = Color(0, 0, 0, 1)
 
 [node name="L_middle" type="ColorRect" parent="reel_light" unique_id=524051364]
 offset_left = 4.0
 offset_top = 429.0
 offset_right = 416.0
 offset_bottom = 640.0
+color = Color(0, 0, 0, 1)
 
 [node name="L_lower" type="ColorRect" parent="reel_light" unique_id=1891687478]
 offset_left = 4.0
 offset_top = 640.0
 offset_right = 416.0
 offset_bottom = 850.0
+color = Color(0, 0, 0, 1)
 
 [node name="C_upper" type="ColorRect" parent="reel_light" unique_id=132721965]
 offset_left = 424.0
 offset_top = 219.0
 offset_right = 836.0
 offset_bottom = 429.0
+color = Color(0, 0, 0, 1)
 
 [node name="C_middle" type="ColorRect" parent="reel_light" unique_id=2081703638]
 offset_left = 424.0
 offset_top = 429.0
 offset_right = 836.0
 offset_bottom = 640.0
+color = Color(0, 0, 0, 1)
 
 [node name="C_lower" type="ColorRect" parent="reel_light" unique_id=1936791922]
 offset_left = 424.0
 offset_top = 640.0
 offset_right = 836.0
 offset_bottom = 850.0
+color = Color(0, 0, 0, 1)
 
 [node name="R_upper" type="ColorRect" parent="reel_light" unique_id=788608798]
 offset_left = 844.0
 offset_top = 219.0
 offset_right = 1256.0
 offset_bottom = 429.0
+color = Color(0, 0, 0, 1)
 
 [node name="R_middle" type="ColorRect" parent="reel_light" unique_id=1137197617]
 offset_left = 844.0
 offset_top = 429.0
 offset_right = 1256.0
 offset_bottom = 640.0
+color = Color(0, 0, 0, 1)
 
 [node name="R_lower" type="ColorRect" parent="reel_light" unique_id=1822823713]
 offset_left = 844.0
 offset_top = 640.0
 offset_right = 1256.0
 offset_bottom = 850.0
+color = Color(0, 0, 0, 1)
 
 [node name="symbol_light" type="Node2D" parent="." unique_id=41919105]
 visible = false

@@ -5,7 +5,7 @@ extends Node
 @onready var frame_light = $"frame_light"
 @onready var reel_light = $"reel_light"
 @onready var symbol_light = $"symbol_light"
-@onready var order_navi = $"order_navi"
+@onready var order_assist = $"order_assist"
 
 var now_RT = false
 var current_bonus = "None"
@@ -23,7 +23,7 @@ func _ready():
 	if order_scene_path:
 		var order_scene = load(order_scene_path)
 		var scene = order_scene.instantiate()
-		order_navi.add_child(scene)
+		order_assist.add_child(scene)
 	else:
 		print("押し順無し")
 
@@ -34,6 +34,8 @@ func _ready():
 			mainROM.bonus_prized.connect(_on_bonus_prized)
 		if mainROM.has_signal("medal_bet"):
 			mainROM.medal_bet.connect(_on_medal_bet)
+		if mainROM.has_signal("flag"):
+			mainROM.flag.connect(_on_flag)
 		if mainROM.has_signal("spin_start"):
 			mainROM.spin_start.connect(_on_spin_start)
 		if mainROM.has_signal("reel_stopped"):
@@ -44,7 +46,6 @@ func _ready():
 			mainROM.JAC_IN.connect(_on_JAC_IN)
 		if mainROM.has_signal("prized"):
 			mainROM.prized.connect(_on_prized)
-	# reel_light.v_flash()
 
 
 func _on_spin_start():
@@ -54,6 +55,9 @@ func _on_JAC_IN():
 	jac_counter += 1
 	if jac_counter == 3:
 		jac_count.emit()
+
+func _on_flag(value):
+	print(value)
 
 func _on_bonus_est(value):
 	pass
@@ -69,14 +73,15 @@ func _on_bonus_prized(value):
 
 func _on_medal_bet(value):
 	audio.play_bet(value)
+	reel_light.stop_flash()
+	symbol_light.stop_flash()
 	medal_bet.emit()
-	pass
 	# medal_bet.emit(value)
 
-func _on_prized(_value):
+func _on_prized(value):
 	var current_reel_grid = mainROM.current_reel_grid
-	reel_light.lights_out()
-	symbol_light.v_flash(current_reel_grid)
+	reel_light.replay_flash()
+	# symbol_light.middle_flash(current_reel_grid)
 
 
 func _on_reel_stopped(_current_reel, _current_reel_grid):

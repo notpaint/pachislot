@@ -861,7 +861,7 @@ func role_prize(matched_role):
 		2: #小役
 			pass
 		3: #リプレイ
-			await get_tree().create_timer(0.25).timeout
+			await get_tree().create_timer(0.3).timeout
 			bet_medals = 3
 
 func get_matched_role(reel_result):

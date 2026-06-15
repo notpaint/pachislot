@@ -335,7 +335,6 @@ flag_data_3bet = [
     {"name": 'RB', "weight": 197},
     {"name": 'redBB', "weight": 197},
     {"name": 'blueBB', "weight": 0}
-
 ]
 
 flag_data_1bet = [

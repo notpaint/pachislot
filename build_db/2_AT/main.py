@@ -45,7 +45,7 @@ suica_group = ["suica", "r7", "cherry"]
 
 
 role_data = [
-    ('upperBell', 8, 2,
+    ('upperBell', 3, 2,
      create_multi_pattern(
          (rep_any, "cherry", rep_any),
          (rep_any, "blank", rep_any),
@@ -54,7 +54,7 @@ role_data = [
      None
      ),
 
-     ('downBell', 8, 2,
+     ('downBell', 3, 2,
       create_multi_pattern(
           (rep_any, bell_any, "suica"),
           (rep_any, bell_any, "bar"),
@@ -189,7 +189,7 @@ role_data = [
      None
      ),
 
-    ('Cherry_A', 2, 2,
+    ('Cherry_A', 1, 2,
        create_multi_pattern(
         ("bar", "bar", bell_any),
         ("bar", "cherry", bell_any),
@@ -201,7 +201,7 @@ role_data = [
        )
        ),
 
-    ('Cherry_B', 2, 2,
+    ('Cherry_B', 1, 2,
      create_multi_pattern(
          ("bar", "bar", "suica"),
          ("bar", "bar", "b7"),
@@ -222,7 +222,7 @@ role_data = [
      )
      ),
 
-    ('downSuica', 5, 2,
+    ('downSuica', 8, 2,
      create_multi_pattern(
          (bell_any, "suica", "cherry")
      ),
@@ -234,7 +234,7 @@ role_data = [
      )
      ),
 
-    ('middleSuica', 5, 2,
+    ('middleSuica', 8, 2,
     create_multi_pattern(
         ("suica", "suica", "suica")
     ),
@@ -242,6 +242,20 @@ role_data = [
          ("suica", suica_group, rep_any)
      )
     ),
+
+    ('Special_A', 1, 2,
+     create_multi_pattern(
+         (bell_any, bell_any, rep_any)
+     ),
+     None
+     ),
+
+     ('Special_B', 1, 2,
+      create_multi_pattern(
+          (rep_any, bell_any, rep_any)
+      ),
+      None
+      ),
 
     ('middleReplay', 0, 3, 
       create_multi_pattern(
@@ -465,23 +479,49 @@ role_pattern_priority = {
 
 # [{'フラグ名', '確率', 'RT状態'}]
 flag_data_3bet = [
-    {"name": 'middleBell', "weight": 0},
-    {"name": 'upperBell', "weight": 3277},
-    {"name": 'downBell', 'weight': 3277},
-    {"name": '213Bell', 'weight':0},
-    {"name": '312Bell', 'weight':0},
-    {"name": '231Bell', 'weight':0},
-    {"name": '321Bell', 'weight':0},
-    {"name": 'r7_Replay', "weight": 4000},
-    {"name": 'b7_Replay', "weight": 188},
-    {"name": 'fake_Replay', "weight": 4978},
-    {"name": 'middleSuica', "weight": 188},
-    {"name": 'Cherry_A', "weight": 655},
-    {"name": 'Cherry_B', "weight": 655},
-    {"name": 'downSuica', "weight": 820},
-    {"name": 'vac', "weight": 13107},
-    {"name": 'vac', "weight": 35046},
-    {"name": 'RB_Replay', "weight": 0}
+    {"name": 'upperBell', "weight": 1639},
+    {"name": 'downBell', 'weight': 1639},
+
+    {"name": 'Cherry_A', "weight": 328},
+    {"name": 'Cherry_B', "weight": 100},
+
+    {"name": 'downSuica', "weight": 410},
+    {"name": 'middleSuica', "weight": 0},
+
+    {"name": "Special_A", "weight": 110},
+    {"name": "Special_B", "weight": 110},
+
+    {"name": "fake_Replay", "weight": 3000},
+    {"name": 'r7_Replay', "weight": 3000},
+
+    {"name": "213Bell", "weight": 4776},
+    {"name": "312Bell", "weight": 4776},
+    {"name": "231Bell", "weight": 4776},
+    {"name": "321Bell", "weight": 4776},
+
+    {"name": 'vac', "weight": 3328},
+
+    {"name": 'upperBell', "weight": 1639},
+    {"name": 'downBell', 'weight': 1639},
+
+    {"name": 'Cherry_A', "weight": 328},
+    {"name": 'Cherry_B', "weight": 100},
+
+    {"name": 'downSuica', "weight": 410},
+    {"name": 'middleSuica', "weight": 0},
+
+    {"name": "Special_A", "weight": 110},
+    {"name": "Special_B", "weight": 110},
+
+    {"name": "fake_Replay", "weight": 3000},
+    {"name": 'r7_Replay', "weight": 3000},
+
+    {"name": "213Bell", "weight": 4776},
+    {"name": "312Bell", "weight": 4776},
+    {"name": "231Bell", "weight": 4776},
+    {"name": "321Bell", "weight": 4776},
+
+    {"name": 'vac', "weight": 3328}
 ]
 
 flag_data_1bet = [
@@ -611,11 +651,11 @@ flag_role_map = [
     },
     {
         "flag": "Cherry_A",
-        "roles": ["Cherry_A"]
+        "roles": ["Cherry_A", "dummyBell_13"]
     },
     {
         "flag": "Cherry_B",
-        "roles": ["Cherry_B"]
+        "roles": ["Cherry_B", "dummyBell_13"]
     },
     {
         "flag": "downSuica",
@@ -627,8 +667,12 @@ flag_role_map = [
 
     },
     {
-        "flag": "RB1",
-        "roles": ["RB1"]
+        "flag": "Special_A",
+        "roles": ["Special_A"]
+    },
+    {
+        "flag": "Special_B",
+        "roles": ["Special_B"]
     }
 ]
 
@@ -877,6 +921,7 @@ if __name__ == "__main__":
     
     build_main(config)
     build_sub(sub_config)
+    check()
 
 #%%
 
