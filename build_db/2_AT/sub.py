@@ -96,7 +96,7 @@ bonus_music = {
     }
 }
 
-role_bonus = {
+flag_trigger = {
     "downSuica" : {
         "Normal": {
             "bonus" : 0.1
@@ -114,12 +114,147 @@ role_bonus = {
     },
     "Special_A": {
         "Normal": {
-            "bonus": 20.0
+            "bonus": 15.0
         }
     },
     "Special_B": {
         "Normal": {
-            "bonus": 20.0
+            "bonus": 15.0
+        }
+    }
+}
+
+pseudo_bonus_mode = {
+    "A": {
+        "release": {
+            49 : {"weight": 1, "premonition": 5},
+            99 : {"weight": 4},
+            256 : {"weight": 60},
+            512 : {"weight": 35}
+        },
+        "map": {
+            "A": 70,
+            "B": 25,
+            "C": 1,
+            "Heaven": 4
+        },
+        "ratio": {
+            "map": {
+                "r7BIG": 50,
+                "REG": 50
+            },
+            "flag": {
+                "r7BIG": 50,
+                "REG": 50  
+            }
+        }
+    },
+    "B": {
+        "release": {
+            49 : {"weight": 1, "premonition": 5},
+            99 : {"weight": 4},
+            128 : {"weight": 20},
+            384 : {"weight": 30},
+            512 : {"weight": 45}
+        },
+        "map": {
+            "B": 50,
+            "C": 5,
+            "Heaven": 45
+        },
+        "ratio": {
+            "map": {
+                "r7BIG": 25,
+                "REG": 75
+            },
+            "flag": {
+                "r7BIG": 40,
+                "REG": 60
+            }
+        }
+    },
+    "C": {
+        "release": {
+            49 : {"weight": 1, "premonition": 20},
+            99 : {"weight": 4},
+            256 : {"weight": 25},
+            512 : {"weight": 70}
+        },
+        "map": {
+            "C": 20,
+            "Heaven": 80
+        },
+        "ratio": {
+            "map": {
+                "r7BIG": 50,
+                "REG": 50
+            },
+            "flag": {
+                "r7BIG": 50,
+                "REG": 50
+            }
+        }
+    },
+    "Heaven": {
+        "release": {
+            49: {"weight": 40},
+            99: {"weight": 60}
+        },
+        "map": {
+            "A": 30,
+            "B": 25,
+            "C": 5,
+            "Heaven": 40
+        },
+        "ratio": {
+            "map": {
+                "r7BIG": 70,
+                "REG": 30
+            },
+            "flag": {
+                "r7BIG": 80,
+                "REG": 20
+            }
+        }
+    }
+}
+
+
+premonition_map = {
+    "pseudo": {
+        "map": {
+            "default": {
+                "fake": {
+                    8: 15, 9: 5, 10: 15, 11: 5, 12: 15, 13: 5, 14: 15, 15: 5, 16: 20
+                    },
+                "win": {
+                    7: 5, 8: 10, 9: 10, 10: 10, 11: 10, 12: 10, 13: 10, 14: 10, 15: 10, 16: 15
+                }
+            }
+        },
+        "flag": {
+            "default": {
+                "fake": {
+                    8: 15, 9: 5, 10: 15, 11: 5, 12: 15, 13: 5, 14: 15, 15: 5, 16: 20
+                },
+                "win": {
+                    7: 5, 8: 10, 9: 10, 10: 10, 11: 10, 12: 10, 13: 10, 14: 10, 15: 10, 16: 15
+                }
+            },
+            "Cherry_A": {
+                "win": {
+                    6: 100
+                }
+            }
+        }
+    },
+    "real": {
+        "flag": {
+            "default": {
+                "win": {
+                    1: 100
+                }
+            }
         }
     }
 }
@@ -146,5 +281,10 @@ sub_config = SubBuildConfig(
     SE = SE,
     bonus_music = bonus_music,
     AT_music = AT_music,
+
+    flag_trigger = flag_trigger,
+    pseudo_bonus_mode = pseudo_bonus_mode,
+    premonition_map = premonition_map,
+
     env = env
 )

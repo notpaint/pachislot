@@ -61,8 +61,9 @@ var result_flag : String = "None": #当選フラグ
 		if result_flag == value:
 			return
 		result_flag = value
-		flag.emit(value)
-		Datahub.result_flag = value
+		if value != "None":
+			flag.emit(value)
+			Datahub.result_flag = value
 		
 var result_roles : Array = []:
 	set(value):
@@ -178,7 +179,7 @@ func _unhandled_input(event):
 		print_to_console()
 
 func print_to_console():
-	print(bonus_data)
+	print(sub.mode_data)
 	# print(current_role_priority)
 	# print(pattern_priority)
 		

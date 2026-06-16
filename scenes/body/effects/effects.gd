@@ -14,12 +14,16 @@ var jac_counter: int = 0
 var order_scene_path:String
 
 signal medal_bet()
+signal main_flag(value)
 signal jac_count()
 signal bonus_end()
 signal prized()
 
 func _ready():
 	order_scene_path = sub.order_scene_path
+
+	for child in order_assist.get_children():
+		child.queue_free()
 	if order_scene_path:
 		var order_scene = load(order_scene_path)
 		var scene = order_scene.instantiate()
@@ -28,25 +32,27 @@ func _ready():
 		print("押し順無し")
 
 	if mainROM:
-		if mainROM.has_signal("bonus_est"):
-			mainROM.bonus_est.connect(_on_bonus_est)
-		if mainROM.has_signal("bonus_prized"):
-			mainROM.bonus_prized.connect(_on_bonus_prized)
-		if mainROM.has_signal("medal_bet"):
-			mainROM.medal_bet.connect(_on_medal_bet)
-		if mainROM.has_signal("flag"):
-			mainROM.flag.connect(_on_flag)
-		if mainROM.has_signal("spin_start"):
-			mainROM.spin_start.connect(_on_spin_start)
-		if mainROM.has_signal("reel_stopped"):
-			mainROM.reel_stopped.connect(_on_reel_stopped)
-		if mainROM.has_signal("now_RT"):
-			mainROM.now_RT.connect(_on_now_RT)
-		if mainROM.has_signal("JAC_IN"):
-			mainROM.JAC_IN.connect(_on_JAC_IN)
-		if mainROM.has_signal("prized"):
-			mainROM.prized.connect(_on_prized)
+		connect_to_mainROM()
 
+func connect_to_mainROM():
+	if mainROM.has_signal("bonus_est"):
+		mainROM.bonus_est.connect(_on_bonus_est)
+	if mainROM.has_signal("bonus_prized"):
+		mainROM.bonus_prized.connect(_on_bonus_prized)
+	if mainROM.has_signal("medal_bet"):
+		mainROM.medal_bet.connect(_on_medal_bet)
+	if mainROM.has_signal("flag"):
+		mainROM.flag.connect(_on_flag)
+	if mainROM.has_signal("spin_start"):
+		mainROM.spin_start.connect(_on_spin_start)
+	if mainROM.has_signal("reel_stopped"):
+		mainROM.reel_stopped.connect(_on_reel_stopped)
+	if mainROM.has_signal("now_RT"):
+		mainROM.now_RT.connect(_on_now_RT)
+	if mainROM.has_signal("JAC_IN"):
+		mainROM.JAC_IN.connect(_on_JAC_IN)
+	if mainROM.has_signal("prized"):
+		mainROM.prized.connect(_on_prized)
 
 func _on_spin_start():
 	audio.play_spin_start()
@@ -57,7 +63,7 @@ func _on_JAC_IN():
 		jac_count.emit()
 
 func _on_flag(value):
-	print(value)
+	main_flag.emit(value)
 
 func _on_bonus_est(value):
 	pass

@@ -25,4 +25,49 @@ CREATE TABLE RT_music(
     track_name TEXT,
     start TEXT,
     end TEXT
+);
+
+CREATE TABLE flag_trigger(
+    flag TEXT,
+    state TEXT,
+    data TEXT
+);
+
+CREATE TABLE mode_list(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    mode TEXT UNIQUE
+);
+
+CREATE TABLE mode_release(
+    mode_id INT,
+    game INT,
+    weight INT,
+    premonition INT,
+    FOREIGN KEY(mode_id) REFERENCES mode_list(id)
+);
+
+
+CREATE TABLE mode_map(
+    mode_id INT,
+    next_mode_id INT,
+    weight TEXT,
+    FOREIGN KEY(mode_id) REFERENCES mode_list(id)
+    FOREIGN KEY(next_mode_id) REFERENCES mode_list(id)
+);
+
+CREATE TABLE mode_ratio(
+    mode_ID INT,
+    trigger TEXT,
+    bonus TEXT,
+    weight INT,
+    FOREIGN KEY(mode_id) REFERENCES mode_list(id)
+);
+
+CREATE TABLE premonition_map(
+    type TEXT,
+    trigger TEXT,
+    flag TEXT,
+    is_win INT,
+    game INT,
+    weight INT
 )

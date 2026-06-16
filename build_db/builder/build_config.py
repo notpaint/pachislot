@@ -61,3 +61,7 @@ class SubBuildConfig:
 
     RT_music: dict = field(default_factory=dict)
     AT_music: dict = field(default_factory=dict)
+
+    flag_trigger: dict = field(default_factory=dict)
+    pseudo_bonus_mode:dict = field(default_factory=dict)
+    premonition_map: dict = field(default_factory=dict)
