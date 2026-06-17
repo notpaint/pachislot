@@ -56,7 +56,7 @@ var last_spin_time : int = 0
 
 var active_tweens : Array[Tween] = [null, null, null]
 
-var effects_seed : int
+var effects_seeds : PackedInt32Array
 
 var result_flag : String = "None": #当選フラグ
 	set(value):
@@ -748,7 +748,7 @@ func drawing_hash(seed_number):
 	var flag_rand = (block2 << 8) + block1
 	var effects_rand = (block4 << 8) + block3
 
-	effects_seed = effects_rand
+	effects_seeds = [effects_rand, flag_rand]
 	return(flag_rand)
 
 

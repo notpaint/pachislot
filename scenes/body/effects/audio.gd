@@ -69,8 +69,6 @@ func play_spin_start():
 	if start_stream:
 		SE.stream = start_stream
 		SE.play()
-	
-
 
 
 func play_bonus(value):

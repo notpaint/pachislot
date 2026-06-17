@@ -10,7 +10,7 @@ extends Node
 var now_RT = false
 var current_bonus = "None"
 
-var effects_seed : int
+var effects_seeds : PackedInt32Array
 
 #16個の8bit乱数
 #AT []
@@ -27,6 +27,7 @@ signal prized()
 
 func _ready():
 	order_scene_path = sub.order_scene_path
+	effects_rands.resize(256)
 
 	for child in order_assist.get_children():
 		child.queue_free()
@@ -69,8 +70,8 @@ func _on_JAC_IN():
 		jac_count.emit()
 
 func _on_flag(value):
-	effects_seed = mainROM.effects_seed
-	effects_rands = drawing_hash_array(effects_seed)
+	effects_seeds = mainROM.effects_seeds
+	drawing_hash_array(effects_seeds)
 	main_flag.emit(value)
 	print(effects_rands)
 
@@ -113,16 +114,18 @@ func bit_array(v):
 		[v & 0xFF, (v >> 8) & 0xFF, (v >> 16) & 0xFF, (v >> 24) & 0xFF]
 	)
 
-func drawing_hash_array(seed_number):
+func drawing_hash_array(seed_numbers):
+	var seed_number = seed_numbers[0]
+	var salt_number = seed_numbers[1]
+
+	var current = (seed_number << 16) + salt_number
+
+	for i in range(64):
+		current = hash(current)
+		var offset = i * 4
+
+		effects_rands[offset] = current & 0xFF
+		effects_rands[offset + 1] = (current >>8) & 0xFF
+		effects_rands[offset + 2] = (current >>16) & 0xFF
+		effects_rands[offset + 3] = (current >>24) & 0xFF
 	
-	var h = hash(seed_number)
-	var i = hash(seed_number + 1)
-
-	var a = hash(h & 0xFFFF)
-	var b = hash((h >> 16) & 0xFFFF)
-
-	var c = hash(i & 0xFFFF)
-	var d = hash((i >> 16) & 0xFFFF)
-
-
-	return PackedByteArray(bit_array(a) + bit_array(b) + bit_array(c) + bit_array(d))
