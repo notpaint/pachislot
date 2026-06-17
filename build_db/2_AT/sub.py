@@ -99,27 +99,27 @@ bonus_music = {
 flag_trigger = {
     "downSuica" : {
         "Normal": {
-            "bonus" : 0.1
+            "bonus" : 1
         }
     },
     "Cherry_A" : {
         "Normal" : {
-            "bonus" : 1.0
+            "bonus" : 4
         }
     },
     "Cherry_B" : {
         "Normal": {
-            "bonus": 33.3
+            "bonus": 86
         }
     },
     "Special_A": {
         "Normal": {
-            "bonus": 15.0
+            "bonus": 39
         }
     },
     "Special_B": {
         "Normal": {
-            "bonus": 15.0
+            "bonus": 39
         }
     }
 }
@@ -127,93 +127,93 @@ flag_trigger = {
 pseudo_bonus_mode = {
     "A": {
         "release": {
-            49 : {"weight": 1, "premonition": 5},
-            99 : {"weight": 4},
-            256 : {"weight": 60},
-            512 : {"weight": 35}
+            49 : {"weight": 3, "premonition": 13},
+            99 : {"weight": 10},
+            256 : {"weight": 154},
+            512 : {"weight": 89}
         },
         "map": {
-            "A": 70,
-            "B": 25,
-            "C": 1,
-            "Heaven": 4
+            "A": 179,
+            "B": 64,
+            "C": 3,
+            "Heaven": 10
         },
         "ratio": {
             "map": {
-                "r7BIG": 50,
-                "REG": 50
+                "r7BIG": 128,
+                "REG": 128
             },
             "flag": {
-                "r7BIG": 50,
-                "REG": 50  
+                "r7BIG": 128,
+                "REG": 128  
             }
         }
     },
     "B": {
         "release": {
-            49 : {"weight": 1, "premonition": 5},
-            99 : {"weight": 4},
-            128 : {"weight": 20},
-            384 : {"weight": 30},
-            512 : {"weight": 45}
+            49 : {"weight": 3, "premonition": 13},
+            99 : {"weight": 10},
+            128 : {"weight": 51},
+            384 : {"weight": 77},
+            512 : {"weight": 115}
         },
         "map": {
-            "B": 50,
-            "C": 5,
-            "Heaven": 45
+            "B": 128,
+            "C": 13,
+            "Heaven": 115
         },
         "ratio": {
             "map": {
-                "r7BIG": 25,
-                "REG": 75
+                "r7BIG": 64,
+                "REG": 192
             },
             "flag": {
-                "r7BIG": 40,
-                "REG": 60
+                "r7BIG": 102,
+                "REG": 154
             }
         }
     },
     "C": {
         "release": {
-            49 : {"weight": 1, "premonition": 20},
-            99 : {"weight": 4},
-            256 : {"weight": 25},
-            512 : {"weight": 70}
+            49 : {"weight": 3, "premonition": 51},
+            99 : {"weight": 10},
+            256 : {"weight": 64},
+            512 : {"weight": 179}
         },
         "map": {
-            "C": 20,
-            "Heaven": 80
+            "C": 51,
+            "Heaven": 205
         },
         "ratio": {
             "map": {
-                "r7BIG": 50,
-                "REG": 50
+                "r7BIG": 128,
+                "REG": 128
             },
             "flag": {
-                "r7BIG": 50,
-                "REG": 50
+                "r7BIG": 128,
+                "REG": 128
             }
         }
     },
     "Heaven": {
         "release": {
-            49: {"weight": 40},
-            99: {"weight": 60}
+            49: {"weight": 102},
+            99: {"weight": 154}
         },
         "map": {
-            "A": 30,
-            "B": 25,
-            "C": 5,
-            "Heaven": 40
+            "A": 77,
+            "B": 64,
+            "C": 13,
+            "Heaven": 102
         },
         "ratio": {
             "map": {
-                "r7BIG": 70,
-                "REG": 30
+                "r7BIG": 179,
+                "REG": 77
             },
             "flag": {
-                "r7BIG": 80,
-                "REG": 20
+                "r7BIG": 205,
+                "REG": 51
             }
         }
     }
@@ -225,25 +225,25 @@ premonition_map = {
         "map": {
             "default": {
                 "fake": {
-                    8: 15, 9: 5, 10: 15, 11: 5, 12: 15, 13: 5, 14: 15, 15: 5, 16: 20
+                    8: 38, 9: 13, 10: 38, 11: 13, 12: 38, 13: 13, 14: 38, 15: 13, 16: 52
                     },
                 "win": {
-                    7: 5, 8: 10, 9: 10, 10: 10, 11: 10, 12: 10, 13: 10, 14: 10, 15: 10, 16: 15
+                    7: 13, 8: 25, 9: 25, 10: 25, 11: 26, 12: 26, 13: 26, 14: 26, 15: 26, 16: 38
                 }
             }
         },
         "flag": {
             "default": {
                 "fake": {
-                    8: 15, 9: 5, 10: 15, 11: 5, 12: 15, 13: 5, 14: 15, 15: 5, 16: 20
+                    8: 38, 9: 13, 10: 38, 11: 13, 12: 38, 13: 13, 14: 38, 15: 13, 16: 52
                 },
                 "win": {
-                    7: 5, 8: 10, 9: 10, 10: 10, 11: 10, 12: 10, 13: 10, 14: 10, 15: 10, 16: 15
+                    7: 13, 8: 25, 9: 25, 10: 25, 11: 26, 12: 26, 13: 26, 14: 26, 15: 26, 16: 38
                 }
             },
             "Cherry_A": {
                 "win": {
-                    6: 100
+                    6: 256
                 }
             }
         }
@@ -252,7 +252,7 @@ premonition_map = {
         "flag": {
             "default": {
                 "win": {
-                    1: 100
+                    1: 256
                 }
             }
         }

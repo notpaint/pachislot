@@ -208,5 +208,3 @@ func generate_premonition_map():
 		if not premonition_map[type][trigger][flag].has(is_win):
 			premonition_map[type][trigger][flag][is_win] = {}
 		premonition_map[type][trigger][flag][is_win][game] = weight
-
-	print(premonition_map)

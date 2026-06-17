@@ -10,6 +10,12 @@ extends Node
 var now_RT = false
 var current_bonus = "None"
 
+var effects_seed : int
+
+#16個の8bit乱数
+#AT []
+var effects_rands: PackedByteArray
+
 var jac_counter: int = 0
 var order_scene_path:String
 
@@ -63,7 +69,10 @@ func _on_JAC_IN():
 		jac_count.emit()
 
 func _on_flag(value):
+	effects_seed = mainROM.effects_seed
+	effects_rands = drawing_hash_array(effects_seed)
 	main_flag.emit(value)
+	print(effects_rands)
 
 func _on_bonus_est(value):
 	pass
@@ -98,3 +107,22 @@ func _on_now_RT(value):
 		now_RT = true
 	elif value == "RT0":
 		now_RT = false
+
+func bit_array(v):
+	return (
+		[v & 0xFF, (v >> 8) & 0xFF, (v >> 16) & 0xFF, (v >> 24) & 0xFF]
+	)
+
+func drawing_hash_array(seed_number):
+	
+	var h = hash(seed_number)
+	var i = hash(seed_number + 1)
+
+	var a = hash(h & 0xFFFF)
+	var b = hash((h >> 16) & 0xFFFF)
+
+	var c = hash(i & 0xFFFF)
+	var d = hash((i >> 16) & 0xFFFF)
+
+
+	return PackedByteArray(bit_array(a) + bit_array(b) + bit_array(c) + bit_array(d))

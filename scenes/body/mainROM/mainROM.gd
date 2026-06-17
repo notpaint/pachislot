@@ -56,6 +56,8 @@ var last_spin_time : int = 0
 
 var active_tweens : Array[Tween] = [null, null, null]
 
+var effects_seed : int
+
 var result_flag : String = "None": #当選フラグ
 	set(value):
 		if result_flag == value:
@@ -735,15 +737,19 @@ func drawing():
 	return(result_value)
 
 func drawing_hash(seed_number):
-	var ctx = HashingContext.new()
-	ctx.start(HashingContext.HASH_MD5)
-	ctx.update(str(seed_number).to_utf8_buffer())
-	var bytes = ctx.finish()
+	
+	var h = hash(seed_number)
 
-	var num = (bytes[0] << 8) + bytes[1]
+	var block1 = h & 0xFF
+	var block2 = (h >> 8) & 0xFF
+	var block3 = (h >> 16) & 0xFF
+	var block4 = (h >> 24) & 0xFF
 
-	print(num)
-	return(num)
+	var flag_rand = (block2 << 8) + block1
+	var effects_rand = (block4 << 8) + block3
+
+	effects_seed = effects_rand
+	return(flag_rand)
 
 
 #当選役の制御テーブル作成

@@ -66,7 +66,7 @@ def generate_pseudo_bonus_mode(cursor_sub, config):
         release_data = data.get("release")
         for game, info in release_data.items():
             weight = info.get("weight", 0)
-            premonition = info.get("premonition", 100)
+            premonition = info.get("premonition", 256)
             cursor_sub.execute("""INSERT OR IGNORE INTO mode_release(mode_id, game, weight, premonition)
                                VALUES(?, ?, ?, ?)""", (mode_id, game, weight, premonition))
         
