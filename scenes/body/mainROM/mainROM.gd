@@ -179,7 +179,7 @@ func _unhandled_input(event):
 		print_to_console()
 
 func print_to_console():
-	print(sub.mode_data)
+	print(weight_table)
 	# print(current_role_priority)
 	# print(pattern_priority)
 		
@@ -234,7 +234,7 @@ func can_spin():
 
 
 func generate_flag():	
-	var rand_num : int = drawing()
+	var rand_num : int = drawing_hash(Time.get_ticks_usec())
 	result_flag = select_flags(rand_num)
 
 	if not Datahub.force_flag == "None":
@@ -733,6 +733,17 @@ func drawing():
 	# var result_value = int(current_value / 2)]
 	var result_value = randi() % 65536
 	return(result_value)
+
+func drawing_hash(seed_number):
+	var ctx = HashingContext.new()
+	ctx.start(HashingContext.HASH_MD5)
+	ctx.update(str(seed_number).to_utf8_buffer())
+	var bytes = ctx.finish()
+
+	var num = (bytes[0] << 8) + bytes[1]
+
+	print(num)
+	return(num)
 
 
 #当選役の制御テーブル作成
