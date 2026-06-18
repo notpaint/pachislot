@@ -1,14 +1,21 @@
 extends Node
 
 @onready var mainROM = $"../mainROM"
+@onready var weight = $"weight"
 @onready var audio = $"audio"
 @onready var frame_light = $"frame_light"
 @onready var reel_light = $"reel_light"
 @onready var symbol_light = $"symbol_light"
 @onready var order_assist = $"order_assist"
 
+var rare_flag = sub.rare_flags
+
 var now_RT = false
+var bonus_state = null
 var current_bonus = "None"
+
+var result_flag: String
+var prized_role: String
 
 var effects_seeds : PackedInt32Array
 
@@ -58,11 +65,14 @@ func connect_to_mainROM():
 		mainROM.now_RT.connect(_on_now_RT)
 	if mainROM.has_signal("JAC_IN"):
 		mainROM.JAC_IN.connect(_on_JAC_IN)
-	if mainROM.has_signal("prized"):
-		mainROM.prized.connect(_on_prized)
+	if mainROM.has_signal("prized_role"):
+		mainROM.prized_role.connect(_on_prized_role)
+	if mainROM.has_signal("prized_array"):
+		mainROM.prized_array.connect(_on_prized_array)
 
 func _on_spin_start():
-	audio.play_spin_start()
+	var track = weight.random_SE("reel_start")
+	audio.play_spin_start(track)
 
 func _on_JAC_IN():
 	jac_counter += 1
@@ -70,13 +80,14 @@ func _on_JAC_IN():
 		jac_count.emit()
 
 func _on_flag(value):
+	result_flag = value
 	effects_seeds = mainROM.effects_seeds
 	drawing_hash_array(effects_seeds)
 	main_flag.emit(value)
 	print(effects_rands)
 
 func _on_bonus_est(value):
-	pass
+	bonus_state = value
 
 func _on_bonus_prized(value):
 	current_bonus = value
@@ -94,9 +105,14 @@ func _on_medal_bet(value):
 	medal_bet.emit()
 	# medal_bet.emit(value)
 
-func _on_prized(value):
+func _on_prized_role(value):
+	if value:
+		prized_role = value["name"]
+		audio.play_prized(value["name"])
+
+func _on_prized_array(value):
 	var current_reel_grid = mainROM.current_reel_grid
-	reel_light.replay_flash()
+	# reel_light.replay_flash()
 	# symbol_light.middle_flash(current_reel_grid)
 
 

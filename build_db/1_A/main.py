@@ -63,7 +63,7 @@ role_data = [
     None
     ),
 
-    ('middleBell', 8, 2,
+    ('middleBell', 12, 2,
       create_multi_pattern(
           (bell_any, bell_any, bell_any)
       ),
@@ -103,7 +103,7 @@ role_data = [
      )
      ),
 
-    ('downSuica', 5, 2,
+    ('downSuica', 8, 2,
      create_multi_pattern(
          (bell_any, "suica", "cherry")
      ),
@@ -115,7 +115,7 @@ role_data = [
      )
      ),
 
-    ('middleSuica', 5, 2,
+    ('middleSuica', 8, 2,
     create_multi_pattern(
         ("suica", "suica", "suica")
     ),
@@ -295,18 +295,17 @@ role_pattern_priority = {
 # [{'フラグ名', '確率', 'RT状態'}]
 flag_data_3bet = [
     {"name": 'middleBell', "weight": 0},
-    {"name": 'upperBell', "weight": 3277},
-    {"name": 'downBell', 'weight': 3277},
-    {"name": 'middleSuica', "weight": 188},
-    {"name": 'Cherry_A', "weight": 655},
-    {"name": 'Cherry_B', "weight": 655},
-    {"name": 'downSuica', "weight": 820},
-    {"name": 'middleReplay', "weight": 0},
-    {"name": 'RB', "weight": 0},
-    {"name": 'redBB', "weight": 0},
+    {"name": 'upperBell', "weight": 4096},
+    {"name": 'downBell', 'weight': 4096},
+    {"name": 'middleSuica', "weight": 0},
+    {"name": 'Cherry_A', "weight": 819},
+    {"name": 'Cherry_B', "weight": 0},
+    {"name": 'downSuica', "weight": 655},
+    {"name": 'middleReplay', "weight": 8973},
+    {"name": 'RB', "weight": 328},
+    {"name": 'redBB', "weight": 328},
     {"name": 'blueBB', "weight": 0},
-    {"name": 'vac', "weight": 13107},
-    {"name": 'vac', "weight": 35046},
+    {"name": 'vac', "weight": 46241},
     {"name": "r7suica", "weight": 0}
 ]
 
@@ -331,7 +330,7 @@ flag_data_normal = {
     },
     "RB1": {
         "RT0" : {
-        1 : flag_data_JAC["RB1"]
+        3 : flag_data_JAC["RB1"]
         }
     }
 }
@@ -352,9 +351,6 @@ RT_data = {
 }
 
 RT_pattern = {
-    "RT2": [create_multi_pattern(
-        (rep_any, bell_any, bell_any)
-    )]
 }
 
 
@@ -365,7 +361,7 @@ JAC_data = {
     'RB1' : {
         "prize_count" : 8,
         "play_count": 12,
-        "play_bet": 1
+        "play_bet": 3
     }
 }
 

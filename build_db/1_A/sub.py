@@ -38,10 +38,47 @@ SE = {
                 "priority": 0,
                 "track": "main",
                 "cond": "default"
+            },
+            {
+                "priority": 1,
+                "track": "chance",
+                "cond": "bonus_state == null and result_flag == 'vac'",
+                "weight": 12
+            },
+            {
+                "priority": 2,
+                "track": "chance",
+                "cond": "bonus_state == null and result_flag != 'vac'",
+                "weight": 25
+            },
+            {
+                "priority": 5,
+                "track": "chance",
+                "cond": "bonus_state == null and result_flag in rare_flag",
+                "weight": 128
+            },
+            {
+                "priority": 6,
+                "track": "chance",
+                "cond": "bonus_state != null and result_flag == 'vac'",
+                "weight": 85
+            },
+            {
+                "priority": 8,
+                "track": "chance",
+                "cond": "bonus_state != null and result_flag != 'vac'",
+                "weight": 128
+            },
+            {
+                "priority": 10,
+                "track": "chance",
+                "cond": "bonus_state != null and result_flag in rare_flag",
+                "weight": 192
             }
         ],
         "sound": {
             "main" : "res://assets/SE/otoko/start.ogg",
+            "chance" : "res://assets/SE/otoko/start_chance.ogg",
             "silent": None
         }
     },
@@ -57,16 +94,22 @@ SE = {
             "main": "res://assets/SE/otoko/stop.ogg"
         }
     },
-    "prize": {
+    "prized": {
         "rule": [
             {
                 "priority": 0,
                 "track": "main",
                 "cond": "default"
+            },
+            {
+                "priority": 1,
+                "track": "downBell",
+                "cond": "current_bonus == 'None' and prized_role == 'downBell'"
             }
         ],
         "sound":{
-            "main": None
+            "main": None,
+            "downBell": "res://assets/SE/otoko/role/downBell.ogg"
         }
     }
 }
@@ -107,7 +150,12 @@ bonus_music = {
 }
 
 env = {
-     "order_scene_path": None
+     "order_scene_path": None,
+     "rare_flag": ["downSuica", "Cherry_A", "redBB", "RB"],
+     "effect_rand": {
+         "lever": 0,
+         "reel_start": 1
+     }
 }
 
 base_path = Path(__file__).resolve().parent

@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dyrqrc1calxh1" path="res://scenes/body/effects/audio.gd" id="1_4wp5r"]
 [ext_resource type="Script" uid="uid://c4yn8q6pvbsat" path="res://scenes/body/effects/effects.gd" id="1_6ruq1"]
+[ext_resource type="Script" uid="uid://d07c3wy8xifu1" path="res://scenes/body/effects/weight.gd" id="2_an7ao"]
 [ext_resource type="Script" uid="uid://bi21r6otx53a0" path="res://scenes/body/effects/music.gd" id="2_f0rvd"]
 [ext_resource type="Shader" uid="uid://dhrp8cb0e31l6" path="res://scenes/body/effects/reel_light.gdshader" id="4_6ruq1"]
 [ext_resource type="Script" uid="uid://d35dyw0svql3f" path="res://scenes/body/effects/order_navi/order_navi.gd" id="5_an7ao"]
@@ -31,6 +32,9 @@ shader_parameter/dark_amount = 0.0
 
 [node name="Effects" type="Node" unique_id=1805229761]
 script = ExtResource("1_6ruq1")
+
+[node name="weight" type="Node" parent="." unique_id=1180865916]
+script = ExtResource("2_an7ao")
 
 [node name="audio" type="Node" parent="." unique_id=1886538669]
 script = ExtResource("1_4wp5r")

@@ -1,6 +1,7 @@
 extends Node
 
 @onready var effects = $".."
+@onready var weight = $"../weight"
 @onready var SE = $"SE"
 @onready var bonus = $"bonus"
 
@@ -13,34 +14,8 @@ var first_bet: bool = true
 var current_bonus: String
 
 func _ready():
-	load_SE_dict()
-	load_bonus_music()
-
-func load_SE_dict():
-	SE_dict = sub.SE_dict.duplicate(true)
-	for item in SE_dict:
-		var SE_rules = SE_dict[item]["rule"]
-		SE_rules.sort_custom(sort_rules)
-		for rule in SE_rules:
-			if rule["cond"] != "default":
-				var expr = Expression.new()
-				expr.parse(rule["cond"])
-				rule["parsed"] = expr
-		for track_name in SE_dict[item]["sound"]:
-			var path = SE_dict[item]["sound"][track_name]
-			if path:
-				SE_dict[item]["sound"][track_name] = load(path)
-
-
-func load_bonus_music():
-	bonus_music = sub.bonus_music.duplicate(true)
-	for value in bonus_music:
-		var bonus_rules = bonus_music[value]["rule"]
-		for rule in bonus_rules:
-			if rule["cond"] != "default":
-				var expr = Expression.new()
-				expr.parse(rule["cond"])
-				rule["parsed"] = expr
+	SE_dict = weight.SE_dict
+	bonus_music = weight.bonus_music
 
 
 func play_bet(value):
@@ -62,10 +37,16 @@ func play_reel_stop():
 		SE.play()
 
 
-func play_spin_start():
-	var start_rules = SE_dict["reel_start"]["rule"]
+func play_spin_start(track):
+	var start_stream = SE_dict["reel_start"]["sound"][track]
+	if start_stream:
+		SE.stream = start_stream
+		SE.play()
+
+func play_prized(value):
+	var start_rules = SE_dict["prized"]["rule"]
 	var start_track = get_track(start_rules)
-	var start_stream = SE_dict["reel_start"]["sound"][start_track]
+	var start_stream = SE_dict["prized"]["sound"][start_track]
 	if start_stream:
 		SE.stream = start_stream
 		SE.play()
@@ -124,5 +105,3 @@ func get_track(rules):
 			return rule["track"]
 
 		
-func sort_rules(a, b):
-	return a["priority"] > b["priority"]

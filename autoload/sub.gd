@@ -14,6 +14,9 @@ var order_scene_path: String
 
 var SE_dict: Dictionary = {}
 var bonus_music: Dictionary = {}
+var rare_flags: Array = []
+var effect_slot: Dictionary = {}
+
 var mode_data: Dictionary = {}
 var premonition_map: Dictionary = {}
 
@@ -56,6 +59,8 @@ func load_sub_db(version):
 	db.open_db()
 
 	load_order_scene()
+	load_rare_flags()
+	load_effects_slot()
 	load_data_from_db()
 
 func load_order_scene():
@@ -67,6 +72,24 @@ func load_order_scene():
 		if scene_path:
 			order_scene_path = scene_path
 
+func load_rare_flags():
+	db.query("SELECT data FROM env WHERE name = 'rare_flag'")
+	var results = db.query_result
+
+	if results:
+		var item = results[0]["data"]
+		if item:
+			rare_flags = JSON.parse_string(item)
+
+func load_effects_slot():
+	db.query("SELECT data FROM env WHERE name = 'effect_rand'")
+	var results = db.query_result
+
+	if results:
+		var item = results[0]["data"]
+		if item:
+			effect_slot = JSON.parse_string(item)
+	print(effect_slot)
 
 
 func clear_data():

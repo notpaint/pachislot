@@ -103,7 +103,11 @@ def generate_premonition_map(cursor_main, cursor_sub, config):
             
 def generate_env(cursor_sub, config):
     for name, data in config.env.items():
-        cursor_sub.execute("""INSERT OR IGNORE INTO env(name, data) VALUES(?, ?)""", (name, data))
+        if isinstance(data, (list,dict)):
+            db_data = json.dumps(data)
+        else:
+            db_data = data
+        cursor_sub.execute("""INSERT OR IGNORE INTO env(name, data) VALUES(?, ?)""", (name, db_data))
 
             
 def build_sub(config):

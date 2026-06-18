@@ -116,7 +116,8 @@ var current_bonus_payout : int = 0
 
 signal flag(result_flag)
 signal roles(result_roles)
-signal prized(reel_result)
+signal prized_role(matched_role)
+signal prized_array(reel_result)
 signal spin_start()
 signal bonus_est(bonus_state)
 signal bonus_prized(current_bonus)
@@ -854,7 +855,8 @@ func check_prize():
 		if current_bonus_payout >= max_bonus_payout:
 			end_bonus()
 	
-	prized.emit(reel_result)
+	prized_role.emit(matched_role)
+	prized_array.emit(reel_result)
 
 
 func role_prize(matched_role):

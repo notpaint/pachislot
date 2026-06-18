@@ -18,12 +18,12 @@ func _ready():
 
 	if mainROM:
 		mainROM.flag.connect(_on_flaged)
-		mainROM.prized.connect(_on_prized)
+		mainROM.prized_array.connect(_on_prized_array)
 
 func _on_flaged(result_flag):
 	flag_result = result_flag
 
-func _on_prized(_reel_result):
+func _on_prized_array(_reel_result):
 	send_udp_data(flag_result)
 
 

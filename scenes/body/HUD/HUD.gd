@@ -25,13 +25,13 @@ func _ready():
 	if mainROM:
 		mainROM.flag.connect(_on_flaged)
 		mainROM.roles.connect(_on_roles)
-		mainROM.prized.connect(_on_prized)
+		mainROM.prized_array.connect(_on_prized_array)
 		mainROM.spin_start.connect(_on_spin_start)
 		mainROM.bonus_est.connect(_on_bonus_est)
 		mainROM.bonus_prized.connect(_on_bonus_prized)
 		mainROM.now_RT.connect(_on_now_RT)
 
-func _on_prized(reel_result):
+func _on_prized_array(reel_result):
 	for i in range(3):
 		var symbol_name = reel_result[i]
 		if symbol_name in bonus_symbols:

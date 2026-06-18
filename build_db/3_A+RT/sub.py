@@ -68,7 +68,7 @@ SE = {
             "silent": None
         }
     },
-    "prize": {
+    "prized": {
         "rule": [
             {
                 "priority": 0,
