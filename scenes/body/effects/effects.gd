@@ -17,11 +17,14 @@ var current_bonus = "None"
 var result_flag: String
 var prized_role: String
 
+var current_reel: Array = ["", "" ,""]
+
 var effects_seeds : PackedInt32Array
 
-#16個の8bit乱数
-#AT []
+#256個の8bit乱数
 var effects_rands: PackedByteArray
+
+var effect_slot: Dictionary = {}
 
 var jac_counter: int = 0
 var order_scene_path:String
@@ -35,6 +38,7 @@ signal prized()
 func _ready():
 	order_scene_path = sub.order_scene_path
 	effects_rands.resize(256)
+	effect_slot = sub.effect_slot
 
 	for child in order_assist.get_children():
 		child.queue_free()
@@ -84,7 +88,6 @@ func _on_flag(value):
 	effects_seeds = mainROM.effects_seeds
 	drawing_hash_array(effects_seeds)
 	main_flag.emit(value)
-	print(effects_rands)
 
 func _on_bonus_est(value):
 	bonus_state = value
@@ -116,7 +119,8 @@ func _on_prized_array(value):
 	# symbol_light.middle_flash(current_reel_grid)
 
 
-func _on_reel_stopped(_current_reel, _current_reel_grid):
+func _on_reel_stopped(stopped_reel, _current_reel_grid):
+	current_reel = stopped_reel
 	audio.play_reel_stop()
 
 func _on_now_RT(value):

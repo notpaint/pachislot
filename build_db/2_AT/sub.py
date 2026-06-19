@@ -63,7 +63,7 @@ SE = {
             "SBB": "res://assets/SE/otoko2/SBB_stopped.ogg"
         }
     },
-    "prize": {
+    "prized": {
         "rule": [
             {
                 "priority": 0,
@@ -97,29 +97,122 @@ bonus_music = {
 }
 
 flag_trigger = {
+    "order_bell": {
+        "in_bonus": {
+            "redBB": 1
+        }
+    },
+    "upperBell": {
+        "in_bonus": {
+            "RB": 1,
+            "redBB": 3
+        }
+    },
+    "downBell": {
+        "in_bonus": {
+            "RB": 1,
+            "redBB": 3
+        }
+    },
     "downSuica" : {
-        "Normal": {
-            "bonus" : 1
+        "bonus": {
+            "normal": 2,
+            "high": 2
+        },
+        "in_bonus": {
+            "RB": 3,
+            "redBB": 3
+        },
+        "game": {
+            "normal": 32
+        },
+        "add": {
+            30: 120,
+            50: 64,
+            100: 46,
+            200: 18,
+            300: 8
         }
     },
     "Cherry_A" : {
-        "Normal" : {
-            "bonus" : 4
+        "bonus": {
+            "normal": 4,
+            "high": 52
+        },
+        "in_bonus": {
+            "RB": 26,
+            "redBB": 26
+        },
+        "game": {
+            "normal": 85
+        },
+        "add": {
+            10: 174,
+            20: 38,
+            30: 26,
+            50: 13,
+            100: 5
         }
     },
     "Cherry_B" : {
-        "Normal": {
-            "bonus": 86
+        "bonus": {
+            "normal": 85,
+            "high": 154
+        },
+        "in_bonus": {
+            "RB": 115,
+            "redBB": 115
+        },
+        "game": {
+            "normal": 256
+        },
+        "add": {
+            20: 159,
+            30: 72,
+            50: 10,
+            100: 8,
+            200: 5,
+            300: 2
         }
     },
     "Special_A": {
-        "Normal": {
-            "bonus": 39
+        "bonus": {
+            "normal": 39,
+            "high": 117
+        },
+        "in_bonus": {
+            "RB": 39,
+            "redBB": 85
+        },
+        "game": {
+            "normal": 256
+        },
+        "add": {
+            20: 166,
+            30: 51,
+            50: 26,
+            100: 8,
+            200: 5
         }
     },
     "Special_B": {
-        "Normal": {
-            "bonus": 39
+        "bonus": {
+            "normal": 39,
+            "high": 117
+        },
+        "in_bonus": {
+            "RB": 39,
+            "redBB": 85
+        },
+        "game": {
+            "normal": 256
+        },
+        "add": {
+            20: 166,
+            30: 51,
+            50: 26,
+            100: 8,
+            200: 5
         }
     }
 }
@@ -265,7 +358,14 @@ AT_music = {
 }
 
 env = {
-    "order_scene_path": "res://scenes/body/effects/order_navi/AT.tscn"
+    "order_scene_path": "res://scenes/body/effects/order_navi/AT.tscn",
+     "effect_rand": {
+         "lever": 0,
+         "reel_start": 1,
+         "next_mode": 32,
+         "release_game": 33,
+         "premonition": 34
+     }
 }
 
 base_path = Path(__file__).resolve().parent

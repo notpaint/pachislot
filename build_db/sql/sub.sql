@@ -29,8 +29,9 @@ CREATE TABLE RT_music(
 
 CREATE TABLE flag_trigger(
     flag TEXT,
+    type TEXT,
     state TEXT,
-    data TEXT
+    weight INTEGER
 );
 
 CREATE TABLE mode_list(

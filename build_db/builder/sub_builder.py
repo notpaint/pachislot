@@ -44,16 +44,15 @@ def generate_RT_music(cursor_main, cursor_sub, config):
                                """, (RT, rule, track_name, start, end))
             
 def generate_flag_trigger(cursor_main, cursor_sub, config):
-    for flag, state_data in config.flag_trigger.items():
+    for flag, type_data in config.flag_trigger.items():
         cursor_main.execute("SELECT flag from flags WHERE flag = (?)", (flag,))
         if cursor_main.fetchone() is None:
             print(f"ERROR on generate_flag_trigger: {flag} does not exists in main.db")
             continue
-        for state, data in state_data.items():
-            data_json = json.dumps(data)
-
-            cursor_sub.execute("""INSERT OR IGNORE INTO flag_trigger(flag, state, data)
-                               VALUES(?, ?, ?)""", (flag, state, data_json))
+        for type, state_data in type_data.items():
+            for state, weight in state_data.items():
+                cursor_sub.execute("""INSERT OR IGNORE INTO flag_trigger(flag, type, state, weight)
+                                VALUES(?, ?, ?, ?)""", (flag, type, state, weight))
             
 def generate_pseudo_bonus_mode(cursor_sub, config):
     for mode in config.pseudo_bonus_mode.keys():

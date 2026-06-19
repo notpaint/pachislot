@@ -3,15 +3,15 @@ extends Node
 @onready var effects = $"../.."
 
 var mode_data: Dictionary = {}
-var premonition_map: Dictionary = {}
+var premonition_data: Dictionary = {}
 
 var current_mode: String = "A"
-var release_map: Dictionary = {}
-var next_bonus: int
+var premonition_map: Dictionary = {}
+var release_game: int
 
 func _ready():
 	mode_data = sub.mode_data
-	premonition_map = sub.premonition_map
+	premonition_data = sub.premonition_data
 	# print(premonition_map)
 
 	if effects:
@@ -20,11 +20,9 @@ func _ready():
 
 
 func _on_main_flag(value):
-	if not next_bonus:
-		release_drawing(current_mode)
-	print(release_map)
-	if not current_mode and not next_bonus:
-		morning_game()
+	if not release_game:
+		drawing_release_game(current_mode)
+		print(premonition_map)
 
 
 func morning_game():
@@ -33,7 +31,7 @@ func morning_game():
 	var game_weight = mode_data[current_mode]["release"]
 
 
-func mode_drawing(mode):
+func drawing_mode(mode):
 	var rand_num = effects.effects_rands[0]
 	var map_dict = mode_data[mode]["map"]
 
@@ -44,42 +42,51 @@ func mode_drawing(mode):
 			current_mode = key
 			break
 
-func release_drawing(mode):
+func bonus_release(flag):
 	pass
-	# var release_num = effects.effects_rands[1]
-	# var premonition_num_1 = effects.effects_rands[2]
-	# var premonition_num_2 = effects.effects_rands[3]
-	# var release_dict = mode_data[mode]["release"]
 
-	# for release_game in release_dict.keys():
-	# 	var release_weight = release_dict[release_game]["weight"]
-	# 	var premonition_chance = release_dict[release_game]["premonition"]
-	# 	release_num -= release_weight
-	# 	if release_num < 0:
-	# 		next_bonus = release_game
-	# 		var win_dict = premonition_map["pseudo"]["map"]["default"][true]
-	# 		for premonition_game in win_dict.keys():
-	# 			var premonition_weight = win_dict[premonition_game]
-	# 			premonition_num_1 -= premonition_weight
-	# 			if premonition_num_1 < 0:
-	# 				var game = release_game - premonition_game
-	# 				var data = {
-	# 					"win": true,
-	# 					"release": release_game
-	# 				}
-	# 				release_map[game] = data
-	# 				return
-	# 	if premonition_chance <= premonition_num_2:
-	# 		continue
-	# 	var fake_dict = premonition_map["pseudo"]["map"]["default"][false]
-	# 	for premonition_game in fake_dict.keys():
-	# 		var premonition_weight = fake_dict[premonition_game]
-	# 		premonition_num_1 -= premonition_weight
-	# 		if premonition_num_1 < 0:
-	# 			var game = release_game - premonition_game
-	# 			var data = {
-	# 				"win": false,
-	# 				"release": release_game
-	# 			}
-	# 			release_map[game] = data
-	# 			break
+
+
+
+func drawing_release_game(mode):
+	var pre_map_temp: Dictionary = {}
+
+	var current_mode_data = mode_data[mode]
+	var release_game_slot = effects.effect_slot["release_game"]
+	var release_game_rand = effects.effects_rands[release_game_slot]
+	for game in current_mode_data["release"].keys():
+		var weight = current_mode_data["release"][game]["weight"]
+		release_game_rand -= weight
+		if release_game_rand < 0:
+			release_game = game
+			pre_map_temp[game] = {"win": true}
+			break
+		else:
+			pre_map_temp[game] = {"win": false}
+
+	var pre_data = premonition_data["pseudo"]["map"]["default"]
+	for pre_start in pre_map_temp.keys():
+		var premonition_game_slot = effects.effect_slot["premonition"]
+		var premonition_game_rand = effects.effects_rands[premonition_game_slot]
+		if pre_map_temp[pre_start]["win"] == true:
+			for game in pre_data[true].keys():
+				var weight = pre_data[true][game]
+				premonition_game_rand -= weight
+				if premonition_game_rand < 0:
+					var start_game = pre_start - game
+					premonition_map[start_game] = {"win": true, "length": game}
+					break
+
+		if pre_map_temp[pre_start]["win"] == false:
+			for game in pre_data[false].keys():
+				var weight = pre_data[false][game]
+				premonition_game_rand -= weight
+				if premonition_game_rand < 0:
+					var start_game = pre_start - game
+					premonition_map[start_game] = {"win": false, "length": game}
+					break
+
+
+func culc_premonition_map():
+
+	pass

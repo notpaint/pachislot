@@ -17,8 +17,9 @@ var bonus_music: Dictionary = {}
 var rare_flags: Array = []
 var effect_slot: Dictionary = {}
 
+var flag_trigger: Dictionary = {}
 var mode_data: Dictionary = {}
-var premonition_map: Dictionary = {}
+var premonition_data: Dictionary = {}
 
 func _ready():
 	if db_path == "":
@@ -99,7 +100,10 @@ func load_data_from_db():
 	generate_bonus_music()
 	generate_mode_data()
 	generate_SE_dict()
-	generate_premonition_map()
+	generate_premonition_data()
+	generate_flag_trigger()
+
+	print(flag_trigger)
 
 func generate_SE_dict():
 	db.query("SELECT name, rule, sound FROM SE")
@@ -140,6 +144,21 @@ func generate_bonus_music():
 			"end": row["end"],
 			"next": row["next"]
 		}
+
+func generate_flag_trigger():
+	db.query("SELECT flag, type, state, weight from flag_trigger")
+	var results = db.query_result
+
+	for row in results:
+		var flag = row["flag"]
+		if not flag_trigger.has(flag):
+			flag_trigger[flag] = {}
+		var type = row["type"]
+		if not flag_trigger[flag].has(type):
+			flag_trigger[flag][type] = {}
+		var state = row["state"]
+		var weight = row["weight"]
+		flag_trigger[flag][type][state] = weight
 
 func generate_mode_data():
 	db.query("SELECT id, mode from mode_list")
@@ -211,7 +230,7 @@ func generate_mode_data():
 			mode_data[row.mode]["ratio"][row.trigger] = {}
 		mode_data[row.mode]["ratio"][row.trigger][row.bonus] = row.weight
 
-func generate_premonition_map():
+func generate_premonition_data():
 	db.query("SELECT type, trigger, flag, is_win, game, weight FROM premonition_map")
 	var results = db.query_result
 
@@ -222,12 +241,12 @@ func generate_premonition_map():
 		var is_win = bool(row["is_win"])
 		var game = row["game"]
 		var weight = row["weight"]
-		if not premonition_map.has(type):
-			premonition_map[type] = {}
-		if not premonition_map[type].has(trigger):
-			premonition_map[type][trigger] = {}
-		if not premonition_map[type][trigger].has(flag):
-			premonition_map[type][trigger][flag] = {}
-		if not premonition_map[type][trigger][flag].has(is_win):
-			premonition_map[type][trigger][flag][is_win] = {}
-		premonition_map[type][trigger][flag][is_win][game] = weight
+		if not premonition_data.has(type):
+			premonition_data[type] = {}
+		if not premonition_data[type].has(trigger):
+			premonition_data[type][trigger] = {}
+		if not premonition_data[type][trigger].has(flag):
+			premonition_data[type][trigger][flag] = {}
+		if not premonition_data[type][trigger][flag].has(is_win):
+			premonition_data[type][trigger][flag][is_win] = {}
+		premonition_data[type][trigger][flag][is_win][game] = weight

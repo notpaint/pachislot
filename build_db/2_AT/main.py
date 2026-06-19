@@ -545,7 +545,7 @@ flag_data_normal = {
     },
     "RB1": {
         "RT0" : {
-        1 : flag_data_JAC["RB1"]
+        3 : flag_data_JAC["RB1"]
         }
     }
 }
@@ -579,7 +579,7 @@ JAC_data = {
     'RB1' : {
         "prize_count" : 8,
         "play_count": 12,
-        "play_bet": 1
+        "play_bet": 3
     }
 }
 

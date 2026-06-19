@@ -12,7 +12,6 @@ var first_bet: bool = true
 func _ready():
 	load_SE_dict()
 	load_bonus_music()
-	effect_slot = sub.effect_slot
 
 func sort_rules(a, b):
 	return a["priority"] > b["priority"]
@@ -49,11 +48,11 @@ func random_SE(event):
 	return(SE_track)
 
 
-func get_track(rules, event):
+func get_track(rules, event, variant: String = "default"):
 	for rule in rules:
 		var cond = rule["cond"]
 		
-		if cond == "default":
+		if cond == variant:
 			return rule["track"]
 
 		var expression = rule["parsed"]
@@ -61,18 +60,17 @@ func get_track(rules, event):
 
 			if rule.has("weight"):
 				var weight = rule["weight"]
-				var rand_slot = effect_slot[event]
+				var rand_slot = effects.effect_slot[event]
 				var rand_number = effects.effects_rands[rand_slot]
-				print(rand_number)
 
 				if rand_number < weight:
 					return rule["track"]
 				else:
-					return return_default(rules)
+					return return_default(rules, variant)
 
 
-func return_default(rules):
+func return_default(rules, variant: String = "default"):
 	for rule in rules:
-		if rule["cond"] == "default":
+		if rule["cond"] == variant:
 			return rule["track"]
 				
