@@ -123,6 +123,15 @@ flag_trigger = {
             "RB": 3,
             "redBB": 3
         },
+        "bonus_promo": {
+            "RB": 2
+        },
+        "mode_promo": {
+            "A": 0,
+            "B": 0,
+            "C": 0,
+            "Heaven": 20
+        },
         "game": {
             "normal": 32
         },
@@ -143,6 +152,15 @@ flag_trigger = {
             "RB": 26,
             "redBB": 26
         },
+        "bonus_promo": {
+            "RB": 8
+        },
+        "mode_promo": {
+            "A": 8,
+            "B": 8,
+            "C": 8,
+            "Heaven": 8
+        },
         "game": {
             "normal": 85
         },
@@ -158,6 +176,15 @@ flag_trigger = {
         "bonus": {
             "normal": 85,
             "high": 154
+        },
+        "bonus_promo": {
+            "RB": 102
+        },
+        "mode_promo": {
+            "A": 64,
+            "B": 64,
+            "C": 64,
+            "Heaven": 102
         },
         "in_bonus": {
             "RB": 115,
@@ -184,6 +211,15 @@ flag_trigger = {
             "RB": 39,
             "redBB": 85
         },
+        "bonus_promo": {
+            "RB": 39
+        },
+        "mode_promo": {
+            "A": 25,
+            "B": 25,
+            "C": 25,
+            "Heaven": 64
+        },
         "game": {
             "normal": 256
         },
@@ -199,6 +235,15 @@ flag_trigger = {
         "bonus": {
             "normal": 39,
             "high": 117
+        },
+        "bonus_promo": {
+            "RB": 39
+        },
+        "mode_promo": {
+            "A": 25,
+            "B": 25,
+            "C": 25,
+            "Heaven": 64
         },
         "in_bonus": {
             "RB": 39,
@@ -232,14 +277,8 @@ pseudo_bonus_mode = {
             "Heaven": 10
         },
         "ratio": {
-            "map": {
-                "r7BIG": 128,
-                "REG": 128
-            },
-            "flag": {
-                "r7BIG": 128,
-                "REG": 128  
-            }
+            "r7BIG": 128,
+            "REG": 128
         }
     },
     "B": {
@@ -256,14 +295,8 @@ pseudo_bonus_mode = {
             "Heaven": 115
         },
         "ratio": {
-            "map": {
-                "r7BIG": 64,
-                "REG": 192
-            },
-            "flag": {
-                "r7BIG": 102,
-                "REG": 154
-            }
+            "r7BIG": 64,
+            "REG": 192
         }
     },
     "C": {
@@ -278,14 +311,8 @@ pseudo_bonus_mode = {
             "Heaven": 205
         },
         "ratio": {
-            "map": {
-                "r7BIG": 128,
-                "REG": 128
-            },
-            "flag": {
-                "r7BIG": 128,
-                "REG": 128
-            }
+            "r7BIG": 128,
+            "REG": 128
         }
     },
     "Heaven": {
@@ -300,14 +327,8 @@ pseudo_bonus_mode = {
             "Heaven": 102
         },
         "ratio": {
-            "map": {
-                "r7BIG": 179,
-                "REG": 77
-            },
-            "flag": {
-                "r7BIG": 205,
-                "REG": 51
-            }
+            "r7BIG": 179,
+            "REG": 77
         }
     }
 }

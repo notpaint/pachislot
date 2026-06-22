@@ -58,7 +58,6 @@ CREATE TABLE mode_map(
 
 CREATE TABLE mode_ratio(
     mode_ID INT,
-    trigger TEXT,
     bonus TEXT,
     weight INT,
     FOREIGN KEY(mode_id) REFERENCES mode_list(id)

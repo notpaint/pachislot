@@ -32,7 +32,7 @@ Special_B,L_middleRep,C_middleBell,R_middleRep
 ,,,
 middleReplay,L_middleRep,C_middleRep,R_middleRep
 fakeReplay,L_middleRep,C_r7,R_r7
-middleRed7,L_middleRep,C_r7,R_r7
+middleRed7,L_r7,C_r7,R_r7
 middleRed7miss,L_middleRep,C_r7,R_r7
 upwardRed7,L_middleRep,C_r7,R_middleBell
 upwardRed7miss,L_middleRep,C_middleRep,R_middleBell

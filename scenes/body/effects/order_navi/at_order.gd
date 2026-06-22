@@ -42,10 +42,9 @@ func drawing_mode(mode):
 			current_mode = key
 			break
 
+
 func bonus_release(flag):
 	pass
-
-
 
 
 func drawing_release_game(mode):

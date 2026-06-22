@@ -77,10 +77,9 @@ def generate_pseudo_bonus_mode(cursor_sub, config):
                                VALUES(?, ?, ?)""", (mode_id, next_mode_id, weight))
             
         ratio_data = data.get("ratio")
-        for trigger, bonus_data in ratio_data.items():
-            for bonus, weight in bonus_data.items():
-                cursor_sub.execute("""INSERT OR IGNORE INTO mode_ratio(mode_id, trigger, bonus, weight)
-                                VALUES(?, ?, ?, ?)""", (mode_id, trigger, bonus, weight))
+        for bonus, weight in ratio_data.items():
+                cursor_sub.execute("""INSERT OR IGNORE INTO mode_ratio(mode_id, bonus, weight)
+                                VALUES(?, ?, ?)""", (mode_id, bonus, weight))
 
 def generate_premonition_map(cursor_main, cursor_sub, config):
     for type, trigger_data in config.premonition_map.items():

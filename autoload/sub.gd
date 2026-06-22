@@ -215,7 +215,7 @@ func generate_mode_data():
 	var ratio_order = """
 	SELECT
 	ml.mode,
-	mr.trigger, mr.bonus, mr.weight
+	mr.bonus, mr.weight
 	FROM
 	mode_ratio AS mr
 	JOIN
@@ -226,9 +226,7 @@ func generate_mode_data():
 	var ratio_results = db.query_result
 
 	for row in ratio_results:
-		if not mode_data[row.mode]["ratio"].has(row.trigger):
-			mode_data[row.mode]["ratio"][row.trigger] = {}
-		mode_data[row.mode]["ratio"][row.trigger][row.bonus] = row.weight
+		mode_data[row.mode]["ratio"][row.bonus] = row.weight
 
 func generate_premonition_data():
 	db.query("SELECT type, trigger, flag, is_win, game, weight FROM premonition_map")
