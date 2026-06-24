@@ -114,39 +114,50 @@ SE = {
     }
 }
 
-bonus_music = {
-    "RB": {
-        "jingle": "res://assets/SE/otoko/REG_jingle.ogg",
-        "rule": [
-            {
-                "priority": 0,
-                "track": "main",
-                "cond": "default"
-            }
-        ],
-        "tracks": {
-            "main": {
-                "start": "res://assets/music/otoko/RB/RB_start.ogg",
-                "end": "res://assets/music/otoko/RB/RB_end.ogg"
-            }
+bonus_music = [
+    {"bonus": "RB",
+     "phase": "jingle",
+     "track": "main",
+     "path": "res://assets/SE/otoko/REG_jingle.ogg"},
+    {"bonus": "RB",
+     "phase": "start",
+     "track": "main",
+     "path": "res://assets/music/otoko/RB/RB_start.ogg"},
+    {"bonus": "RB",
+     "phase": "end",
+     "track": "main",
+     "path": "res://assets/music/otoko/RB/RB_end.ogg"},
+
+     {"bonus": "redBB",
+      "phase": "jingle",
+      "track": "main",
+      "path": "res://assets/SE/otoko/BB_jingle.ogg"},
+
+     {"bonus": "redBB",
+      "phase": "start",
+      "track": "main",
+      "path": "res://assets/music/otoko/BB/todoroki_start.ogg"},
+     {"bonus": "redBB",
+      "phase": "end",
+      "track": "main",
+      "path": "res://assets/music/otoko/BB/todoroki_end.ogg"}
+]
+
+music_rules = {
+    "RB" : [
+        {
+            "priority": 0,
+            "track": "main",
+            "cond": "default"
         }
-    },
-    "redBB": {
-        "jingle": "res://assets/SE/otoko/BB_jingle.ogg",
-        "rule": [
-            {
-                "priority": 0,
-                "track": "main",
-                "cond": "default"
-            }
-        ],
-        "tracks": {
-            "main": {
-                "start": "res://assets/music/otoko/BB/todoroki_start.ogg",
-                "end": "res://assets/music/otoko2/BB/todoroki_end.ogg",
-            }
+    ],
+    "redBB" : [
+        {
+            "priority": 0,
+            "track": "main",
+            "cond": "default"
         }
-    }
+    ]
 }
 
 env = {
@@ -170,5 +181,6 @@ sub_config = SubBuildConfig(
 
     SE = SE,
     bonus_music = bonus_music,
+    music_rules = music_rules,
     env = env
 )

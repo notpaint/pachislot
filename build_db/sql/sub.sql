@@ -11,16 +11,21 @@ CREATE TABLE SE(
 
 CREATE TABLE bonus_music(
     bonus TEXT,
-    jingle TEXT,
-    rule TEXT,
-    track_name TEXT,
-    start TEXT,
-    end TEXT,
-    next TEXT
+    phase TEXT,
+    track TEXT,
+    part INT,
+    path TEXT
 );
 
-CREATE TABLE RT_music(
-    RT TEXT,
+CREATE TABLE music_rules(
+    name TEXT,
+    priority INT,
+    track TEXT,
+    cond TEXT
+);
+
+CREATE TABLE bgm(
+    name TEXT,
     rule TEXT,
     track_name TEXT,
     start TEXT,

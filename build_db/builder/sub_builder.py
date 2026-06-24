@@ -8,24 +8,53 @@ def generate_SE(cursor_sub, config):
         cursor_sub.execute("""INSERT OR IGNORE INTO SE(name, rule, sound)
                        VALUES(?, ?, ?)
                        """, (name, rule, sound))
-
+        
 def generate_bonus_music(cursor_main, cursor_sub, config):
-    for bonus, music_data in config.bonus_music.items():
+    for data in config.bonus_music:
+        bonus = data["bonus"]
+
         cursor_main.execute("SELECT name from bonus_data WHERE name = (?)", (bonus,))
         if cursor_main.fetchone() is None:
             print(f"ERROR on generate_bonus_music: {bonus} does not exists in main.db")
             continue
-        jingle = music_data.get("jingle")
-        rule = json.dumps(music_data.get("rule"))
-        tracks = music_data.get("tracks", {})
-        for track_name, track_info in tracks.items():
-            start = track_info.get("start")
-            end = track_info.get("end")
-            next = track_info.get("next")
 
-            cursor_sub.execute("""INSERT OR IGNORE INTO bonus_music(bonus, jingle, rule, track_name, start, end, next)
-                           VALUES(?, ?, ?, ?, ?, ?, ?)
-                           """, (bonus, jingle, rule, track_name, start, end, next))
+        phase = data["phase"]
+        track = data["track"]
+        part = data.get("part", 1)
+        path = data["path"]
+
+        cursor_sub.execute("""INSERT OR IGNORE INTO bonus_music(bonus, phase, track, part, path)
+                           VALUES(?, ?, ?, ?, ?)""", (bonus, phase, track, part, path))
+        
+def generate_music_rules(cursor_sub, config):
+    for name, rule_data in config.music_rules.items():
+
+        for data in rule_data:
+            priority = data["priority"]
+            track = data["track"]
+            cond = data["cond"]
+
+            cursor_sub.execute("""INSERT OR IGNORE INTO music_rules(name, priority, track, cond)
+                           VALUES(?, ?, ?, ?)
+                           """, (name, priority, track, cond))
+
+# def generate_bonus_music(cursor_main, cursor_sub, config):
+#     for bonus, music_data in config.bonus_music.items():
+#         cursor_main.execute("SELECT name from bonus_data WHERE name = (?)", (bonus,))
+#         if cursor_main.fetchone() is None:
+#             print(f"ERROR on generate_bonus_music: {bonus} does not exists in main.db")
+#             continue
+#         jingle = music_data.get("jingle")
+#         rule = json.dumps(music_data.get("rule"))
+#         tracks = music_data.get("tracks", {})
+#         for track_name, track_info in tracks.items():
+#             start = track_info.get("start")
+#             end = track_info.get("end")
+#             next = track_info.get("next")
+
+#             cursor_sub.execute("""INSERT OR IGNORE INTO bonus_music(bonus, jingle, rule, track_name, start, end, next)
+#                            VALUES(?, ?, ?, ?, ?, ?, ?)
+#                            """, (bonus, jingle, rule, track_name, start, end, next))
             
 def generate_RT_music(cursor_main, cursor_sub, config):
     for RT, music_data in config.RT_music.items():
@@ -123,6 +152,7 @@ def build_sub(config):
         conn_sub.executescript(f.read())
 
     generate_bonus_music(cursor_main, cursor_sub, config)
+    generate_music_rules(cursor_sub, config)
     generate_RT_music(cursor_main, cursor_sub, config)
     generate_SE(cursor_sub, config)
     generate_env(cursor_sub, config)
