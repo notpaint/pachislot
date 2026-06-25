@@ -56,8 +56,7 @@ class SubBuildConfig:
     sub_db_path: Path
 
     SE: dict
-    bonus_music: list
-    music_rules: dict
+    bonus_music: dict
     env: dict
 
     RT_music: dict = field(default_factory=dict)

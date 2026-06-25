@@ -7,7 +7,6 @@ extends Node
 
 var SE_dict: Dictionary = {}
 var bonus_music: Dictionary = {}
-var music_rules: Dictionary = {}
 
 var in_bonus: bool = false
 var first_bet: bool = true
@@ -16,8 +15,7 @@ var current_bonus: String
 
 func _ready():
 	SE_dict = weight.SE_dict
-	bonus_music = sub.bonus_music
-	music_rules = sub.music_rules
+	bonus_music = weight.bonus_music
 
 
 func play_bet(value):
@@ -53,20 +51,6 @@ func play_prized(value):
 		SE.stream = start_stream
 		SE.play()
 
-func get_bonus_music_path(value):
-	if value != "None":
-		var current_bonus_music = bonus_music[value]
-		var current_part = 1
-		var bonus_rules = music_rules[value]
-		var bonus_track = get_track(bonus_rules)
-
-		var jingle_path = current_bonus_music[bonus_track][current_part]["jingle"]
-
-		if jingle_path:
-			bonus.stream = load(jingle_path)
-			bonus.play()
-
-			await effects.medal_bet
 
 func play_bonus(value):
 	if value != "None":

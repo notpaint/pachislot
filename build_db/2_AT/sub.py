@@ -77,31 +77,23 @@ SE = {
     }
 }
 
-
-bonus_music = [
-    {"bonus": "SBB",
-     "phase": "jingle",
-     "track": "main",
-     "path": "res://assets/SE/otoko2/SBB_jingle.ogg"},
-
-    {"bonus": "SBB",
-     "phase": "start",
-     "track": "main",
-     "path": "res://assets/music/otoko2/SBB/SBB_start.ogg"},
-    {"bonus": "SBB",
-     "phase": "end",
-     "track": "main",
-     "path": "res://assets/music/otoko2/SBB/SBB_end.ogg"}
-]
-
-music_rules = {
-    "SBB" : [
-        {
-            "priority": 0,
-            "track": "main",
-            "cond": "default"
+bonus_music = {
+    "SBB": {
+        "jingle": "res://assets/SE/otoko2/SBB_jingle.ogg",
+        "rule": [
+            {
+                "priority": 0,
+                "track": "main",
+                "cond": "default"
+            }
+        ],
+        "tracks":{
+            "main": {
+                "start": "res://assets/music/otoko2/SBB/SBB_start.ogg",
+                "end": "res://assets/music/otoko2/SBB/SBB_end.ogg",
+            }
         }
-    ]
+    }
 }
 
 flag_trigger = {
@@ -409,7 +401,6 @@ sub_config = SubBuildConfig(
 
     SE = SE,
     bonus_music = bonus_music,
-    music_rules = music_rules,
     AT_music = AT_music,
 
     flag_trigger = flag_trigger,

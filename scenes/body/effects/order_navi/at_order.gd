@@ -46,11 +46,6 @@ func drawing_mode(mode):
 func bonus_release(flag):
 	pass
 
-func start_premonition(game):
-	var result = premonition_map[game]
-	if not result:
-		pass
-
 
 func drawing_release_game(mode):
 	var pre_map_temp: Dictionary = {}

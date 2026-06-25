@@ -14,7 +14,6 @@ var order_scene_path: String
 
 var SE_dict: Dictionary = {}
 var bonus_music: Dictionary = {}
-var music_rules: Dictionary = {}
 var rare_flags: Array = []
 var effect_slot: Dictionary = {}
 
@@ -91,6 +90,7 @@ func load_effects_slot():
 		var item = results[0]["data"]
 		if item:
 			effect_slot = JSON.parse_string(item)
+	print(effect_slot)
 
 
 func clear_data():
@@ -98,14 +98,12 @@ func clear_data():
 
 func load_data_from_db():
 	generate_bonus_music()
-	generate_music_rules()
 	generate_mode_data()
 	generate_SE_dict()
 	generate_premonition_data()
 	generate_flag_trigger()
 
-	print(bonus_music)
-	print(music_rules)
+	print(flag_trigger)
 
 func generate_SE_dict():
 	db.query("SELECT name, rule, sound FROM SE")
@@ -125,51 +123,27 @@ func generate_SE_dict():
 			}
 
 func generate_bonus_music():
-	db.query("SELECT bonus, phase, track, part, path FROM bonus_music")
+	db.query("SELECT bonus, jingle, rule, track_name, start, end, next FROM bonus_music")
 	var results = db.query_result
 
 	for row in results:
 		var bonus = row["bonus"]
-		var phase = row["phase"]
-		var track = row["track"]
-		var part = int(row["part"])
-		var path = row["path"]
+		var jingle = row["jingle"]
+		var rule_array = row["rule"]
+		rule_array = JSON.parse_string(rule_array)
+		var track_name = row["track_name"]
 		if not bonus_music.has(bonus):
-			bonus_music[bonus] = {}
-		if not bonus_music[bonus].has(track):
-			bonus_music[bonus][track] = {}
-		if not bonus_music[bonus][track].has(part):
-			bonus_music[bonus][track][part] = {}
-		bonus_music[bonus][track][part][phase] = path
+			bonus_music[bonus] = {
+				"jingle": jingle,
+				"rule": rule_array,
+				"tracks": {}
+			}
 
-func generate_music_rules():
-	db.query("SELECT name, priority, track, cond FROM music_rules")
-	var results = db.query_result
-
-	for row in results:
-		var state = row["name"]
-		var cond = row["cond"]
-
-		var expr: Expression = null
-
-		if cond != "default":
-			expr = Expression.new()
-			expr.parse(cond)
-
-		var priority = int(row["priority"])
-		var track = row["track"]
-
-		if not music_rules.has(state):
-			music_rules[state] = []
-
-		music_rules[state].append({
-			"name": state,
-			"priority": priority,
-			"track": track,
-			"cond": cond,
-			"expr": expr
-			})
-			
+		bonus_music[bonus]["tracks"][track_name] = {
+			"start": row["start"],
+			"end": row["end"],
+			"next": row["next"]
+		}
 
 func generate_flag_trigger():
 	db.query("SELECT flag, type, state, weight from flag_trigger")

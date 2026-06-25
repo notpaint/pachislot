@@ -10,9 +10,8 @@ var in_bonus: bool = false
 var first_bet: bool = true
 
 func _ready():
-	pass
-	# load_SE_dict()
-	# load_bonus_music()
+	load_SE_dict()
+	load_bonus_music()
 
 func sort_rules(a, b):
 	return a["priority"] > b["priority"]
