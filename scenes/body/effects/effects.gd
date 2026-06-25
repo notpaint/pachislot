@@ -57,6 +57,8 @@ func connect_to_mainROM():
 		mainROM.bonus_est.connect(_on_bonus_est)
 	if mainROM.has_signal("bonus_prized"):
 		mainROM.bonus_prized.connect(_on_bonus_prized)
+	if mainROM.has_signal("bonus_end"):
+		mainROM.bonus_end.connect(_on_bonus_end)
 	if mainROM.has_signal("medal_bet"):
 		mainROM.medal_bet.connect(_on_medal_bet)
 	if mainROM.has_signal("flag"):
@@ -80,8 +82,10 @@ func _on_spin_start():
 
 func _on_JAC_IN():
 	jac_counter += 1
-	if jac_counter == 3:
-		jac_count.emit()
+
+	if jac_counter >= 2:
+		print(jac_counter)
+		audio.update_bonus_music(current_bonus)
 
 func _on_flag(value):
 	result_flag = value
@@ -97,9 +101,13 @@ func _on_bonus_prized(value):
 	if value != "None":
 		audio.play_bonus(value)
 	if value == "None":
-		bonus_end.emit()
 		print("bonus_end: effects")
 		jac_counter = 0
+
+func _on_bonus_end(value):
+	if value != "None":
+		audio.end_bonus(value)
+	current_bonus = "None"
 
 func _on_medal_bet(value):
 	audio.play_bet(value)

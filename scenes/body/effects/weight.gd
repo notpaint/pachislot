@@ -18,14 +18,11 @@ func sort_rules(a, b):
 
 func load_SE_dict():
 	SE_dict = sub.SE_dict.duplicate(true)
+
 	for item in SE_dict:
 		var SE_rules = SE_dict[item]["rule"]
 		SE_rules.sort_custom(sort_rules)
-		for rule in SE_rules:
-			if rule["cond"] != "default":
-				var expr = Expression.new()
-				expr.parse(rule["cond"])
-				rule["parsed"] = expr
+
 		for track_name in SE_dict[item]["sound"]:
 			var path = SE_dict[item]["sound"][track_name]
 			if path:
@@ -33,14 +30,6 @@ func load_SE_dict():
 
 func load_bonus_music():
 	bonus_music = sub.bonus_music.duplicate(true)
-	for value in bonus_music:
-		var bonus_rules = bonus_music[value]["rule"]
-		for rule in bonus_rules:
-			if rule["cond"] != "default":
-				var expr = Expression.new()
-				expr.parse(rule["cond"])
-				rule["parsed"] = expr
-
 
 func random_SE(event):
 	var SE_rules = SE_dict[event]["rule"]
@@ -67,6 +56,8 @@ func get_track(rules, event, variant: String = "default"):
 					return rule["track"]
 				else:
 					return return_default(rules, variant)
+			else:
+				return rule["track"]
 
 
 func return_default(rules, variant: String = "default"):

@@ -116,6 +116,13 @@ func generate_SE_dict():
 		var sound_json = row["sound"]
 		sound_json = JSON.parse_string(sound_json)
 
+		for rule in rule_json:
+			var cond = rule["cond"]
+			if cond != "default":
+				var expr = Expression.new()
+				expr.parse(cond)
+				rule["parsed"] = expr
+
 		if not SE_dict.has(item):
 			SE_dict[item] = {
 				"rule": rule_json,
@@ -123,7 +130,7 @@ func generate_SE_dict():
 			}
 
 func generate_bonus_music():
-	db.query("SELECT bonus, jingle, rule, track_name, start, end, next FROM bonus_music")
+	db.query("SELECT bonus, jingle, rule, track_name, start, end FROM bonus_music")
 	var results = db.query_result
 
 	for row in results:
@@ -131,6 +138,14 @@ func generate_bonus_music():
 		var jingle = row["jingle"]
 		var rule_array = row["rule"]
 		rule_array = JSON.parse_string(rule_array)
+		rule_array.sort_custom(func(a, b): return a["priority"] > b["priority"])
+		for rule in rule_array:
+			var cond = rule["cond"]
+			if cond != "default":
+				var expr = Expression.new()
+				expr.parse(cond)
+				rule["parsed"] = expr
+
 		var track_name = row["track_name"]
 		if not bonus_music.has(bonus):
 			bonus_music[bonus] = {
@@ -141,8 +156,7 @@ func generate_bonus_music():
 
 		bonus_music[bonus]["tracks"][track_name] = {
 			"start": row["start"],
-			"end": row["end"],
-			"next": row["next"]
+			"end": row["end"]
 		}
 
 func generate_flag_trigger():

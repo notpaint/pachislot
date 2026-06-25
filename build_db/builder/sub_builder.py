@@ -21,11 +21,10 @@ def generate_bonus_music(cursor_main, cursor_sub, config):
         for track_name, track_info in tracks.items():
             start = track_info.get("start")
             end = track_info.get("end")
-            next = track_info.get("next")
 
-            cursor_sub.execute("""INSERT OR IGNORE INTO bonus_music(bonus, jingle, rule, track_name, start, end, next)
-                           VALUES(?, ?, ?, ?, ?, ?, ?)
-                           """, (bonus, jingle, rule, track_name, start, end, next))
+            cursor_sub.execute("""INSERT OR IGNORE INTO bonus_music(bonus, jingle, rule, track_name, start, end)
+                           VALUES(?, ?, ?, ?, ?, ?)
+                           """, (bonus, jingle, rule, track_name, start, end))
             
 def generate_RT_music(cursor_main, cursor_sub, config):
     for RT, music_data in config.RT_music.items():

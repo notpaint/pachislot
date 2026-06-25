@@ -15,8 +15,7 @@ CREATE TABLE bonus_music(
     rule TEXT,
     track_name TEXT,
     start TEXT,
-    end TEXT,
-    next TEXT
+    end TEXT
 );
 
 CREATE TABLE RT_music(

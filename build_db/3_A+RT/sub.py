@@ -109,6 +109,11 @@ bonus_music = {
             },
             {
                 "priority": 1,
+                "track": "first_part2",
+                "cond": "jac_counter >= 3"
+            },
+            {
+                "priority": 2,
                 "track": "second",
                 "cond": "now_RT == true"
             }
@@ -116,8 +121,7 @@ bonus_music = {
         "tracks":{
             "first_part1": {
                 "start": "res://assets/music/shake2/redBB/I_love_you_baby/I_love_you_baby_part1.ogg",
-                "end": None,
-                "next": "first_part2"
+                "end": "res://assets/music/shake2/redBB/I_love_you_baby/I_love_you_baby_end.ogg"
                 },
             "first_part2" : {
                 "start": "res://assets/music/shake2/redBB/I_love_you_baby/I_love_you_baby_part2.ogg",
@@ -131,38 +135,24 @@ bonus_music = {
     }
 }
 
-RT_music = {
+RT_music = {}
+
+back_music = {
     "RT2": {
-        "rule": [
-            {
-                "priority": 0,
-                "track": "main",
-                "cond": "default"
-            }
-        ],
-        "tracks": {
-            "main": {
-                "start": "res://assets/music/shake2/RT/Into_the_real_part2.ogg",
-                "end": "res://assets/music/shake2/RT/Into_the_real_end.ogg"
-            }
-        }
+        "path": "res://assets/music/shake2/RT/Into_the_real_part1.ogg",
+        "cond": "RT2"
     },
     "RT3": {
-        "rule": [
-            {
-                "priority": 0,
-                "track": "main",
-                "cond": "default"
-            }
-        ],
-        "tracks": {
-            "main": {
-                "start": "res://assets/music/shake2/RT/Into_the_real_part1.ogg",
-                "end": "res://assets/music/shake2/RT/Into_the_real_end.ogg"
-            }
-        }
+        "path": "res://assets/music/shake2/RT/Into_the_real_part2.ogg",
+        "cond": "RT3"
+    },
+    "RT_end": {
+        "path": "res://assets/music/shake2/RT/Into_the_real_end.ogg",
+        "cond": "end"
     }
 }
+
+
 
 env = {
     "order_scene_path": "res://scenes/body/effects/order_navi/A+RT.tscn"

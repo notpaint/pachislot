@@ -121,6 +121,7 @@ signal prized_array(reel_result)
 signal spin_start()
 signal bonus_est(bonus_state)
 signal bonus_prized(current_bonus)
+signal bonus_end(current_bonus)
 signal now_RT(current_RT)
 signal now_JAC(current_JAC)
 signal medal_bet(bet_medals)
@@ -182,7 +183,8 @@ func _unhandled_input(event):
 		print_to_console()
 
 func print_to_console():
-	print(weight_table)
+	for se in sub.SE_dict:
+		print(sub.SE_dict[se])
 	# print(current_role_priority)
 	# print(pattern_priority)
 		
@@ -975,6 +977,8 @@ func end_bonus():
 		start_RT(after_RT)
 	
 	print("%s IS END" % [current_bonus])
+	bonus_end.emit(current_bonus)
+	
 	bonus_state = null
 	current_bonus = "None"
 	current_JAC = "None"

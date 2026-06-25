@@ -12,6 +12,8 @@ var in_bonus: bool = false
 var first_bet: bool = true
 
 var current_bonus: String
+var current_bonus_track: String
+var current_bonus_path: String
 
 func _ready():
 	SE_dict = weight.SE_dict
@@ -21,7 +23,7 @@ func _ready():
 func play_bet(value):
 	if value != 0:
 		var bet_rules = SE_dict["bet"]["rule"]
-		var bet_track = get_track(bet_rules)
+		var bet_track = weight.get_track(bet_rules, "bet")
 		var bet_stream = SE_dict["bet"]["sound"][bet_track]
 		if bet_stream:
 			SE.stream = bet_stream
@@ -30,7 +32,7 @@ func play_bet(value):
 
 func play_reel_stop():
 	var stop_rules = SE_dict["reel_stop"]["rule"]
-	var stop_track = get_track(stop_rules)
+	var stop_track = weight.get_track(stop_rules, "reel_stop")
 	var stop_stream = SE_dict["reel_stop"]["sound"][stop_track]
 	if stop_stream:
 		SE.stream = stop_stream
@@ -45,7 +47,7 @@ func play_spin_start(track):
 
 func play_prized(value):
 	var start_rules = SE_dict["prized"]["rule"]
-	var start_track = get_track(start_rules)
+	var start_track = weight.get_track(start_rules, "prized")
 	var start_stream = SE_dict["prized"]["sound"][start_track]
 	if start_stream:
 		SE.stream = start_stream
@@ -58,10 +60,11 @@ func play_bonus(value):
 		var jingle_path = current_bonus_music["jingle"]
 
 		var bonus_rules = current_bonus_music["rule"]
-		var bonus_track = get_track(bonus_rules)
+		var bonus_track = weight.get_track(bonus_rules, value)
+		current_bonus_track = bonus_track
+
 		var start_path = current_bonus_music["tracks"][bonus_track]["start"]
-		var next_track = current_bonus_music["tracks"][bonus_track]["next"]
-		var end_path: String
+		current_bonus_path = start_path
 
 		if jingle_path:
 			bonus.stream = load(jingle_path)
@@ -72,36 +75,31 @@ func play_bonus(value):
 		if start_path:
 			bonus.stream = load(start_path)
 			bonus.play()
+			
 
-			if next_track:
-				var part2_path = current_bonus_music["tracks"][next_track]["start"]
 
-				await effects.jac_count
+func update_bonus_music(value):
+	if value != "None":
+		print(value)
+		var current_bonus_music = bonus_music[value]
+		var bonus_rules = current_bonus_music["rule"]
+		var bonus_track = weight.get_track(bonus_rules, value)
+		var start_path = current_bonus_music["tracks"][bonus_track]["start"]
 
-				bonus.stream = load(part2_path)
-				bonus.play()
-				end_path = current_bonus_music["tracks"][next_track]["end"]
-				await effects.bonus_end
-			else:
-				end_path = current_bonus_music["tracks"][bonus_track]["end"]
-				await effects.bonus_end
+		if current_bonus_path != start_path:
+			current_bonus_path = start_path
+			current_bonus_track = bonus_track
+			bonus.stream = load(start_path)
+			bonus.play()
+
+
+func end_bonus(value):
+	if value != "None":
+		var current_bonus_music = bonus_music[value]
+		var end_path = current_bonus_music["tracks"][current_bonus_track]["end"]
 
 		if end_path:
 			bonus.stream = load(end_path)
 			bonus.play()
 		else:
 			bonus.stop()
-		
-
-func get_track(rules):
-	for rule in rules:
-		var cond = rule["cond"]
-		
-		if cond == "default":
-			return rule["track"]
-
-		var expression = rule["parsed"]
-		if expression.execute([], effects) == true:
-			return rule["track"]
-
-		
