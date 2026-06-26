@@ -14,6 +14,8 @@ var order_scene_path: String
 
 var SE_dict: Dictionary = {}
 var bonus_music: Dictionary = {}
+var back_music:Array = []
+
 var rare_flags: Array = []
 var effect_slot: Dictionary = {}
 
@@ -98,6 +100,7 @@ func clear_data():
 
 func load_data_from_db():
 	generate_bonus_music()
+	generate_back_music()
 	generate_mode_data()
 	generate_SE_dict()
 	generate_premonition_data()
@@ -158,6 +161,20 @@ func generate_bonus_music():
 			"start": row["start"],
 			"end": row["end"]
 		}
+
+func generate_back_music():
+	db.query("SELECT * FROM back_music")
+	var results = db.query_result
+
+	back_music = results.duplicate(true)
+	back_music.sort_custom(func(a, b): return a["priority"] > b["priority"])
+
+	for data in back_music:
+		var cond = data["cond"]
+		if cond != "default":
+			var expr = Expression.new()
+			expr.parse(cond, ["trigger"])
+			data["parsed"] = expr
 
 func generate_flag_trigger():
 	db.query("SELECT flag, type, state, weight from flag_trigger")

@@ -18,6 +18,14 @@ CREATE TABLE bonus_music(
     end TEXT
 );
 
+CREATE TABLE back_music(
+    priority INT,
+    track TEXT,
+    cond TEXT,
+    weight INT,
+    path TEXT
+);
+
 CREATE TABLE RT_music(
     RT TEXT,
     rule TEXT,

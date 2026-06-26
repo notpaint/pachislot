@@ -106,7 +106,12 @@ var current_bonus : String = "None":
 		bonus_prized.emit(value)
 		Datahub.current_bonus = value
 
-var RT_game : int = 0
+var RT_game : int = 0:
+	set(value):
+		if RT_game == value:
+			return
+		RT_game = value
+		last_RT.emit(value)
 var RT_level : int = 0
 
 var JAC_game = false
@@ -123,6 +128,7 @@ signal bonus_est(bonus_state)
 signal bonus_prized(current_bonus)
 signal bonus_end(current_bonus)
 signal now_RT(current_RT)
+signal last_RT(RT_game)
 signal now_JAC(current_JAC)
 signal medal_bet(bet_medals)
 signal medal_number(medal_sum)
@@ -200,6 +206,9 @@ func start_spin():
 	generate_flag()
 	generate_role_list()
 
+	if not JAC_game and RT_game > 0:
+		RT_game -= 1
+
 	current_control_table = create_control_data(result_roles)
 	
 	var current_time = Time.get_ticks_msec()
@@ -214,6 +223,7 @@ func start_spin():
 
 	for i in range (3):
 		is_spinning[i] = true
+	
 
 	spin_start.emit()
 
@@ -833,11 +843,6 @@ func check_prize():
 	if JAC_game:
 		JAC_counter[1] -= 1
 
-	if not JAC_game and RT_game != 0:
-		RT_game -= 1
-		if RT_game <= 0:
-			end_RT()
-
 	var reel_result : Array = get_reel_result()
 
 	var matched_role = get_matched_role(reel_result)
@@ -847,6 +852,9 @@ func check_prize():
 	if matched_role:
 		role_prize(matched_role)
 		print(matched_role["name"])
+
+	if RT_game == 0:
+		end_RT()
 
 	if JAC_game:
 		print(JAC_counter)
@@ -992,10 +1000,13 @@ func start_RT(RT):
 	var RT_type = RT_data[RT]["type"]
 	# if RT_level > RT_type:
 	# 	return
-	RT_game = 0
+	var game = RT_data[RT]["game"]
+	if not game:
+		RT_game = -1
+	else:
+		RT_game = game
 	RT_level = RT_type
 	current_RT = RT
-	var game = RT_data[RT]["game"]
 	if game:
 		RT_game = game
 		print(game)

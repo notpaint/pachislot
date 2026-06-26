@@ -10,6 +10,8 @@ extends Node
 
 var rare_flag = sub.rare_flags
 
+var current_RT: String = "RT0"
+var RT_game: int
 var now_RT = false
 var bonus_state = null
 var current_bonus = "None"
@@ -69,6 +71,8 @@ func connect_to_mainROM():
 		mainROM.reel_stopped.connect(_on_reel_stopped)
 	if mainROM.has_signal("now_RT"):
 		mainROM.now_RT.connect(_on_now_RT)
+	if mainROM.has_signal("last_RT"):
+		mainROM.last_RT.connect(_on_last_RT)
 	if mainROM.has_signal("JAC_IN"):
 		mainROM.JAC_IN.connect(_on_JAC_IN)
 	if mainROM.has_signal("prized_role"):
@@ -95,9 +99,11 @@ func _on_flag(value):
 
 func _on_bonus_est(value):
 	bonus_state = value
+	print("effects.gd", bonus_state)
 
 func _on_bonus_prized(value):
 	current_bonus = value
+	bonus_state = null
 	if value != "None":
 		audio.play_bonus(value)
 	if value == "None":
@@ -111,6 +117,7 @@ func _on_bonus_end(value):
 
 func _on_medal_bet(value):
 	audio.play_bet(value)
+	audio.back_music("medal_bet")
 	reel_light.stop_flash()
 	symbol_light.stop_flash()
 	medal_bet.emit()
@@ -132,10 +139,16 @@ func _on_reel_stopped(stopped_reel, _current_reel_grid):
 	audio.play_reel_stop()
 
 func _on_now_RT(value):
-	if value == "RT3":
+	current_RT = value
+	audio.back_music("now_RT")
+	if value == "RT1" or value == "RT2":
 		now_RT = true
-	elif value == "RT0":
+	elif value == "RT0" and current_bonus == "None":
 		now_RT = false
+
+func _on_last_RT(value):
+	RT_game = value
+	
 
 func bit_array(v):
 	return (

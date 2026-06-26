@@ -4,6 +4,8 @@ extends Node
 
 var SE_dict: Dictionary = {}
 var bonus_music: Dictionary = {}
+var back_music: Array = []
+
 var effect_slot: Dictionary = {}
 
 var in_bonus: bool = false
@@ -11,7 +13,7 @@ var first_bet: bool = true
 
 func _ready():
 	load_SE_dict()
-	load_bonus_music()
+	load_music()
 
 func sort_rules(a, b):
 	return a["priority"] > b["priority"]
@@ -28,8 +30,9 @@ func load_SE_dict():
 			if path:
 				SE_dict[item]["sound"][track_name] = load(path)
 
-func load_bonus_music():
+func load_music():
 	bonus_music = sub.bonus_music.duplicate(true)
+	back_music = sub.back_music.duplicate(true)
 
 func random_SE(event):
 	var SE_rules = SE_dict[event]["rule"]
@@ -65,3 +68,19 @@ func return_default(rules, variant: String = "default"):
 		if rule["cond"] == variant:
 			return rule["track"]
 				
+func get_track_array(trigger: String = "default"):
+	print("--- BGM判定開始 トリガー: ", trigger, " ---")
+	print("sub.gd の保持するBGM数: ", sub.back_music.size())
+	for data in back_music:
+		if not data.has("parsed"):
+			continue
+		
+		var expression = data["parsed"]
+		if expression.execute([trigger], effects):
+			return data["path"]
+
+	for data in back_music:
+		if not data.has("parsed"):
+			return data["path"]
+
+	return ""

@@ -30,6 +30,7 @@ func _ready():
 		mainROM.bonus_est.connect(_on_bonus_est)
 		mainROM.bonus_prized.connect(_on_bonus_prized)
 		mainROM.now_RT.connect(_on_now_RT)
+		mainROM.last_RT.connect(_on_last_RT)
 
 func _on_prized_array(reel_result):
 	for i in range(3):
@@ -89,4 +90,10 @@ func _on_now_RT(RT):
 		RT_name.text = "RT0"
 	else:
 		RT_name.text = RT
+
+func _on_last_RT(game):
+	if game <= 0:
+		RT_count.text = "ー"
+	else:
+		RT_count.text = str(game)
 	

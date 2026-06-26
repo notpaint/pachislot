@@ -15,10 +15,11 @@ var current_bonus: String
 var current_bonus_track: String
 var current_bonus_path: String
 
+var current_music_path: String
+
 func _ready():
 	SE_dict = weight.SE_dict
 	bonus_music = weight.bonus_music
-
 
 func play_bet(value):
 	if value != 0:
@@ -28,7 +29,6 @@ func play_bet(value):
 		if bet_stream:
 			SE.stream = bet_stream
 			SE.play()
-
 
 func play_reel_stop():
 	var stop_rules = SE_dict["reel_stop"]["rule"]
@@ -53,7 +53,6 @@ func play_prized(value):
 		SE.stream = start_stream
 		SE.play()
 
-
 func play_bonus(value):
 	if value != "None":
 		var current_bonus_music = bonus_music[value]
@@ -77,7 +76,6 @@ func play_bonus(value):
 			bonus.play()
 			
 
-
 func update_bonus_music(value):
 	if value != "None":
 		print(value)
@@ -92,7 +90,6 @@ func update_bonus_music(value):
 			bonus.stream = load(start_path)
 			bonus.play()
 
-
 func end_bonus(value):
 	if value != "None":
 		var current_bonus_music = bonus_music[value]
@@ -103,3 +100,11 @@ func end_bonus(value):
 			bonus.play()
 		else:
 			bonus.stop()
+
+func back_music(trigger: String = "default"):
+	var music_path = weight.get_track_array(trigger)
+	if music_path != "":
+		if current_music_path != music_path:
+			current_music_path = music_path
+			bonus.stream = load(music_path)
+			bonus.play()

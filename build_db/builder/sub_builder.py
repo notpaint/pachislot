@@ -26,21 +26,17 @@ def generate_bonus_music(cursor_main, cursor_sub, config):
                            VALUES(?, ?, ?, ?, ?, ?)
                            """, (bonus, jingle, rule, track_name, start, end))
             
-def generate_RT_music(cursor_main, cursor_sub, config):
-    for RT, music_data in config.RT_music.items():
-        cursor_main.execute("SELECT name from RT_data WHERE name = (?)", (RT,))
-        if cursor_main.fetchone() is None:
-            print(f"ERROR on generate_RT_music: {RT} does not exists in main.db")
-            continue
-        rule = json.dumps(music_data.get("rule"))
-        tracks = music_data.get("tracks", {})
-        for track_name, track_info in tracks.items():
-            start = track_info.get("start")
-            end = track_info.get("end")
+def generate_back_music(cursor_sub, config):
+    for data in config.back_music:
+        priority = data["priority"]
+        track = data["track"]
+        cond = data["cond"]
+        weight = data.get("weight", None)
+        path = data["path"]
 
-            cursor_sub.execute("""INSERT OR IGNORE INTO RT_music(RT, rule, track_name, start, end)
-                               VALUES(?, ?, ?, ? ,?)
-                               """, (RT, rule, track_name, start, end))
+        cursor_sub.execute("""INSERT OR IGNORE INTO back_music(priority, track, cond, weight, path)
+                           VALUES(?, ?, ?, ?, ?)""", (priority, track, cond, weight, path))
+            
             
 def generate_flag_trigger(cursor_main, cursor_sub, config):
     for flag, type_data in config.flag_trigger.items():
@@ -122,7 +118,7 @@ def build_sub(config):
         conn_sub.executescript(f.read())
 
     generate_bonus_music(cursor_main, cursor_sub, config)
-    generate_RT_music(cursor_main, cursor_sub, config)
+    generate_back_music(cursor_sub, config)
     generate_SE(cursor_sub, config)
     generate_env(cursor_sub, config)
     generate_flag_trigger(cursor_main, cursor_sub, config)

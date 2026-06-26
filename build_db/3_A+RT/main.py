@@ -302,38 +302,43 @@ role_pattern_priority = {
 # [{'フラグ名', '確率', 'RT状態'}]
 #リプレイは下限8978個
 flag_data_3bet = [
-    {"name": 'upperBell', "weight": 1639},
-    {"name": 'downBell', 'weight': 1639},
+    {"name": 'upperBell', "weight": 1689},
+    {"name": 'downBell', 'weight': 1689},
 
-    {"name": 'Cherry_A', "weight": 328},
-    {"name": 'Cherry_A_with_redBB', "weight": 14},
-    {"name": 'Cherry_A_with_RB', "weight": 14},
+    {"name": 'Cherry_A', "weight": 324},
+    {"name": 'Cherry_A_with_redBB', "weight": 18},
+    {"name": 'Cherry_A_with_RB', "weight": 18},
 
     {"name": 'downSuica', "weight": 410},
     {"name": 'middleSuica', "weight": 0},
 
-    {"name": 'middleReplay', "weight": 4489, "replace": {"RT3": "TReplay1", "RT4": "SReplay"}},
+    {"name": 'middleReplay', "weight": 4489, "replace": {"RT1": "TReplay1", "RT3": "SReplay"}},
 
-    {"name": 'vac', "weight": 13295},
-    {"name": 'RB', "weight": 197},
-    {"name": 'redBB', "weight": 197},
+    {"name": 'vac', "weight": 20564, "replace": {"RT1": "middleReplay", "RT2": "middleReplay"}},
+    {"name": 'vac', "weight": 3275},
+    {"name": 'TReplay1', "weight": 0},
+
+    {"name": 'RB', "weight": 146},
+    {"name": 'redBB', "weight": 146},
     {"name": 'blueBB', "weight": 0},
 
-    {"name": 'upperBell', "weight": 1639},
-    {"name": 'downBell', 'weight': 1639},
+    {"name": 'upperBell', "weight": 1689},
+    {"name": 'downBell', 'weight': 1689},
 
-    {"name": 'Cherry_A', "weight": 328},
-    {"name": 'Cherry_A_with_redBB', "weight": 14},
-    {"name": 'Cherry_A_with_RB', "weight": 14},
+    {"name": 'Cherry_A', "weight": 324},
+    {"name": 'Cherry_A_with_redBB', "weight": 18},
+    {"name": 'Cherry_A_with_RB', "weight": 18},
 
     {"name": 'downSuica', "weight": 410},
     {"name": 'middleSuica', "weight": 0},
 
-    {"name": 'middleReplay', "weight": 4489, "replace": {"RT3": "TReplay1", "RT4": "SReplay"}},
+    {"name": 'middleReplay', "weight": 4489, "replace": {"RT1": "TReplay1"}},
 
-    {"name": 'vac', "weight": 34387},
-    {"name": 'RB', "weight": 197},
-    {"name": 'redBB', "weight": 197},
+    {"name": 'vac', "weight": 20564, "replace": {"RT1": "middleReplay", "RT2": "middleReplay"}},
+    {"name": 'vac', "weight": 3275},
+
+    {"name": 'RB', "weight": 146},
+    {"name": 'redBB', "weight": 146},
     {"name": 'blueBB', "weight": 0}
 ]
 
@@ -373,20 +378,16 @@ RT_map = {
 
 #('RT名', 継続ゲーム数, rank{0 = RT0, 1 = ボーナス後or入賞系無限RT, 2 = 入賞系有限RT, 3 = ボーナス成立中RT})
 RT_data = {
-    ('RT0', None, 0),#基底RT
-    ('RT1', 20, 2),#入賞系有限RT
-    ('RT2', None, 1),#入賞系無限RT
-    ('RT3', 30, 1),#BB1終了後RT
-    ('RT4', None, 3)#BB1成立中RT
+    ('RT0', -1, 0),#基底RT
+    ('RT1', 5, 1),#ボーナス終了後有限RT
+    ('RT2', 5, 2),#入賞系有限RT
+    ('RT3', -1, 3)#ボーナス成立中RT
 }
 
 RT_pattern = {
-    "RT1": [create_multi_pattern(
-        ("suica", rep_any, rep_any)
-    )],
     "RT2": [create_multi_pattern(
-        (bell_any, rep_any, bell_any)
-    )],
+        ("suica", rep_any, rep_any)
+    )]
 }
 
 
@@ -406,7 +407,7 @@ bonus_data = {
         "max_payout" : None,
         "JACIN_type" : "RB1",
         "JAC_nums" : None,
-        "before_RT" : None,
+        "before_RT" : "RT3",
         "present_RT": None,
         "after_RT" : "RT0"
     },
@@ -414,17 +415,17 @@ bonus_data = {
         "max_payout" : 50,
         "JACIN_type" : "RB1",
         "JAC_nums" : json.dumps(JAC_SBB),
-        "before_RT" : "RT4",
+        "before_RT" : "RT3",
         "present_RT": None,
-        "after_RT" : "RT3"
+        "after_RT" : "RT1"
     },
     'blueBB': {
         "max_payout" : 5,
         "JACIN_type" : "RB1",
         "JAC_nums" : json.dumps(JAC_SBB),
-        "before_RT" : None,
+        "before_RT" : "RT3",
         "present_RT": None,
-        "after_RT" : "RT0"
+        "after_RT" : "RT1"
     }
 }
 
@@ -463,6 +464,14 @@ flag_role_map = [
     {
         "flag": "Cherry_A",
         "roles": ["Cherry_A"]
+    },
+    {
+        "flag": "Cherry_A_with_redBB",
+        "roles": ["Cherry_A", "redBB"]
+    },
+    {
+        "flag": "Cherry_A_with_RB",
+        "roles": ["Cherry_A", "RB"]
     },
     {
         "flag": "Cherry_B",

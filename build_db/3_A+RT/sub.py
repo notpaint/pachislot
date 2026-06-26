@@ -135,22 +135,26 @@ bonus_music = {
     }
 }
 
-RT_music = {}
-
-back_music = {
-    "RT2": {
-        "path": "res://assets/music/shake2/RT/Into_the_real_part1.ogg",
-        "cond": "RT2"
+back_music = [
+    {
+        "priority": 1,
+        "track": "RT1",
+        "cond": "current_RT == 'RT1' and trigger == 'medal_bet'",
+        "path": "res://assets/music/shake2/RT/Into_the_real_part1.ogg"
     },
-    "RT3": {
-        "path": "res://assets/music/shake2/RT/Into_the_real_part2.ogg",
-        "cond": "RT3"
+    {
+        "priority": 2,
+        "track": "RT2",
+        "cond": "current_RT == 'RT2'",
+        "path": "res://assets/music/shake2/RT/Into_the_real_part2.ogg"
     },
-    "RT_end": {
-        "path": "res://assets/music/shake2/RT/Into_the_real_end.ogg",
-        "cond": "end"
+    {
+        "priority": 0,
+        "track": "RT_end",
+        "cond": "trigger == 'now_RT' and RT_game == 0 and now_RT == true and bonus_state == null",
+        "path": "res://assets/music/shake2/RT/Into_the_real_end.ogg"
     }
-}
+]
 
 
 
@@ -170,7 +174,7 @@ sub_config = SubBuildConfig(
 
     SE = SE,
     bonus_music = bonus_music,
-    RT_music = RT_music,
+    back_music = back_music,
 
     env = env
 )

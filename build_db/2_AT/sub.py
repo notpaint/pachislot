@@ -96,6 +96,10 @@ bonus_music = {
     }
 }
 
+back_music = {
+
+}
+
 flag_trigger = {
     "order_bell": {
         "in_bonus": {
@@ -374,9 +378,7 @@ premonition_map = {
 }
 
 
-AT_music = {
 
-}
 
 env = {
     "order_scene_path": "res://scenes/body/effects/order_navi/AT.tscn",
@@ -401,8 +403,8 @@ sub_config = SubBuildConfig(
 
     SE = SE,
     bonus_music = bonus_music,
-    AT_music = AT_music,
-
+    back_music = back_music,
+    
     flag_trigger = flag_trigger,
     pseudo_bonus_mode = pseudo_bonus_mode,
     premonition_map = premonition_map,
