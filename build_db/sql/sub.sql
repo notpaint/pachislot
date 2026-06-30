@@ -23,7 +23,8 @@ CREATE TABLE back_music(
     track TEXT,
     cond TEXT,
     weight INT,
-    path TEXT
+    path TEXT,
+    bet_block INT
 );
 
 CREATE TABLE RT_music(

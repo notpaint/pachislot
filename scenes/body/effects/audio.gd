@@ -1,9 +1,12 @@
 extends Node
 
+@onready var mainROM =$"../../mainROM"
 @onready var effects = $".."
 @onready var weight = $"../weight"
 @onready var SE = $"SE"
 @onready var bonus = $"bonus"
+@onready var reel = [$"left", $"center", $"right"]
+
 
 var SE_dict: Dictionary = {}
 var bonus_music: Dictionary = {}
@@ -30,13 +33,14 @@ func play_bet(value):
 			SE.stream = bet_stream
 			SE.play()
 
-func play_reel_stop():
+func play_reel_stop(reel_pos):
 	var stop_rules = SE_dict["reel_stop"]["rule"]
 	var stop_track = weight.get_track(stop_rules, "reel_stop")
 	var stop_stream = SE_dict["reel_stop"]["sound"][stop_track]
 	if stop_stream:
-		SE.stream = stop_stream
-		SE.play()
+		var player = reel[reel_pos]
+		player.stream = stop_stream
+		player.play()
 
 
 func play_spin_start(track):
@@ -69,6 +73,10 @@ func play_bonus(value):
 			bonus.stream = load(jingle_path)
 			bonus.play()
 
+			mainROM.bet_block += 1
+			await bonus.finished
+			mainROM.bet_block -= 1
+
 			await effects.medal_bet
 
 		if start_path:
@@ -90,6 +98,7 @@ func update_bonus_music(value):
 			bonus.stream = load(start_path)
 			bonus.play()
 
+
 func end_bonus(value):
 	if value != "None":
 		var current_bonus_music = bonus_music[value]
@@ -98,13 +107,28 @@ func end_bonus(value):
 		if end_path:
 			bonus.stream = load(end_path)
 			bonus.play()
+
+			mainROM.bet_block += 1
+			await bonus.finished
+			mainROM.bet_block -= 1
 		else:
 			bonus.stop()
 
 func back_music(trigger: String = "default"):
-	var music_path = weight.get_track_array(trigger)
-	if music_path != "":
-		if current_music_path != music_path:
-			current_music_path = music_path
-			bonus.stream = load(music_path)
-			bonus.play()
+	var music_data = weight.get_track_array(trigger)
+	if music_data:
+		var music_path = music_data["path"]
+		if music_path == "silent":
+			if current_music_path != "":
+				current_music_path = ""
+				bonus.stop()
+		elif music_path != "":
+			if current_music_path != music_path:
+				current_music_path = music_path
+				bonus.stream = load(music_path)
+				bonus.play()
+
+				if music_data["bet_block"]:
+					mainROM.bet_block += 1
+					await bonus.finished
+					mainROM.bet_block -= 1

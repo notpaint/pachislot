@@ -150,7 +150,7 @@ bonus_music = {
 }
 
 env = {
-     "order_scene_path": None,
+     "order_scene_path": "res://scenes/body/effects/order_navi/A.tscn",
      "rare_flag": ["downSuica", "Cherry_A", "redBB", "RB"],
      "effect_rand": {
          "lever": 0,

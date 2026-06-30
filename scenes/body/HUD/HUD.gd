@@ -92,7 +92,9 @@ func _on_now_RT(RT):
 		RT_name.text = RT
 
 func _on_last_RT(game):
-	if game <= 0:
+	if game == 0:
+		RT_count.text = str(0)
+	elif game < 0:
 		RT_count.text = "ー"
 	else:
 		RT_count.text = str(game)

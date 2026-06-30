@@ -45,6 +45,12 @@ script = ExtResource("2_f0rvd")
 [node name="SE" type="AudioStreamPlayer" parent="audio" unique_id=281881813]
 max_polyphony = 5
 
+[node name="left" type="AudioStreamPlayer" parent="audio" unique_id=1371045777]
+
+[node name="center" type="AudioStreamPlayer" parent="audio" unique_id=474814600]
+
+[node name="right" type="AudioStreamPlayer" parent="audio" unique_id=513071212]
+
 [node name="frame_light" type="Node" parent="." unique_id=1083910793]
 
 [node name="L_reel_light" type="Line2D" parent="frame_light" unique_id=745687035]
@@ -54,7 +60,6 @@ material = SubResource("ShaderMaterial_voxqf")
 position = Vector2(0, 215)
 points = PackedVector2Array(0, 300, 0, 0, 0, 639, 420, 639, 420, 0, 0, 0, 0, 300)
 width = 8.0
-default_color = Color(1, 1, 0, 1)
 texture = SubResource("GradientTexture1D_6ruq1")
 texture_mode = 2
 
@@ -64,8 +69,7 @@ z_index = 1
 material = SubResource("ShaderMaterial_voxqf")
 position = Vector2(420, 215)
 points = PackedVector2Array(0, 300, 0, 0, 0, 639, 420, 639, 420, 0, 0, 0, 0, 300)
-width = 7.0
-default_color = Color(1, 1, 0, 1)
+width = 8.0
 texture = SubResource("GradientTexture1D_6ruq1")
 texture_mode = 2
 
@@ -75,8 +79,7 @@ z_index = 1
 material = SubResource("ShaderMaterial_voxqf")
 position = Vector2(840, 215)
 points = PackedVector2Array(0, 300, 0, 0, 0, 639, 420, 639, 420, 0, 0, 0, 0, 300)
-width = 7.0
-default_color = Color(1, 1, 0, 1)
+width = 8.0
 texture = SubResource("GradientTexture1D_6ruq1")
 texture_mode = 2
 
@@ -86,8 +89,7 @@ z_index = 1
 material = SubResource("ShaderMaterial_voxqf")
 position = Vector2(0, 215)
 points = PackedVector2Array(630, 0, 0, 0, 0, 639, 1260, 639, 1260, 0, 0, 0, 630, 0)
-width = 7.0
-default_color = Color(1, 1, 0, 1)
+width = 8.0
 texture = SubResource("GradientTexture1D_6ruq1")
 texture_mode = 2
 

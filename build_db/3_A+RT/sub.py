@@ -41,12 +41,44 @@ SE = {
             },
             {
                 "priority": 1,
-                "track": "silent",
-                "cond": "current_bonus != 'None'"
+                "track": "chance",
+                "cond": "bonus_state == null and current_bonus == 'None' and result_flag == 'vac' and order_node.now_RT == false",
+                "weight": 12
+            },
+            {
+                "priority": 2,
+                "track": "chance",
+                "cond": "bonus_state == null and current_bonus == 'None' and result_flag != 'vac' and order_node.now_RT == false",
+                "weight": 25
+            },
+            {
+                "priority": 5,
+                "track": "chance",
+                "cond": "bonus_state == null and current_bonus == 'None' and result_flag in rare_flag and order_node.now_RT == false",
+                "weight": 128
+            },
+            {
+                "priority": 6,
+                "track": "chance",
+                "cond": "bonus_state != null and current_bonus == 'None' and result_flag == 'vac' and order_node.now_RT == false",
+                "weight": 85
+            },
+            {
+                "priority": 8,
+                "track": "chance",
+                "cond": "bonus_state != null and current_bonus == 'None' and result_flag != 'vac' and order_node.now_RT == false",
+                "weight": 128
+            },
+            {
+                "priority": 10,
+                "track": "chance",
+                "cond": "bonus_state != null and current_bonus == 'None' and result_flag in rare_flag and order_node.now_RT == false",
+                "weight": 192
             }
         ],
         "sound": {
             "main" : "res://assets/SE/shake2/start.ogg",
+            "chance": "res://assets/SE/shake2/start_chance.ogg",
             "silent": None
         }
     },
@@ -74,10 +106,27 @@ SE = {
                 "priority": 0,
                 "track": "main",
                 "cond": "default"
+            },
+            {
+                "priority": 1,
+                "track": "Bell",
+                "cond": "current_bonus == 'None' and prized_role == 'downBell' and order_node.now_RT == false"
+            },
+            {
+                "priority": 1,
+                "track": "Bell",
+                "cond": "current_bonus == 'None' and prized_role == 'upperBell' and order_node.now_RT == false"
+            },
+            {
+                "priority": 1,
+                "track": "Replay",
+                "cond": "current_bonus == 'None' and prized_role == 'middleReplay' and order_node.now_RT == false"
             }
         ],
         "sound":{
-            "main": None
+            "main": None,
+            "Bell": "res://assets/SE/shake2/role/bell.ogg",
+            "Replay": "res://assets/SE/shake2/role/replay.ogg"
         }
     }
 }
@@ -115,7 +164,7 @@ bonus_music = {
             {
                 "priority": 2,
                 "track": "second",
-                "cond": "now_RT == true"
+                "cond": "order_node.now_RT == true"
             }
         ],
         "tracks":{
@@ -149,17 +198,35 @@ back_music = [
         "path": "res://assets/music/shake2/RT/Into_the_real_part2.ogg"
     },
     {
+        "priority": 3,
+        "track": "silent1",
+        "cond": "trigger == 'prized_role' and order_node.now_RT == true and result_flag == 'SReplay'",
+        "path": "silent"
+    },
+    {
+        "priority": 3,
+        "track": "silent2",
+        "cond": "trigger == 'prized_role' and order_node.now_RT == true and bonus_state != null and prized_role == ''",
+        "path": "silent"
+    },
+    {
         "priority": 0,
         "track": "RT_end",
-        "cond": "trigger == 'now_RT' and RT_game == 0 and now_RT == true and bonus_state == null",
-        "path": "res://assets/music/shake2/RT/Into_the_real_end.ogg"
+        "cond": "trigger == 'now_RT' and RT_game == 0 and order_node.now_RT == true and bonus_state == null",
+        "path": "res://assets/music/shake2/RT/Into_the_real_end.ogg",
+        "bet_block": 1
     }
 ]
 
 
 
 env = {
-    "order_scene_path": "res://scenes/body/effects/order_navi/A+RT.tscn"
+    "order_scene_path": "res://scenes/body/effects/order_navi/A+RT.tscn",
+    "rare_flag": ["downSuica", "Cherry_A", "redBB", "RB"],
+     "effect_rand": {
+         "lever": 0,
+         "reel_start": 1
+     }
 }
 
 base_path = Path(__file__).resolve().parent

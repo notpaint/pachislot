@@ -3,16 +3,21 @@ extends Node
 @onready var mainROM = $"../mainROM"
 @onready var weight = $"weight"
 @onready var audio = $"audio"
-@onready var frame_light = $"frame_light"
 @onready var reel_light = $"reel_light"
 @onready var symbol_light = $"symbol_light"
 @onready var order_assist = $"order_assist"
+
+@onready var frame_lights: Array = [
+	$frame_light/L_reel_light,
+	$frame_light/C_reel_light,
+	$frame_light/R_reel_light,
+	$frame_light/all_reel_light
+]
 
 var rare_flag = sub.rare_flags
 
 var current_RT: String = "RT0"
 var RT_game: int
-var now_RT = false
 var bonus_state = null
 var current_bonus = "None"
 
@@ -31,6 +36,8 @@ var effect_slot: Dictionary = {}
 var jac_counter: int = 0
 var order_scene_path:String
 
+var order_node: Node = null
+
 signal medal_bet()
 signal main_flag(value)
 signal jac_count()
@@ -48,6 +55,7 @@ func _ready():
 		var order_scene = load(order_scene_path)
 		var scene = order_scene.instantiate()
 		order_assist.add_child(scene)
+		order_node = scene
 	else:
 		print("押し順無し")
 
@@ -65,18 +73,26 @@ func connect_to_mainROM():
 		mainROM.medal_bet.connect(_on_medal_bet)
 	if mainROM.has_signal("flag"):
 		mainROM.flag.connect(_on_flag)
+		if order_node.has_method("_on_flag"):
+			mainROM.flag.connect(order_node._on_flag)
 	if mainROM.has_signal("spin_start"):
 		mainROM.spin_start.connect(_on_spin_start)
 	if mainROM.has_signal("reel_stopped"):
 		mainROM.reel_stopped.connect(_on_reel_stopped)
+		if order_node.has_method("_on_reel_stopped"):
+			mainROM.reel_stopped.connect(order_node._on_reel_stopped)
 	if mainROM.has_signal("now_RT"):
 		mainROM.now_RT.connect(_on_now_RT)
+		if order_node.has_method("_on_now_RT"):
+			mainROM.now_RT.connect(order_node._on_now_RT)
 	if mainROM.has_signal("last_RT"):
 		mainROM.last_RT.connect(_on_last_RT)
 	if mainROM.has_signal("JAC_IN"):
 		mainROM.JAC_IN.connect(_on_JAC_IN)
 	if mainROM.has_signal("prized_role"):
 		mainROM.prized_role.connect(_on_prized_role)
+		if order_node.has_method("_on_prized"):
+			mainROM.prized_role.connect(order_node._on_prized)
 	if mainROM.has_signal("prized_array"):
 		mainROM.prized_array.connect(_on_prized_array)
 
@@ -127,6 +143,11 @@ func _on_prized_role(value):
 	if value:
 		prized_role = value["name"]
 		audio.play_prized(value["name"])
+		audio.back_music("prized_role")
+	else:
+		prized_role = ""
+		audio.back_music("prized_role")
+
 
 func _on_prized_array(value):
 	var current_reel_grid = mainROM.current_reel_grid
@@ -134,17 +155,13 @@ func _on_prized_array(value):
 	# symbol_light.middle_flash(current_reel_grid)
 
 
-func _on_reel_stopped(stopped_reel, _current_reel_grid):
+func _on_reel_stopped(reel_pos, stopped_reel, _current_reel_grid):
 	current_reel = stopped_reel
-	audio.play_reel_stop()
+	audio.play_reel_stop(reel_pos)
 
 func _on_now_RT(value):
 	current_RT = value
 	audio.back_music("now_RT")
-	if value == "RT1" or value == "RT2":
-		now_RT = true
-	elif value == "RT0" and current_bonus == "None":
-		now_RT = false
 
 func _on_last_RT(value):
 	RT_game = value

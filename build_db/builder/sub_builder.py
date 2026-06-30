@@ -33,9 +33,10 @@ def generate_back_music(cursor_sub, config):
         cond = data["cond"]
         weight = data.get("weight", None)
         path = data["path"]
+        bet_block = data.get("bet_block", None)
 
-        cursor_sub.execute("""INSERT OR IGNORE INTO back_music(priority, track, cond, weight, path)
-                           VALUES(?, ?, ?, ?, ?)""", (priority, track, cond, weight, path))
+        cursor_sub.execute("""INSERT OR IGNORE INTO back_music(priority, track, cond, weight, path, bet_block)
+                           VALUES(?, ?, ?, ?, ?, ?)""", (priority, track, cond, weight, path, bet_block))
             
             
 def generate_flag_trigger(cursor_main, cursor_sub, config):

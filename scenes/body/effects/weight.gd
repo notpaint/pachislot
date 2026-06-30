@@ -77,10 +77,10 @@ func get_track_array(trigger: String = "default"):
 		
 		var expression = data["parsed"]
 		if expression.execute([trigger], effects):
-			return data["path"]
+			return data
 
 	for data in back_music:
 		if not data.has("parsed"):
-			return data["path"]
+			return data
 
-	return ""
+	return null

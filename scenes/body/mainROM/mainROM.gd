@@ -43,6 +43,12 @@ var bet_medals : int = 0:
 		medal_bet.emit(value)
 		Datahub.bet_medals = value
 
+var bet_block: int = 0:
+	set(value):
+		bet_block = max(0, value)
+		if bet_block == 0:
+			bet_release.emit()
+
 var is_spinning = [false, false, false]
 var can_stop_reel : Array = [false, false, false]
 
@@ -119,6 +125,7 @@ var JAC_counter : Array
 var max_bonus_payout : int = 0
 var current_bonus_payout : int = 0
 
+signal bet_release()
 signal flag(result_flag)
 signal roles(result_roles)
 signal prized_role(matched_role)
@@ -132,7 +139,7 @@ signal last_RT(RT_game)
 signal now_JAC(current_JAC)
 signal medal_bet(bet_medals)
 signal medal_number(medal_sum)
-signal reel_stopped(current_reel, current_reel_grid)
+signal reel_stopped(reel_pos, current_reel, current_reel_grid)
 signal JAC_IN()
 
 @onready var L_reel = $window/L_reel
@@ -199,7 +206,9 @@ func start_spin():
 
 	if not can_spin():
 		return
-	
+
+	bet_block += 1
+
 	is_waiting = true
 
 	clear_current_data()
@@ -246,8 +255,6 @@ func can_spin():
 		return false
 	return true
 
-
-
 func generate_flag():	
 	var rand_num : int = drawing_hash(Time.get_ticks_usec())
 	result_flag = select_flags(rand_num)
@@ -288,6 +295,8 @@ func generate_role_list():
 
 
 func maxbet():
+	if bet_block > 0:
+		return
 	if not is_spinning[0] and not is_spinning[1] and not is_spinning[2]:
 		if current_JAC != "None":
 			if bet_medals != 0:
@@ -827,7 +836,7 @@ func stop_reels(slide, current_pixel, raw_ID, reel_pos):
 	if active_tweens[reel_pos]:
 		active_tweens[reel_pos].kill()
 
-	reel_stopped.emit(current_reel, current_reel_grid)
+	reel_stopped.emit(reel_pos, current_reel, current_reel_grid)
 	
 	if not is_spinning[0] and not is_spinning[1] and not is_spinning[2]:
 		while Input.is_anything_pressed():
@@ -852,6 +861,8 @@ func check_prize():
 	if matched_role:
 		role_prize(matched_role)
 		print(matched_role["name"])
+	else:
+		bet_block -= 1
 
 	if RT_game == 0:
 		end_RT()
@@ -882,17 +893,22 @@ func role_prize(matched_role):
 	if JAC_game:
 		JAC_counter[0] -= 1
 
+
 	match kind:
 		1: #ボーナス
+			bet_block -= 1
 			if bonus_data.has(role):
 				start_bonus(role)
 			else:
 				pass
 		2: #小役
-			pass
+			bet_block -= 1
 		3: #リプレイ
-			await get_tree().create_timer(0.3).timeout
+			bet_block -= 1
+			if bet_block > 0:
+				await bet_release
 			bet_medals = 3
+
 
 func get_matched_role(reel_result):
 	for role in all_roles:
@@ -1016,3 +1032,4 @@ func start_RT(RT):
 func end_RT():
 	RT_level = 0
 	current_RT = "RT0"
+	RT_game = -1
