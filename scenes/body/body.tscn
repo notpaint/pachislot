@@ -6,7 +6,6 @@
 [ext_resource type="PackedScene" uid="uid://c6kdejl5wqyw3" path="res://scenes/body/analysis/analysis.tscn" id="4_k5gax"]
 [ext_resource type="PackedScene" uid="uid://c70j8ea87e5ew" path="res://scenes/body/UI/UI.tscn" id="5_8yn5v"]
 [ext_resource type="PackedScene" uid="uid://qy8yhhsv2mwt" path="res://scenes/body/effects/effects.tscn" id="6_is24f"]
-[ext_resource type="Script" uid="uid://bown76ai3t5yx" path="res://scenes/body/display/display.gd" id="7_k5gax"]
 
 [node name="body" type="Node" unique_id=502036008]
 
@@ -26,6 +25,3 @@ transform = Transform2D(1, 0, 0, 1, 1260, 0)
 [node name="UI" parent="." unique_id=122271127 instance=ExtResource("5_8yn5v")]
 
 [node name="effects" parent="." unique_id=1805229761 instance=ExtResource("6_is24f")]
-
-[node name="display" type="Node2D" parent="." unique_id=2085006750]
-script = ExtResource("7_k5gax")

@@ -381,6 +381,7 @@ premonition_map = {
 
 
 env = {
+    "display_scene_path": "res://scenes/body/effects/display/AT.tscn",
     "order_scene_path": "res://scenes/body/effects/order_navi/AT.tscn",
      "effect_rand": {
          "lever": 0,

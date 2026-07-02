@@ -6,6 +6,7 @@ extends Node
 @onready var reel_light = $"reel_light"
 @onready var symbol_light = $"symbol_light"
 @onready var order_assist = $"order_assist"
+@onready var display = $"display"
 
 @onready var frame_lights: Array = [
 	$frame_light/L_reel_light,
@@ -34,8 +35,11 @@ var effects_rands: PackedByteArray
 var effect_slot: Dictionary = {}
 
 var jac_counter: int = 0
-var order_scene_path:String
 
+var display_scene_path: String
+var order_scene_path: String
+
+var display_node: Node = null
 var order_node: Node = null
 
 signal medal_bet()
@@ -45,6 +49,7 @@ signal bonus_end()
 signal prized()
 
 func _ready():
+	display_scene_path = sub.display_scene_path
 	order_scene_path = sub.order_scene_path
 	effects_rands.resize(256)
 	effect_slot = sub.effect_slot
@@ -56,6 +61,11 @@ func _ready():
 		var scene = order_scene.instantiate()
 		order_assist.add_child(scene)
 		order_node = scene
+	if display_scene_path:
+		var display_scene = load(display_scene_path)
+		var scene = display_scene.instantiate()
+		display.add_child(scene)
+		display_node = scene
 	else:
 		print("押し順無し")
 
@@ -79,8 +89,6 @@ func connect_to_mainROM():
 		mainROM.spin_start.connect(_on_spin_start)
 	if mainROM.has_signal("reel_stopped"):
 		mainROM.reel_stopped.connect(_on_reel_stopped)
-		if order_node.has_method("_on_reel_stopped"):
-			mainROM.reel_stopped.connect(order_node._on_reel_stopped)
 	if mainROM.has_signal("now_RT"):
 		mainROM.now_RT.connect(_on_now_RT)
 		if order_node.has_method("_on_now_RT"):
@@ -116,6 +124,8 @@ func _on_flag(value):
 func _on_bonus_est(value):
 	bonus_state = value
 	print("effects.gd", bonus_state)
+	if display_node and display_node.has_method("_on_bonus_est"):
+		display_node._on_bonus_est(value)
 
 func _on_bonus_prized(value):
 	current_bonus = value
@@ -140,6 +150,7 @@ func _on_medal_bet(value):
 	# medal_bet.emit(value)
 
 func _on_prized_role(value):
+	print(value)
 	if value:
 		prized_role = value["name"]
 		audio.play_prized(value["name"])
@@ -158,6 +169,9 @@ func _on_prized_array(value):
 func _on_reel_stopped(reel_pos, stopped_reel, _current_reel_grid):
 	current_reel = stopped_reel
 	audio.play_reel_stop(reel_pos)
+
+	if order_node and order_node.has_method("_on_reel_stopped"):
+		order_node._on_reel_stopped(reel_pos, stopped_reel, _current_reel_grid)
 
 func _on_now_RT(value):
 	current_RT = value

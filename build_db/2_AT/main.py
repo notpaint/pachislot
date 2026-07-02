@@ -565,7 +565,7 @@ RT_map = {
 RT_data = {
     ('RT0', None, 0),#基底RT
     ('RT1', 5, 1),#BB1終了後RT
-    ('RT2', None, 1),#入賞系無限RT
+    ('RT2', None, 2),#入賞系無限RT
     ('RT3', 5, 2),#入賞系有限RT
     ('BB1', None, 3)#BB1成立中RT
 }

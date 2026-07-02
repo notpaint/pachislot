@@ -119,6 +119,11 @@ SE = {
             },
             {
                 "priority": 1,
+                "track": "Bell_BB",
+                "cond": "current_bonus == 'redBB' and prized_role == 'middleBell'"
+            },
+            {
+                "priority": 1,
                 "track": "Replay",
                 "cond": "current_bonus == 'None' and prized_role == 'middleReplay' and order_node.now_RT == false"
             }
@@ -126,6 +131,7 @@ SE = {
         "sound":{
             "main": None,
             "Bell": "res://assets/SE/shake2/role/bell.ogg",
+            "Bell_BB": "res://assets/SE/shake2/role/bell_bb.ogg",
             "Replay": "res://assets/SE/shake2/role/replay.ogg"
         }
     }
@@ -221,6 +227,7 @@ back_music = [
 
 
 env = {
+    "display_scene_path": "res://scenes/body/effects/display/A+RT.tscn",
     "order_scene_path": "res://scenes/body/effects/order_navi/A+RT.tscn",
     "rare_flag": ["downSuica", "Cherry_A", "redBB", "RB"],
      "effect_rand": {

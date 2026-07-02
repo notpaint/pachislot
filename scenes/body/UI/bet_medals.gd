@@ -22,4 +22,3 @@ func _on_bet(value):
 	for i in range(n):
 		var child = children[i]
 		child.modulate = ON
-		await get_tree().create_timer(0.05).timeout

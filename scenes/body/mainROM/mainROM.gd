@@ -64,6 +64,14 @@ var active_tweens : Array[Tween] = [null, null, null]
 
 var effects_seeds : PackedInt32Array
 
+var game: int = 0:
+	set(value):
+		if game == value:
+			return
+		game = value
+		game_count.emit(game)
+		Datahub.game = value
+
 var result_flag : String = "None": #当選フラグ
 	set(value):
 		if result_flag == value:
@@ -98,8 +106,6 @@ var current_JAC : String= "None": #JAC状態
 
 var current_RT : String = "RT0":
 	set(value):
-		if current_RT == value:
-			return
 		current_RT = value
 		now_RT.emit(value)
 		Datahub.current_RT = value
@@ -141,6 +147,7 @@ signal medal_bet(bet_medals)
 signal medal_number(medal_sum)
 signal reel_stopped(reel_pos, current_reel, current_reel_grid)
 signal JAC_IN()
+signal game_count(game)
 
 @onready var L_reel = $window/L_reel
 @onready var C_reel = $window/C_reel
@@ -253,6 +260,8 @@ func can_spin():
 		return false
 	if bet_medals == 0:
 		return false
+	if bet_block > 0:
+		return false
 	return true
 
 func generate_flag():	
@@ -304,15 +313,26 @@ func maxbet():
 			var play_bet = JAC_data[current_JAC]["bet"]
 			if medal_sum < play_bet:
 				return
-			bet_medals = play_bet
-			medal_sum = medal_sum - bet_medals
+
+			bet_block += 1
+			for i in range(play_bet):
+				bet_medals += 1
+				medal_sum -= 1
+				await get_tree().create_timer(0.08).timeout
+			bet_block -= 1
+
 			return
 		if bet_medals == 3:
 			return
 		if medal_sum < 3:
 			return
-		medal_sum = medal_sum - 3
-		bet_medals = 3
+
+		bet_block += 1
+		for i in range(3):
+			bet_medals += 1
+			medal_sum -= 1
+			await get_tree().create_timer(0.08).timeout
+		bet_block -= 1
 
 func _on_maxbet_requested():
 	maxbet()
@@ -864,6 +884,9 @@ func check_prize():
 	else:
 		bet_block -= 1
 
+	prized_role.emit(matched_role)
+	prized_array.emit(reel_result)
+
 	if RT_game == 0:
 		end_RT()
 
@@ -876,8 +899,15 @@ func check_prize():
 		if current_bonus_payout >= max_bonus_payout:
 			end_bonus()
 	
-	prized_role.emit(matched_role)
-	prized_array.emit(reel_result)
+	if matched_role and matched_role["kind"] == 3:
+		if bet_block >0:
+			await bet_release
+		
+		bet_block += 1
+		for i in range(3):
+			bet_medals += 1
+			await get_tree().create_timer(0.08).timeout
+		bet_block -= 1
 
 
 func role_prize(matched_role):
@@ -905,9 +935,6 @@ func role_prize(matched_role):
 			bet_block -= 1
 		3: #リプレイ
 			bet_block -= 1
-			if bet_block > 0:
-				await bet_release
-			bet_medals = 3
 
 
 func get_matched_role(reel_result):
@@ -996,16 +1023,18 @@ func end_JAC():
 func end_bonus():
 	JAC_game = false
 	JAC_counter = [0, 0]
-	var after_RT = bonus_data[current_bonus]["after_RT"]
+
+	var temp_bonus = current_bonus
+	current_bonus = "None"
+	current_JAC = "None"
+
+	var after_RT = bonus_data[temp_bonus]["after_RT"]
 	if after_RT:
 		start_RT(after_RT)
 	
-	print("%s IS END" % [current_bonus])
-	bonus_end.emit(current_bonus)
+	bonus_end.emit(temp_bonus)
 	
 	bonus_state = null
-	current_bonus = "None"
-	current_JAC = "None"
 	max_bonus_payout = 0
 	current_bonus_payout = 0
 
@@ -1014,6 +1043,9 @@ func start_RT(RT):
 	if bonus_state:
 		return
 	var RT_type = RT_data[RT]["type"]
+
+	if RT_game != -1 and RT_level >= RT_type:
+		return
 	# if RT_level > RT_type:
 	# 	return
 	var game = RT_data[RT]["game"]

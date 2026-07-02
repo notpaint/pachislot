@@ -88,10 +88,16 @@ SE = {
                 "priority": 0,
                 "track": "main",
                 "cond": "default"
+            },
+            {
+                "priority": 1,
+                "track": "RB",
+                "cond": "current_bonus == 'RB'"
             }
         ],
         "sound": {
-            "main": "res://assets/SE/otoko/stop.ogg"
+            "main": "res://assets/SE/otoko/stop.ogg",
+            "RB": "res://assets/SE/otoko/stop_RB.ogg"
         }
     },
     "prized": {
@@ -105,11 +111,23 @@ SE = {
                 "priority": 1,
                 "track": "downBell",
                 "cond": "current_bonus == 'None' and prized_role == 'downBell'"
+            },
+            {
+                "priority": 1,
+                "track": "Replay",
+                "cond": "current_bonus == 'None' and prized_role == 'middleReplay'"
+            },
+            {
+                "priority": 1,
+                "track": "middleBell_RB",
+                "cond": "current_bonus == 'RB' and prized_role == 'middleBell'"
             }
         ],
         "sound":{
             "main": None,
-            "downBell": "res://assets/SE/otoko/role/downBell.ogg"
+            "downBell": "res://assets/SE/otoko/role/downBell.ogg",
+            "Replay": "res://assets/SE/otoko/role/Replay.ogg",
+            "middleBell_RB": "res://assets/SE/otoko/role/middleBell_RB.ogg"
         }
     }
 }
@@ -150,12 +168,13 @@ bonus_music = {
 }
 
 env = {
-     "order_scene_path": "res://scenes/body/effects/order_navi/A.tscn",
-     "rare_flag": ["downSuica", "Cherry_A", "redBB", "RB"],
-     "effect_rand": {
-         "lever": 0,
-         "reel_start": 1
-     }
+    "display_scene_path": "res://scenes/body/effects/display/A.tscn",
+    "order_scene_path": "res://scenes/body/effects/order_navi/A.tscn",
+    "rare_flag": ["downSuica", "Cherry_A", "redBB", "RB"],
+    "effect_rand": {
+        "lever": 0,
+        "reel_start": 1
+    }
 }
 
 base_path = Path(__file__).resolve().parent

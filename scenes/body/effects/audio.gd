@@ -4,6 +4,7 @@ extends Node
 @onready var effects = $".."
 @onready var weight = $"../weight"
 @onready var SE = $"SE"
+@onready var medal = $"medal"
 @onready var bonus = $"bonus"
 @onready var reel = [$"left", $"center", $"right"]
 
@@ -30,8 +31,10 @@ func play_bet(value):
 		var bet_track = weight.get_track(bet_rules, "bet")
 		var bet_stream = SE_dict["bet"]["sound"][bet_track]
 		if bet_stream:
-			SE.stream = bet_stream
-			SE.play()
+			if SE.playing:
+				return
+			medal.stream = bet_stream
+			medal.play()
 
 func play_reel_stop(reel_pos):
 	var stop_rules = SE_dict["reel_stop"]["rule"]
@@ -113,6 +116,7 @@ func end_bonus(value):
 			mainROM.bet_block -= 1
 		else:
 			bonus.stop()
+
 
 func back_music(trigger: String = "default"):
 	var music_data = weight.get_track_array(trigger)

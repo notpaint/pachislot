@@ -375,7 +375,7 @@ bonus_data = {
         "after_RT" : "RT0"
     },
     'redBB': {
-        "max_payout" : 10,
+        "max_payout" : 150,
         "JACIN_type" : "RB1",
         "JAC_nums" : json.dumps(JAC_SBB),
         "before_RT" : None,

@@ -51,6 +51,8 @@ max_polyphony = 5
 
 [node name="right" type="AudioStreamPlayer" parent="audio" unique_id=513071212]
 
+[node name="medal" type="AudioStreamPlayer" parent="audio" unique_id=1605967035]
+
 [node name="frame_light" type="Node" parent="." unique_id=1083910793]
 
 [node name="L_reel_light" type="Line2D" parent="frame_light" unique_id=745687035]
@@ -235,3 +237,5 @@ centered = false
 material = SubResource("ShaderMaterial_05fl1")
 position = Vector2(840, 645)
 centered = false
+
+[node name="display" type="Node2D" parent="." unique_id=1695391214]
