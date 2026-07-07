@@ -54,23 +54,25 @@ func _ready():
 	effects_rands.resize(256)
 	effect_slot = sub.effect_slot
 
+	if mainROM:
+		connect_to_mainROM()
+
 	for child in order_assist.get_children():
 		child.queue_free()
+
 	if order_scene_path:
 		var order_scene = load(order_scene_path)
 		var scene = order_scene.instantiate()
 		order_assist.add_child(scene)
 		order_node = scene
+		connect_to_order(order_node)
+
 	if display_scene_path:
 		var display_scene = load(display_scene_path)
 		var scene = display_scene.instantiate()
 		display.add_child(scene)
 		display_node = scene
-	else:
-		print("押し順無し")
-
-	if mainROM:
-		connect_to_mainROM()
+		connect_to_display(display_node)
 
 func connect_to_mainROM():
 	if mainROM.has_signal("bonus_est"):
@@ -83,26 +85,38 @@ func connect_to_mainROM():
 		mainROM.medal_bet.connect(_on_medal_bet)
 	if mainROM.has_signal("flag"):
 		mainROM.flag.connect(_on_flag)
-		if order_node.has_method("_on_flag"):
-			mainROM.flag.connect(order_node._on_flag)
 	if mainROM.has_signal("spin_start"):
 		mainROM.spin_start.connect(_on_spin_start)
 	if mainROM.has_signal("reel_stopped"):
 		mainROM.reel_stopped.connect(_on_reel_stopped)
 	if mainROM.has_signal("now_RT"):
 		mainROM.now_RT.connect(_on_now_RT)
-		if order_node.has_method("_on_now_RT"):
-			mainROM.now_RT.connect(order_node._on_now_RT)
 	if mainROM.has_signal("last_RT"):
 		mainROM.last_RT.connect(_on_last_RT)
 	if mainROM.has_signal("JAC_IN"):
 		mainROM.JAC_IN.connect(_on_JAC_IN)
 	if mainROM.has_signal("prized_role"):
 		mainROM.prized_role.connect(_on_prized_role)
-		if order_node.has_method("_on_prized"):
-			mainROM.prized_role.connect(order_node._on_prized)
 	if mainROM.has_signal("prized_array"):
 		mainROM.prized_array.connect(_on_prized_array)
+
+func connect_to_order(node):
+	if mainROM.has_signal("flag") and node.has_method("_on_flag"):
+		mainROM.flag.connect(node._on_flag)
+	if mainROM.has_signal("now_RT") and node.has_method("_on_now_RT"):
+		mainROM.now_RT.connect(node._on_now_RT)
+	if mainROM.has_signal("prized_role") and node.has_method("_on_prized"):
+		mainROM.prized_role.connect(node._on_prized)
+
+func connect_to_display(node):
+	if mainROM.has_signal("medal_bet") and node.has_method("_on_medal_bet"):
+		mainROM.medal_bet.connect(node._on_medal_bet)
+	if mainROM.has_signal("bonus_est") and node.has_method("_on_bonus_est"):
+		mainROM.bonus_est.connect(node._on_bonus_est)
+	if mainROM.has_signal("bonus_prized") and node.has_method("_on_bonus_prized"):
+		mainROM.bonus_prized.connect(node._on_bonus_prized)
+	if mainROM.has_signal("prized_role") and node.has_method("_on_prized"):
+		mainROM.prized_role.connect(node._on_prized)
 
 func _on_spin_start():
 	var track = weight.random_SE("reel_start")
@@ -130,6 +144,8 @@ func _on_bonus_est(value):
 func _on_bonus_prized(value):
 	current_bonus = value
 	bonus_state = null
+	if display_node and display_node.has_method("_on_bonus_prized"):
+		display_node._on_bonus_prized(value)
 	if value != "None":
 		audio.play_bonus(value)
 	if value == "None":

@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://busj3os64g011" path="res://scenes/body/effects/display/display_A.gd" id="1_s5gi4"]
 [ext_resource type="Texture2D" uid="uid://bconqf8kb6ahe" path="res://assets/images/UI/parrot.png" id="1_th24x"]
 [ext_resource type="Texture2D" uid="uid://cuewhqjjwujg2" path="res://assets/images/UI/reverseparrot.png" id="3_twd8f"]
+[ext_resource type="FontFile" uid="uid://dn83hpd1vj6w4" path="res://assets/fonts/x12y16pxSolidLinker.ttf" id="4_twd8f"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_aoqrr"]
 atlas = ExtResource("1_th24x")
@@ -160,6 +161,14 @@ animations = [{
 "speed": 5.0
 }]
 
+[sub_resource type="LabelSettings" id="LabelSettings_ghu4r"]
+font = ExtResource("4_twd8f")
+font_size = 80
+
+[sub_resource type="LabelSettings" id="LabelSettings_twd8f"]
+font = ExtResource("4_twd8f")
+font_size = 120
+
 [node name="A" type="Node2D" unique_id=1915324479]
 script = ExtResource("1_s5gi4")
 
@@ -178,3 +187,89 @@ sprite_frames = SubResource("SpriteFrames_0f465")
 animation = &"reverseparrot"
 speed_scale = 4.0
 centered = false
+
+[node name="bb_data" type="Node2D" parent="." unique_id=55544232]
+visible = false
+
+[node name="LAST" type="Label" parent="bb_data" unique_id=366489271]
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 254.0
+offset_bottom = 95.0
+text = "LAST"
+label_settings = SubResource("LabelSettings_ghu4r")
+
+[node name="LAST_PAY" type="Label" parent="bb_data" unique_id=826626826]
+offset_left = 266.0
+offset_top = 10.0
+offset_right = 466.0
+offset_bottom = 95.0
+label_settings = SubResource("LabelSettings_ghu4r")
+
+[node name="GET" type="Label" parent="bb_data" unique_id=1352900033]
+offset_left = 10.0
+offset_top = 120.0
+offset_right = 252.0
+offset_bottom = 200.0
+text = " GET"
+label_settings = SubResource("LabelSettings_ghu4r")
+
+[node name="GET_PAY" type="Label" parent="bb_data" unique_id=1595645661]
+offset_left = 266.0
+offset_top = 120.0
+offset_right = 466.0
+offset_bottom = 205.0
+label_settings = SubResource("LabelSettings_ghu4r")
+
+[node name="rb_data" type="Node2D" parent="." unique_id=1924112508]
+visible = false
+
+[node name="PRIZE" type="Label" parent="rb_data" unique_id=1729008459]
+offset_left = 40.0
+offset_top = 10.0
+offset_right = 322.0
+offset_bottom = 95.0
+text = "PRIZE"
+label_settings = SubResource("LabelSettings_ghu4r")
+
+[node name="LAST_PRIZE" type="Label" parent="rb_data" unique_id=1714001717]
+offset_left = 115.0
+offset_top = 110.0
+offset_right = 255.0
+offset_bottom = 195.0
+label_settings = SubResource("LabelSettings_ghu4r")
+
+[node name="PLAY" type="Label" parent="rb_data" unique_id=2120579169]
+offset_left = 415.0
+offset_top = 10.0
+offset_right = 657.0
+offset_bottom = 90.0
+text = "PLAY"
+label_settings = SubResource("LabelSettings_ghu4r")
+
+[node name="LAST_PLAY" type="Label" parent="rb_data" unique_id=1731002546]
+offset_left = 466.0
+offset_top = 110.0
+offset_right = 601.0
+offset_bottom = 195.0
+text = " "
+label_settings = SubResource("LabelSettings_ghu4r")
+
+[node name="total_data" type="Node2D" parent="." unique_id=1442509146]
+visible = false
+
+[node name="GET" type="Label" parent="total_data" unique_id=570420170]
+offset_left = 93.0
+offset_top = 43.0
+offset_right = 367.0
+offset_bottom = 163.0
+text = "GET"
+label_settings = SubResource("LabelSettings_twd8f")
+
+[node name="TOTAL" type="Label" parent="total_data" unique_id=123208091]
+offset_left = 423.0
+offset_top = 43.0
+offset_right = 697.0
+offset_bottom = 163.0
+text = "300"
+label_settings = SubResource("LabelSettings_twd8f")

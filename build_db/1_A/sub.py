@@ -38,42 +38,6 @@ SE = {
                 "priority": 0,
                 "track": "main",
                 "cond": "default"
-            },
-            {
-                "priority": 1,
-                "track": "chance",
-                "cond": "bonus_state == null and current_bonus == 'None' and result_flag == 'vac'",
-                "weight": 12
-            },
-            {
-                "priority": 2,
-                "track": "chance",
-                "cond": "bonus_state == null and current_bonus == 'None' and result_flag != 'vac'",
-                "weight": 25
-            },
-            {
-                "priority": 5,
-                "track": "chance",
-                "cond": "bonus_state == null and current_bonus == 'None' and result_flag in rare_flag",
-                "weight": 128
-            },
-            {
-                "priority": 6,
-                "track": "chance",
-                "cond": "bonus_state != null and current_bonus == 'None' and result_flag == 'vac'",
-                "weight": 85
-            },
-            {
-                "priority": 8,
-                "track": "chance",
-                "cond": "bonus_state != null and current_bonus == 'None' and result_flag != 'vac'",
-                "weight": 128
-            },
-            {
-                "priority": 10,
-                "track": "chance",
-                "cond": "bonus_state != null and current_bonus == 'None' and result_flag in rare_flag",
-                "weight": 192
             }
         ],
         "sound": {
@@ -173,7 +137,8 @@ env = {
     "rare_flag": ["downSuica", "Cherry_A", "redBB", "RB"],
     "effect_rand": {
         "lever": 0,
-        "reel_start": 1
+        "reel_start": 1,
+        "parrot": 2,
     }
 }
 
