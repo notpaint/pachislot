@@ -9,6 +9,7 @@
 [ext_resource type="Script" uid="uid://dql0sp6ada15n" path="res://scenes/body/effects/symbol_light.gd" id="6_05fl1"]
 [ext_resource type="Script" uid="uid://b4dwdd3eenx3f" path="res://scenes/body/effects/reel_light.gd" id="6_fr24f"]
 [ext_resource type="Shader" uid="uid://brbv0ltu20sum" path="res://scenes/body/effects/symbol_light.gdshader" id="7_05fl1"]
+[ext_resource type="FontFile" uid="uid://dn83hpd1vj6w4" path="res://assets/fonts/x12y16pxSolidLinker.ttf" id="7_67ly8"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_voxqf"]
 shader = ExtResource("4_6ruq1")
@@ -23,6 +24,18 @@ metadata/_snap_enabled = true
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_6ruq1"]
 gradient = SubResource("Gradient_voxqf")
 use_hdr = true
+
+[sub_resource type="LabelSettings" id="LabelSettings_ac4b4"]
+font = ExtResource("7_67ly8")
+font_size = 128
+
+[sub_resource type="LabelSettings" id="LabelSettings_67ly8"]
+font = ExtResource("7_67ly8")
+font_size = 128
+
+[sub_resource type="LabelSettings" id="LabelSettings_mf15q"]
+font = ExtResource("7_67ly8")
+font_size = 128
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_05fl1"]
 resource_local_to_scene = true
@@ -95,33 +108,30 @@ width = 8.0
 texture = SubResource("GradientTexture1D_6ruq1")
 texture_mode = 2
 
-[node name="order_assist" type="Node2D" parent="." unique_id=1735075571]
+[node name="order_navi" type="Node2D" parent="." unique_id=1735075571]
 position = Vector2(0, 854)
 script = ExtResource("5_an7ao")
 
-[node name="L_reel" type="Label" parent="order_assist" unique_id=1113268139]
-offset_left = 195.0
-offset_top = 100.0
-offset_right = 232.0
-offset_bottom = 188.0
-theme_override_font_sizes/font_size = 64
-text = "1"
+[node name="L_reel" type="Label" parent="order_navi" unique_id=1113268139]
+offset_left = 163.0
+offset_top = 44.0
+offset_right = 259.0
+offset_bottom = 172.0
+label_settings = SubResource("LabelSettings_ac4b4")
 
-[node name="C_reel" type="Label" parent="order_assist" unique_id=689870695]
-offset_left = 620.0
-offset_top = 100.0
-offset_right = 657.0
-offset_bottom = 188.0
-theme_override_font_sizes/font_size = 64
-text = "1"
+[node name="C_reel" type="Label" parent="order_navi" unique_id=1197131051]
+offset_left = 566.0
+offset_top = 44.0
+offset_right = 662.0
+offset_bottom = 172.0
+label_settings = SubResource("LabelSettings_67ly8")
 
-[node name="R_reel" type="Label" parent="order_assist" unique_id=1558658569]
-offset_left = 1040.0
-offset_top = 100.0
-offset_right = 1077.0
-offset_bottom = 188.0
-theme_override_font_sizes/font_size = 64
-text = "1"
+[node name="R_reel" type="Label" parent="order_navi" unique_id=297485892]
+offset_left = 991.0
+offset_top = 44.0
+offset_right = 1107.0
+offset_bottom = 172.0
+label_settings = SubResource("LabelSettings_mf15q")
 
 [node name="reel_light" type="Node2D" parent="." unique_id=89732523]
 script = ExtResource("6_fr24f")

@@ -379,8 +379,8 @@ RT_map = {
 #('RT名', 継続ゲーム数, rank{0 = RT0, 1 = ボーナス後or入賞系無限RT, 2 = 入賞系有限RT, 3 = ボーナス成立中RT})
 RT_data = {
     ('RT0', -1, 0),#基底RT
-    ('RT1', 5, 1),#ボーナス終了後有限RT
-    ('RT2', 5, 2),#入賞系有限RT
+    ('RT1', 20, 1),#ボーナス終了後有限RT
+    ('RT2', 20, 2),#入賞系有限RT
     ('RT3', -1, 3)#ボーナス成立中RT
 }
 
@@ -426,24 +426,6 @@ bonus_data = {
         "before_RT" : "RT3",
         "present_RT": None,
         "after_RT" : "RT1"
-    }
-}
-
-bonus_music = {
-    'RB' : {
-        "start" : None,
-        "loop" : None,
-        "end" : None
-    },
-    'redBB' : {
-        "start": None,
-        "loop" : None,
-        "end": None
-    },
-    'blueBB' : {
-        "start": None,
-        "loop" : None,
-        "end": None
     }
 }
 

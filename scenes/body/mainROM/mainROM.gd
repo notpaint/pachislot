@@ -145,6 +145,7 @@ signal last_RT(RT_game)
 signal now_JAC(current_JAC)
 signal medal_bet(bet_medals)
 signal medal_number(medal_sum)
+signal stop_button(reel_pos)
 signal reel_stopped(reel_pos, current_reel, current_reel_grid)
 signal JAC_IN()
 signal game_count(game)
@@ -355,6 +356,9 @@ func try_stop_reel(reel_pos):
 		return
 	if active_tweens[reel_pos]:
 		return
+
+	stop_button.emit(reel_pos)
+
 	var reel = reels[reel_pos]
 	var current_pixel = reel.position.y
 	var raw_ID = get_raw_ID(current_pixel)

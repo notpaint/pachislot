@@ -75,33 +75,20 @@ role_data = [
         ("bar", "bar", bell_any),
         ("bar", "cherry", bell_any),
         ("bar", "suica", bell_any),
-        ("bar", "r7", bell_any)
+        ("bar", "r7", bell_any),
+        ("bar", "bar", "b7"),
+        ("bar", "r7", "b7"),
+        ("bar", "cherry", "b7"),
+        ("bar", "suica", "b7"),
+        ("bar", "r7", "bar"),
+        ("bar", "cherry", "bar"),
+        ("bar", "suica", "bar"),
+        ("bar", "rep_2", "bar")
        ),
        create_multi_pattern(
         (rep_any, "rep_2", bell_any)
        )
        ),
-
-    ('Cherry_B', 2, 2,
-     create_multi_pattern(
-         ("bar", "bar", "suica"),
-         ("bar", "bar", "b7"),
-         ("bar", "bar", "rep_1"),
-         ("bar", "r7", "suica"),
-         ("bar", "r7", "bar"),
-         ("bar", "r7", "b7"),
-         ("bar", "cherry", "suica"),
-         ("bar", "cherry", "bar"),
-         ("bar", "cherry", "b7"),
-         ("bar", "suica", "suica"),
-         ("bar", "suica", "b7"),
-         ("bar", "suica", "bar"),
-         ("bar", "rep_2", "bar")
-     ),
-     create_multi_pattern(
-        (rep_any, "rep_2", bell_any)
-     )
-     ),
 
     ('downSuica', 8, 2,
      create_multi_pattern(
@@ -240,6 +227,43 @@ role_pattern_priority = {
                 {"reel_ID": 12, "priority" : 2, "route": "valid"},
                 {"reel_ID": 17, "priority": 2, "route": "valid"},
                 {"reel_ID": 19, "priority": 2, "route": "valid"}
+            ],
+            2: [
+                {"reel_ID": 0, "priority": 2, "route": "valid"},
+                {"reel_ID": 4, "priority": 2, "route": "valid"},
+                {"reel_ID": 8, "priority": 2, "route": "valid"},
+                {"reel_ID": 13, "priority": 2, "route": "valid"},
+                {"reel_ID": 16, "priority": 2, "route": "valid"}
+            ]
+        },
+        "redBB": {
+            1: [
+                {"reel_ID": 1, "priority": 2, "route": "valid"},
+                {"reel_ID": 4, "priority": 2, "route": "valid"},
+                {"reel_ID": 6, "priority": 1, "route": "valid"},
+                {"reel_ID": 9, "priority": 2, "route": "valid"},
+                {"reel_ID": 12, "priority" : 2, "route": "valid"},
+                {"reel_ID": 17, "priority": 2, "route": "valid"},
+                {"reel_ID": 19, "priority": 2, "route": "valid"}
+            ],
+            2: [
+                {"reel_ID": 14, "priority": 2, "route": "valid"},
+                {"reel_ID": 18, "priority": 2, "route": "valid"}
+            ]
+        },
+        "RB": {
+            1: [
+                {"reel_ID": 1, "priority": 2, "route": "valid"},
+                {"reel_ID": 4, "priority": 2, "route": "valid"},
+                {"reel_ID": 6, "priority": 1, "route": "valid"},
+                {"reel_ID": 9, "priority": 2, "route": "valid"},
+                {"reel_ID": 12, "priority" : 2, "route": "valid"},
+                {"reel_ID": 17, "priority": 2, "route": "valid"},
+                {"reel_ID": 19, "priority": 2, "route": "valid"}
+            ],
+            2: [
+                {"reel_ID": 14, "priority": 2, "route": "valid"},
+                {"reel_ID": 18, "priority": 2, "route": "valid"}
             ]
         }
     },
@@ -294,18 +318,14 @@ role_pattern_priority = {
 
 # [{'フラグ名', '確率', 'RT状態'}]
 flag_data_3bet = [
-    {"name": 'middleBell', "weight": 0},
-    {"name": 'upperBell', "weight": 4096},
+    {"name": 'upperBell', "weight": 4046},
     {"name": 'downBell', 'weight': 4096},
-    {"name": 'middleSuica', "weight": 0},
     {"name": 'Cherry_A', "weight": 819},
-    {"name": 'Cherry_B', "weight": 0},
     {"name": 'downSuica', "weight": 655},
-    {"name": 'middleReplay', "weight": 8973},
+    {"name": 'middleReplay', "weight": 8978},
     {"name": 'RB', "weight": 328},
     {"name": 'redBB', "weight": 328},
-    {"name": 'blueBB', "weight": 0},
-    {"name": 'vac', "weight": 46241},
+    {"name": 'vac', "weight": 46236},
     {"name": "r7suica", "weight": 0}
 ]
 
@@ -316,7 +336,8 @@ flag_data_1bet = [
 
 flag_data_JAC = {
     "RB1" : [
-        {"name": "middleBell", "weight": 65536}
+        {"name": "middleBell", "weight": 65536},
+        {"name": "downSuica", "weight": 0},
     ]
 }
 
@@ -427,10 +448,6 @@ flag_role_map = [
     {
         "flag": "Cherry_A",
         "roles": ["Cherry_A"]
-    },
-    {
-        "flag": "Cherry_B",
-        "roles": ["Cherry_B"]
     },
     {
         "flag": "downSuica",

@@ -14,10 +14,21 @@ SE = {
                 "priority": 0,
                 "track": "main",
                 "cond": "default"
+            },
+            {
+                "priority": 1,
+                "track": "silent",
+                "cond": "order_node.now_RT == true and prized_role == 'middleReplay'"
+            },
+            {
+                "priority": 2,
+                "track": "silent",
+                "cond": "prized_role == 'SReplay'"
             }
         ],
         "sound": {
-            "main": "res://assets/SE/shake2/bet.ogg"
+            "main": "res://assets/SE/shake2/bet.ogg",
+            "silent": None
         }
     },
     "lever": {

@@ -89,6 +89,8 @@ func _on_spin_start():
 
 func _on_prized(value):
 	if bb_data_node.visible:
+		if not value:
+			return
 		var payout = value["payout"]
 		get_bonus_payout += payout
 		bb_data_node.get_node("GET_PAY").text = str(get_bonus_payout)
@@ -105,14 +107,14 @@ func _on_prized(value):
 
 
 	if rb_data_node.visible:
-		var payout = value["payout"]
-		get_bonus_payout += payout
-
 		JAC_counter = mainROM.JAC_counter.duplicate(true)
-		var last_prize = JAC_counter[0]
-		var last_prize_str = "%2d" % last_prize
 		var last_play = JAC_counter[1]
 		var last_play_str = "%2d" % last_play
+		var last_prize = JAC_counter[0]
+		var last_prize_str = "%2d" % last_prize
+		if value:
+			var payout = value["payout"]
+			get_bonus_payout += payout
 		rb_data_node.get_node("LAST_PRIZE").text = last_prize_str
 		rb_data_node.get_node("LAST_PLAY").text = last_play_str
 

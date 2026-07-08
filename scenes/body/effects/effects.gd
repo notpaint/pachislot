@@ -5,7 +5,7 @@ extends Node
 @onready var audio = $"audio"
 @onready var reel_light = $"reel_light"
 @onready var symbol_light = $"symbol_light"
-@onready var order_assist = $"order_assist"
+@onready var order_navi = $"order_navi"
 @onready var display = $"display"
 
 @onready var frame_lights: Array = [
@@ -57,13 +57,10 @@ func _ready():
 	if mainROM:
 		connect_to_mainROM()
 
-	for child in order_assist.get_children():
-		child.queue_free()
-
 	if order_scene_path:
 		var order_scene = load(order_scene_path)
 		var scene = order_scene.instantiate()
-		order_assist.add_child(scene)
+		order_navi.add_child(scene)
 		order_node = scene
 		connect_to_order(order_node)
 
@@ -107,6 +104,8 @@ func connect_to_order(node):
 		mainROM.now_RT.connect(node._on_now_RT)
 	if mainROM.has_signal("prized_role") and node.has_method("_on_prized"):
 		mainROM.prized_role.connect(node._on_prized)
+	if mainROM.has_signal("stop_button") and node.has_method("_on_stop_button"):
+		mainROM.stop_button.connect(node._on_stop_button)
 
 func connect_to_display(node):
 	if mainROM.has_signal("medal_bet") and node.has_method("_on_medal_bet"):
@@ -163,7 +162,6 @@ func _on_medal_bet(value):
 	reel_light.stop_flash()
 	symbol_light.stop_flash()
 	medal_bet.emit()
-	# medal_bet.emit(value)
 
 func _on_prized_role(value):
 	print(value)

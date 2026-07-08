@@ -25,6 +25,7 @@ func _ready():
 	SE_dict = weight.SE_dict
 	bonus_music = weight.bonus_music
 
+
 func play_bet(value):
 	if value != 0:
 		var bet_rules = SE_dict["bet"]["rule"]
@@ -35,6 +36,7 @@ func play_bet(value):
 				return
 			medal.stream = bet_stream
 			medal.play()
+
 
 func play_reel_stop(reel_pos):
 	var stop_rules = SE_dict["reel_stop"]["rule"]
