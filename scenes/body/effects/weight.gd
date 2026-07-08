@@ -4,7 +4,7 @@ extends Node
 
 var SE_dict: Dictionary = {}
 var bonus_music: Dictionary = {}
-var back_music: Array = []
+var back_music: Dictionary = {}
 
 var effect_slot: Dictionary = {}
 

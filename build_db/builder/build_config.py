@@ -59,7 +59,7 @@ class SubBuildConfig:
     bonus_music: dict
     env: dict
 
-    back_music: list = field(default_factory=list)
+    back_music: dict = field(default_factory=dict)
 
     flag_trigger: dict = field(default_factory=dict)
     pseudo_bonus_mode:dict = field(default_factory=dict)

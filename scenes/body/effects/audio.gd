@@ -120,21 +120,41 @@ func end_bonus(value):
 			bonus.stop()
 
 
-func back_music(trigger: String = "default"):
-	var music_data = weight.get_track_array(trigger)
-	if music_data:
-		var music_path = music_data["path"]
-		if music_path == "silent":
-			if current_music_path != "":
-				current_music_path = ""
-				bonus.stop()
-		elif music_path != "":
-			if current_music_path != music_path:
-				current_music_path = music_path
-				bonus.stream = load(music_path)
-				bonus.play()
+func back_music(track: String = "default", bet_block: bool = false):
 
-				if music_data["bet_block"]:
-					mainROM.bet_block += 1
-					await bonus.finished
-					mainROM.bet_block -= 1
+	if track == "silent":
+		if current_music_path != "":
+			current_music_path = ""
+			bonus.stop()
+
+	var music_path = weight.back_music.get(track, "")
+
+	if music_path != "" and current_music_path != music_path:
+		current_music_path = music_path
+		bonus.stream = load(music_path)
+		bonus.play()
+
+		if bet_block:
+
+			mainROM.bet_block += 1
+			await bonus.finished
+			mainROM.bet_block -= 1
+
+
+	# var music_data = weight.get_track_array(trigger)
+	# if music_data:
+	# 	var music_path = music_data["path"]
+	# 	if music_path == "silent":
+	# 		if current_music_path != "":
+	# 			current_music_path = ""
+	# 			bonus.stop()
+	# 	elif music_path != "":
+	# 		if current_music_path != music_path:
+	# 			current_music_path = music_path
+	# 			bonus.stream = load(music_path)
+	# 			bonus.play()
+
+	# 			if music_data["bet_block"]:
+	# 				mainROM.bet_block += 1
+	# 				await bonus.finished
+	# 				mainROM.bet_block -= 1

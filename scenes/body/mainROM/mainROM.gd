@@ -204,8 +204,9 @@ func _unhandled_input(event):
 		print_to_console()
 
 func print_to_console():
-	for se in sub.SE_dict:
-		print(sub.SE_dict[se])
+	print(sub.back_music)
+	# for se in sub.SE_dict:
+	# 	print(sub.SE_dict[se])
 	# print(current_role_priority)
 	# print(pattern_priority)
 		

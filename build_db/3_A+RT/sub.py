@@ -201,39 +201,11 @@ bonus_music = {
     }
 }
 
-back_music = [
-    {
-        "priority": 1,
-        "track": "RT1",
-        "cond": "current_RT == 'RT1' and trigger == 'medal_bet'",
-        "path": "res://assets/music/shake2/RT/Into_the_real_part1.ogg"
-    },
-    {
-        "priority": 2,
-        "track": "RT2",
-        "cond": "current_RT == 'RT2'",
-        "path": "res://assets/music/shake2/RT/Into_the_real_part2.ogg"
-    },
-    {
-        "priority": 3,
-        "track": "silent1",
-        "cond": "trigger == 'prized_role' and order_node.now_RT == true and result_flag == 'SReplay'",
-        "path": "silent"
-    },
-    {
-        "priority": 3,
-        "track": "silent2",
-        "cond": "trigger == 'prized_role' and order_node.now_RT == true and bonus_state != null and prized_role == ''",
-        "path": "silent"
-    },
-    {
-        "priority": 0,
-        "track": "RT_end",
-        "cond": "trigger == 'now_RT' and RT_game == 0 and order_node.now_RT == true and bonus_state == null",
-        "path": "res://assets/music/shake2/RT/Into_the_real_end.ogg",
-        "bet_block": 1
-    }
-]
+back_music = {
+    "RT1": "res://assets/music/shake2/RT/Into_the_real_part1.ogg",
+    "RT2": "res://assets/music/shake2/RT/Into_the_real_part2.ogg",
+    "RT_end": "res://assets/music/shake2/RT/Into_the_real_end.ogg"
+}
 
 
 

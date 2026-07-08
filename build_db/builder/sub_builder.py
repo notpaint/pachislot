@@ -27,16 +27,9 @@ def generate_bonus_music(cursor_main, cursor_sub, config):
                            """, (bonus, jingle, rule, track_name, start, end))
             
 def generate_back_music(cursor_sub, config):
-    for data in config.back_music:
-        priority = data["priority"]
-        track = data["track"]
-        cond = data["cond"]
-        weight = data.get("weight", None)
-        path = data["path"]
-        bet_block = data.get("bet_block", None)
-
-        cursor_sub.execute("""INSERT OR IGNORE INTO back_music(priority, track, cond, weight, path, bet_block)
-                           VALUES(?, ?, ?, ?, ?, ?)""", (priority, track, cond, weight, path, bet_block))
+    for track, path in config.back_music.items():
+        cursor_sub.execute("""INSERT OR IGNORE INTO back_music(track, path)
+                           VALUES(?, ?)""", (track, path))
             
             
 def generate_flag_trigger(cursor_main, cursor_sub, config):

@@ -529,16 +529,18 @@ HUD_flag_data = {
     "upperBell": "上段ベル",
     "downBell": "右下がりベル",
     "middleReplay": "中段リプレイ",
-    "Cherry_A": "弱チェリー",
+    "Cherry_A": "チェリー",
     "Cherry_B": "強チェリー",
     "downSuica": "右下がりスイカ",
+    "TReplay1": "移行リプレイ",
     "SReplay": "リーチ目リプレイ",
     "middleSuica": "強スイカ",
     "RB": "RB",
     "redBB": "赤BB",
     "blueBB": "青BB",
     "SBB": "超BB",
-    "Cherry_A_with_BB1": "弱チェリー+BB1"
+    "Cherry_A_with_redBB": "赤7重複チェリー",
+    "Cherry_A_with_RB": "レギュラー重複チェリー"
 }
 
 #現在のフラグの内訳を表示

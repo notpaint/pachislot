@@ -19,12 +19,8 @@ CREATE TABLE bonus_music(
 );
 
 CREATE TABLE back_music(
-    priority INT,
     track TEXT,
-    cond TEXT,
-    weight INT,
-    path TEXT,
-    bet_block INT
+    path TEXT
 );
 
 CREATE TABLE RT_music(

@@ -98,6 +98,8 @@ func connect_to_mainROM():
 		mainROM.prized_array.connect(_on_prized_array)
 
 func connect_to_order(node):
+	if mainROM.has_signal("medal_bet") and node.has_method("_on_medal_bet"):
+		mainROM.medal_bet.connect(node._on_medal_bet)
 	if mainROM.has_signal("flag") and node.has_method("_on_flag"):
 		mainROM.flag.connect(node._on_flag)
 	if mainROM.has_signal("now_RT") and node.has_method("_on_now_RT"):
@@ -158,7 +160,6 @@ func _on_bonus_end(value):
 
 func _on_medal_bet(value):
 	audio.play_bet(value)
-	audio.back_music("medal_bet")
 	reel_light.stop_flash()
 	symbol_light.stop_flash()
 	medal_bet.emit()
@@ -168,10 +169,8 @@ func _on_prized_role(value):
 	if value:
 		prized_role = value["name"]
 		audio.play_prized(value["name"])
-		audio.back_music("prized_role")
 	else:
 		prized_role = ""
-		audio.back_music("prized_role")
 
 
 func _on_prized_array(value):
@@ -189,7 +188,6 @@ func _on_reel_stopped(reel_pos, stopped_reel, _current_reel_grid):
 
 func _on_now_RT(value):
 	current_RT = value
-	audio.back_music("now_RT")
 
 func _on_last_RT(value):
 	RT_game = value
