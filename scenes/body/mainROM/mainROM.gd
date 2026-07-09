@@ -204,7 +204,7 @@ func _unhandled_input(event):
 		print_to_console()
 
 func print_to_console():
-	print(sub.back_music)
+	print(sub.mode_data)
 	# for se in sub.SE_dict:
 	# 	print(sub.SE_dict[se])
 	# print(current_role_priority)
@@ -268,12 +268,13 @@ func can_spin():
 
 func generate_flag():	
 	var rand_num : int = drawing_hash(Time.get_ticks_usec())
-	result_flag = select_flags(rand_num)
+	var temp_flag = select_flags(rand_num)
 
 	if not Datahub.force_flag == "None":
-		result_flag = Datahub.force_flag
+		temp_flag = Datahub.force_flag
 		Datahub.force_flag = "None"
 	
+	result_flag = temp_flag
 	return (result_flag)
 
 

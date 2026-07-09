@@ -123,6 +123,13 @@ flag_trigger = {
             "normal": 2,
             "high": 2
         },
+        "bonus_ratio": {
+            "RB": 0,
+            "redBB": 256
+        },
+        "fake_pre": {
+            "default": 0
+        },
         "in_bonus": {
             "RB": 3,
             "redBB": 3
@@ -152,6 +159,10 @@ flag_trigger = {
             "normal": 4,
             "high": 52
         },
+        "fake_pre": {
+            "normal": 0,
+            "high": 102,
+        },
         "in_bonus": {
             "RB": 26,
             "redBB": 26
@@ -180,6 +191,9 @@ flag_trigger = {
         "bonus": {
             "normal": 85,
             "high": 154
+        },
+        "fake_pre": {
+            "default": 256
         },
         "bonus_promo": {
             "RB": 102
@@ -211,6 +225,9 @@ flag_trigger = {
             "normal": 39,
             "high": 117
         },
+        "fake_pre": {
+            "default": 256
+        },
         "in_bonus": {
             "RB": 39,
             "redBB": 85
@@ -239,6 +256,9 @@ flag_trigger = {
         "bonus": {
             "normal": 39,
             "high": 117
+        },
+        "fake_pre": {
+            "default": 256
         },
         "bonus_promo": {
             "RB": 39
@@ -281,7 +301,7 @@ pseudo_bonus_mode = {
             "Heaven": 10
         },
         "ratio": {
-            "r7BIG": 128,
+            "redBB": 128,
             "REG": 128
         }
     },
@@ -299,7 +319,7 @@ pseudo_bonus_mode = {
             "Heaven": 115
         },
         "ratio": {
-            "r7BIG": 64,
+            "redBB": 64,
             "REG": 192
         }
     },
@@ -315,7 +335,7 @@ pseudo_bonus_mode = {
             "Heaven": 205
         },
         "ratio": {
-            "r7BIG": 128,
+            "redBB": 128,
             "REG": 128
         }
     },
@@ -331,7 +351,7 @@ pseudo_bonus_mode = {
             "Heaven": 102
         },
         "ratio": {
-            "r7BIG": 179,
+            "redBB": 179,
             "REG": 77
         }
     }
@@ -342,25 +362,25 @@ premonition_map = {
     "pseudo": {
         "map": {
             "default": {
-                "fake": {
+                False: {
                     8: 38, 9: 13, 10: 38, 11: 13, 12: 38, 13: 13, 14: 38, 15: 13, 16: 52
                     },
-                "win": {
+                True: {
                     7: 13, 8: 25, 9: 25, 10: 25, 11: 26, 12: 26, 13: 26, 14: 26, 15: 26, 16: 38
                 }
             }
         },
         "flag": {
             "default": {
-                "fake": {
+                False: {
                     8: 38, 9: 13, 10: 38, 11: 13, 12: 38, 13: 13, 14: 38, 15: 13, 16: 52
                 },
-                "win": {
+                True: {
                     7: 13, 8: 25, 9: 25, 10: 25, 11: 26, 12: 26, 13: 26, 14: 26, 15: 26, 16: 38
                 }
             },
             "Cherry_A": {
-                "win": {
+                True: {
                     6: 256
                 }
             }
@@ -369,7 +389,7 @@ premonition_map = {
     "real": {
         "flag": {
             "default": {
-                "win": {
+                True: {
                     1: 256
                 }
             }
@@ -388,7 +408,15 @@ env = {
          "reel_start": 1,
          "next_mode": 32,
          "release_game": 33,
-         "premonition": 34
+         "flag_release": 34,
+         "bonus_assign": 35,
+         "flag_fake_pre": 48,
+         "flag_pre": 49,
+         "map_fake_pre": 64,
+         "map_pre": 65,
+         "in_bonus": 80,
+         "game": 81,
+         "add": 82
      }
 }
 

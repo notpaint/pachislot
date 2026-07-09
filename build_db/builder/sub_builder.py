@@ -79,7 +79,7 @@ def generate_premonition_map(cursor_main, cursor_sub, config):
                     if cursor_main.fetchone() is None:
                         print(f"ERROR ON generate_premonition_map: {flag} does not exists in main.db")
                 for target, game_data in target_data.items():
-                    is_win = 1 if target == "win" else 0
+                    is_win = 1 if target == True else 0
                     for game, weight in game_data.items():
                         cursor_sub.execute("""INSERT OR IGNORE INTO premonition_map
                                            (type, trigger, flag, is_win, game, weight)

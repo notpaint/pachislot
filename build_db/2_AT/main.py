@@ -754,6 +754,32 @@ flag_role_priority = {
             }
         }
     },
+    "Cherry_A": {
+        "default": {
+            0: {
+                "Cherry_A": 1
+            },
+            1: {
+                "Cherry_A": 1
+            },
+            2: {
+                "Cherry_A": 1
+            }
+        }
+    },
+    "Cherry_B": {
+        "default": {
+            0: {
+                "Cherry_B": 1
+            },
+            1: {
+                "Cherry_B": 1
+            },
+            2: {
+                "Cherry_B": 1
+            }
+        }
+    },
     "fake_Replay" : {
         "default" :{
             0 : {
@@ -924,6 +950,8 @@ HUD_flag_data = {
     "fake_Replay": "フェイクリプレイ",
     "Cherry_A": "弱チェリー",
     "Cherry_B": "強チェリー",
+    "Special_A": "チャンス目A",
+    "Special_B": "チャンス目B",
     "downSuica": "右下がりスイカ",
     "middleSuica": "中段スイカ",
     "RB": "RB",

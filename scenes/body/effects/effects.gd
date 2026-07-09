@@ -134,7 +134,6 @@ func _on_flag(value):
 	result_flag = value
 	effects_seeds = mainROM.effects_seeds
 	drawing_hash_array(effects_seeds)
-	main_flag.emit(value)
 
 func _on_bonus_est(value):
 	bonus_state = value
