@@ -410,6 +410,8 @@ env = {
          "release_game": 33,
          "flag_release": 34,
          "bonus_assign": 35,
+         "bonus_promo": 36,
+         "mode_promo": 37,
          "flag_fake_pre": 48,
          "flag_pre": 49,
          "map_fake_pre": 64,

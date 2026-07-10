@@ -9,20 +9,31 @@ var premonition_data: Dictionary = {}
 var current_game: int = 0
 var result_flag: String
 
-var current_mode: String = "Heaven"
+var current_mode: String
 var premonition_map: Dictionary = {}
 var premonition_array: Array = []
+
+var fake_pre_left: int
+var pre_left: int
 var release_game: int
+var pre_bonus:String = "None"
 
 var current_state: String = "normal"
 
 var bonus_condi: String = "normal"
-var pre_bonus:String = "None"
 var current_bonus: String = "None"
 
 var game_condi: String = "normal"
 
 var morning_mode = {"A": 102, "B": 102, "C": 26, "Heaven": 26}
+
+var mode_path = {
+	"A": "B",
+	"B": "Heaven",
+	"C": "Heaven",
+	"Heaven": "Heaven"
+}
+
 
 func _ready():
 	mode_data = sub.mode_data
@@ -101,6 +112,7 @@ func assign_bonus(length, win: bool = false):
 	append_premonition(data)
 
 func append_premonition(data):
+
 	premonition_array.append(data)
 
 
@@ -115,7 +127,7 @@ func drawing_mode(mode):
 		map_dict = mode_data[mode]["map"]
 
 	for key in map_dict.keys():
-		var weight = map_dict[key]
+		var weight = int(map_dict[key])
 		mode_rand -= weight
 		if mode_rand < 0:
 			current_mode = key
@@ -123,6 +135,18 @@ func drawing_mode(mode):
 
 
 func flag_bonus(flag_data):
+	
+	if pre_bonus != "None":
+		var bonus_promo_data = flag_data.get("bonus_promo", null)
+		if bonus_promo_data != null:
+			flag_bonus_promo(bonus_promo_data)
+		
+		var mode_promo_data = flag_data.get("mode_promo", null)
+		if mode_promo_data != null:
+			flag_mode_promo(mode_promo_data)
+
+		return
+	
 	var bonus_data = flag_data.get("bonus", null)
 
 	if not bonus_data:
@@ -136,6 +160,34 @@ func flag_bonus(flag_data):
 		flag_premonition(flag_data, true)
 	else:
 		flag_premonition(flag_data, false)
+
+
+func flag_bonus_promo(promo_data):
+	var promo_slot = effects.effect_slot["bonus_promo"]
+	var promo_rand = effects.effects_rands[promo_slot]
+
+	var weight = promo_data[pre_bonus]
+
+	if promo_rand < weight:
+		match pre_bonus:
+			"RB":
+				pre_bonus = "redBB"
+
+
+func flag_mode_promo(promo_data):
+	var promo_slot = effects.effect_slot["mode_promo"]
+	var promo_rand = effects.effects_rands[promo_slot]
+
+	var weight = promo_data[current_mode]
+
+	if promo_rand < weight:
+		match current_mode:
+			"A":
+				current_mode = "B"
+			"B":
+				current_mode = "Heaven"
+			"C":
+				current_mode = "Heaven"
 
 
 func flag_premonition(flag_data, win: bool = false):
@@ -275,4 +327,29 @@ func drawing_release_game(mode):
 					break
 
 func check_premonition():
-	print(premonition_array)
+	var i = 0
+	while i < premonition_array.size():
+		var data = premonition_array[i]
+
+		if data["type"] == "fake":
+			if fake_pre_left != 0:
+				premonition_array.remove_at(i)
+				continue
+			fake_pre_left = data["length"]
+			premonition_array.remove_at(i)
+
+		else:
+			if pre_left != 0:
+				i += 1
+				continue
+			pre_left = data["length"]
+			pre_bonus = data["type"]
+
+			print("本前兆開始、前回モード:", current_mode)
+
+			drawing_mode(current_mode)
+
+			print("残りゲーム数:", pre_left, "ボーナス種別:", pre_bonus, "次回モード:", current_mode)
+
+			premonition_array.remove_at(i)
+			continue
