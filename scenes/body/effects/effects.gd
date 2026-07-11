@@ -192,6 +192,17 @@ func _on_last_RT(value):
 	RT_game = value
 	
 
+func get_effect_rand(key):
+
+	var slot = effect_slot.get(key, -1)
+
+	if slot == -1:
+		push_error("指定されたキーが存在しません:", key)
+		return 256
+
+	return effects_rands[slot]
+
+
 func bit_array(v):
 	return (
 		[v & 0xFF, (v >> 8) & 0xFF, (v >> 16) & 0xFF, (v >> 24) & 0xFF]

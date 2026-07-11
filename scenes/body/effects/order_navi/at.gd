@@ -1,6 +1,7 @@
 extends Node
 
 @onready var effects = $"../.."
+@onready var order_navi = $"../../order_navi"
 
 var mode_data: Dictionary = {}
 var flag_trigger: Dictionary = {}
@@ -16,35 +17,33 @@ var premonition_array: Array = []
 var fake_pre_left: int
 var pre_left: int
 var release_game: int
-var pre_bonus:String = "None"
+var pre_bonus:String = "RB"
 
-var current_state: String = "normal"
+var base_state: String = "normal" #normal, AT
+var play_state: String = "normal" #normal, AT, bonus_waiting, in_bonus
 
-var bonus_condi: String = "normal"
-var current_bonus: String = "None"
+var bonus_condi: String = "normal" #normal, high
+var current_bonus: String = "None" #RB, redBB
 
-var game_condi: String = "normal"
+var game_condi: String = "normal" #normal, extra
 
 var morning_mode = {"A": 102, "B": 102, "C": 26, "Heaven": 26}
 
-var mode_path = {
-	"A": "B",
-	"B": "Heaven",
-	"C": "Heaven",
-	"Heaven": "Heaven"
+var order_bell: Dictionary = {
+	"213Bell": [2, 1, 3],
+	"312Bell": [3, 1, 2],
+	"231Bell": [2, 3, 1],
+	"321Bell": [3, 2, 1]
 }
-
 
 func _ready():
 	mode_data = sub.mode_data
 	flag_trigger = sub.flag_trigger
 	premonition_data = sub.premonition_data
 	# print(premonition_map)
-	print(current_game)
 
 
 func _on_flag(value):
-	print("--- on_flag 呼び出し --- G数: ", current_game, " 役: ", value)
 
 	result_flag = value
 
@@ -59,26 +58,63 @@ func _on_flag(value):
 	check_current_game()
 		
 	var flag_data = flag_trigger.get(value, null)
-
-	if not flag_data:
-		return
 	
-	match current_state:
+	match play_state:
 
 		"normal":
-			flag_bonus(flag_data)
+			if flag_data:
+				flag_bonus(flag_data)
+
+		"bonus_waiting":
+			if flag_data:
+				flag_bonus(flag_data)
+			bell_navi()
 
 		"in_bonus":
-			flag_in_bonus(flag_data)
+			if flag_data:
+				flag_in_bonus(flag_data)
+			bell_navi()
 
 		"AT":
-			flag_bonus(flag_data)
-			flag_game(flag_data)
+			if flag_data:
+				flag_game(flag_data)
+				flag_bonus(flag_data)
+			bell_navi()
+
+		"penalty":
+			pass
 
 	check_premonition()
 
+func hit_bonus():
+
+	match pre_bonus:
+
+		"RB":
+			if result_flag == "fake_Replay" or result_flag == "r7_Replay":
+				order_navi.set_navi([null, 1, null], Color.RED)
+				play_state = "in_bonus"
+				current_bonus = "RB"
+
+		"redBB":
+			if result_flag == "r7_Replay":
+				order_navi.set_navi([null, null, 1], Color.RED)
+				play_state = "in_bonus"
+				current_bonus = "redBB"
+
+func bell_navi():
+	if order_bell.has(result_flag):
+		var order = Array(order_bell[result_flag])
+		order_navi.set_navi(order, Color.YELLOW)
 
 func check_current_game():
+
+	if fake_pre_left > 0:
+		fake_pre_left -= 1
+	if pre_left > 0:
+		pre_left -= 1
+
+
 	for game in premonition_map:
 		if current_game == game:
 			var length = premonition_map[game]["length"]
@@ -86,7 +122,7 @@ func check_current_game():
 			if win == true:
 				assign_bonus(length, true)
 			else:
-				pass
+				assign_bonus(length, false)
 
 
 func assign_bonus(length, win: bool = false):
@@ -94,8 +130,7 @@ func assign_bonus(length, win: bool = false):
 
 	if win:
 		var ratio_data = mode_data[current_mode]["ratio"]
-		var assign_slot = effects.effect_slot["bonus_assign"]
-		var assign_rand = effects.effects_rands[assign_slot]
+		var assign_rand = effects.get_effect_rand("bonus_assign")
 
 		for bonus in ratio_data:
 			var weight = ratio_data[bonus]
@@ -229,10 +264,6 @@ func culc_flag_pre(pre_data, win: bool = false):
 			assign_bonus(length, win)
 			break
 
-func hit_flag_bonus():
-	pass
-
-
 func flag_game(flag_data):
 	var game_data = flag_data.get("game", null)
 
@@ -326,13 +357,14 @@ func drawing_release_game(mode):
 					map_pre_slot += 1
 					break
 
+
 func check_premonition():
 	var i = 0
 	while i < premonition_array.size():
 		var data = premonition_array[i]
 
 		if data["type"] == "fake":
-			if fake_pre_left != 0:
+			if fake_pre_left != 0 or pre_left != 0:
 				premonition_array.remove_at(i)
 				continue
 			fake_pre_left = data["length"]
@@ -353,3 +385,14 @@ func check_premonition():
 
 			premonition_array.remove_at(i)
 			continue
+
+
+func _on_stop_button(reel_pos):
+	order_navi.push_navi(reel_pos)
+
+
+func _on_reel_stopped(reel_pos, _stopped_reel, _current_reel_grid):
+	order_navi.frame_light_off(reel_pos)
+
+func _on_prized(value):
+	pass

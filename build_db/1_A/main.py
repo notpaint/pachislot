@@ -142,7 +142,8 @@ role_data = [
          ("rep_2", "b7", "r7"),
          (bell_any, suica_group, "suica"),
          (bell_any, suica_group, rep_any),
-         ("r7", "r7", "blank")
+         ("r7", "r7", "blank"),
+         ("r7", "rep_2", rep_any)
      ),
     ),
 
@@ -154,10 +155,11 @@ role_data = [
      create_multi_pattern(
          ("rep_2", "suica", "bell_2"),
          ("rep_2", "suica", "bell_1"),
-         ("rep_2", "b7", "r7"),
+         ("rep_2", "r7", "r7"),
          ("rep_2", "bar", "r7"),
          (bell_any, suica_group, "suica"),
-         (bell_any, suica_group, rep_any)
+         (bell_any, suica_group, rep_any),
+         ("r7", "rep_2", rep_any)
      )
      ),
 
@@ -172,7 +174,8 @@ role_data = [
          ("rep_2", "b7", "r7"),
          ("rep_2", "bar", "r7"),
          (bell_any, suica_group, "suica"),
-         (bell_any, suica_group, rep_any)
+         (bell_any, suica_group, rep_any),
+         ("b7", "rep_2", bell_any)
      )
      )
 ]
@@ -326,7 +329,7 @@ flag_data_3bet = [
     {"name": 'RB', "weight": 328},
     {"name": 'redBB', "weight": 328},
     {"name": 'vac', "weight": 46236},
-    {"name": "r7suica", "weight": 0}
+    {"name": "blueBB", "weight": 0}
 ]
 
 flag_data_1bet = [

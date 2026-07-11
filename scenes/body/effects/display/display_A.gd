@@ -33,8 +33,7 @@ func _on_bonus_est(value):
 		return
 	
 	if value != "RB":
-		var parrot_slot = effects.effect_slot["parrot"]
-		var parrot_rand = effects.effects_rands[parrot_slot]
+		var parrot_rand = effects.get_effect_rand("parrot")
 		if parrot_rand >= parrot_weight:
 			await mainROM.spin_start
 	parrot.play("parrot")

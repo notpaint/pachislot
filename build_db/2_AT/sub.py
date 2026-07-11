@@ -380,8 +380,11 @@ premonition_map = {
                 }
             },
             "Cherry_A": {
+                False: {
+                    5: 128, 6: 77, 7: 51
+                },
                 True: {
-                    6: 256
+                    3: 51, 6: 77, 7: 102, 8: 26
                 }
             }
         }
@@ -395,6 +398,12 @@ premonition_map = {
             }
         }
     }
+}
+
+back_music = {
+    "": "res://assets/music/shake2/RT/Into_the_real_part1.ogg",
+    "RT2": "res://assets/music/shake2/RT/Into_the_real_part2.ogg",
+    "RT_end": "res://assets/music/shake2/RT/Into_the_real_end.ogg"
 }
 
 
