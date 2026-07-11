@@ -15,19 +15,34 @@ var premonition_map: Dictionary = {}
 var premonition_array: Array = []
 
 var fake_pre_left: int
-var pre_left: int
+var pre_left: int = 0:
+	set(value):
+		if pre_left == value:
+			return
+		pre_left = value
+		left_pre.emit(value)
+
 var release_game: int
-var pre_bonus:String = "RB"
+var pre_bonus: String = "None"
 
 var base_state: String = "normal" #normal, AT
-var play_state: String = "normal" #normal, AT, bonus_waiting, in_bonus
+var play_state: String = "normal": #normal, AT, bonus_waiting, in_bonus
+	set(value):
+		if play_state == value:
+			return
+		play_state = value
+		bonus_pre.emit(value)
+
 
 var bonus_condi: String = "normal" #normal, high
-var current_bonus: String = "None" #RB, redBB
+var current_bonus: String = "None" #REG, redBB
 
 var game_condi: String = "normal" #normal, extra
 
 var morning_mode = {"A": 102, "B": 102, "C": 26, "Heaven": 26}
+
+signal left_pre(value)
+signal bonus_pre(value)
 
 var order_bell: Dictionary = {
 	"213Bell": [2, 1, 3],
@@ -68,6 +83,7 @@ func _on_flag(value):
 		"bonus_waiting":
 			if flag_data:
 				flag_bonus(flag_data)
+			hit_bonus()
 			bell_navi()
 
 		"in_bonus":
@@ -90,11 +106,11 @@ func hit_bonus():
 
 	match pre_bonus:
 
-		"RB":
+		"REG":
 			if result_flag == "fake_Replay" or result_flag == "r7_Replay":
 				order_navi.set_navi([null, 1, null], Color.RED)
 				play_state = "in_bonus"
-				current_bonus = "RB"
+				current_bonus = "REG"
 
 		"redBB":
 			if result_flag == "r7_Replay":
@@ -111,8 +127,11 @@ func check_current_game():
 
 	if fake_pre_left > 0:
 		fake_pre_left -= 1
+
 	if pre_left > 0:
 		pre_left -= 1
+		if pre_left == 0:
+			play_state = "bonus_waiting"
 
 
 	for game in premonition_map:
@@ -192,8 +211,10 @@ func flag_bonus(flag_data):
 	var flag_release_rand = effects.effects_rands[flag_release_slot]
 
 	if flag_release_rand < bonus_weight:
+		print("当選")
 		flag_premonition(flag_data, true)
 	else:
+		print("非当選")
 		flag_premonition(flag_data, false)
 
 
@@ -201,11 +222,11 @@ func flag_bonus_promo(promo_data):
 	var promo_slot = effects.effect_slot["bonus_promo"]
 	var promo_rand = effects.effects_rands[promo_slot]
 
-	var weight = promo_data[pre_bonus]
+	var weight = promo_data.get(pre_bonus, 0)
 
 	if promo_rand < weight:
 		match pre_bonus:
-			"RB":
+			"REG":
 				pre_bonus = "redBB"
 
 

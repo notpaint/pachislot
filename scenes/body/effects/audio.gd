@@ -54,18 +54,24 @@ func play_spin_start(track):
 		SE.stream = start_stream
 		SE.play()
 
-func play_prized(value):
+func play_prized(_value):
 	var start_rules = SE_dict["prized"]["rule"]
-	var start_track = weight.get_track(start_rules, "prized")
+	var start_rule = weight.get_rule(start_rules, "prized")
+	var start_track = start_rule["track"]
 	var start_stream = SE_dict["prized"]["sound"][start_track]
+
 	if start_stream:
 		SE.stream = start_stream
 		SE.play()
 
+		if start_rule.get("bet_block", 0) == 1:
+			mainROM.bet_block += 1
+			await SE.finished
+			mainROM.bet_block -= 1
+
 func play_bonus(value):
 	if value != "None":
 		var current_bonus_music = bonus_music[value]
-		var jingle_path = current_bonus_music["jingle"]
 
 		var bonus_rules = current_bonus_music["rule"]
 		var bonus_track = weight.get_track(bonus_rules, value)
@@ -74,14 +80,12 @@ func play_bonus(value):
 		var start_path = current_bonus_music["tracks"][bonus_track]["start"]
 		current_bonus_path = start_path
 
-		if jingle_path:
-			bonus.stream = load(jingle_path)
-			bonus.play()
+		if SE.playing:
 
-			mainROM.bet_block += 1
-			await bonus.finished
-			mainROM.bet_block -= 1
+			if bonus.playing:
+				bonus.stop()
 
+			await SE.finished
 			await effects.medal_bet
 
 		if start_path:

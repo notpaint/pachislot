@@ -41,36 +41,38 @@ func random_SE(event):
 
 
 func get_track(rules, event, variant: String = "default"):
+
+	var rule = get_rule(rules, event, variant)
+	return rule["track"]
+
+func get_rule(rules, event, variant: String = "default"):
 	for rule in rules:
 		var cond = rule["cond"]
-		
 		if cond == variant:
-			return rule["track"]
+			return rule
 
 		var expression = rule["parsed"]
 		if expression.execute([], effects) == true:
-
 			if rule.has("weight"):
 				var weight = rule["weight"]
 				var rand_slot = effects.effect_slot[event]
 				var rand_number = effects.effects_rands[rand_slot]
 
 				if rand_number < weight:
-					return rule["track"]
+					return rule
 				else:
-					return return_default(rules, variant)
+					return return_default_rule(rules, variant)
 			else:
-				return rule["track"]
+				return rule
+				
 
 
-func return_default(rules, variant: String = "default"):
+func return_default_rule(rules, variant: String = "default"):
 	for rule in rules:
 		if rule["cond"] == variant:
-			return rule["track"]
+			return rule
 				
 func get_track_array(trigger: String = "default"):
-	print("--- BGM判定開始 トリガー: ", trigger, " ---")
-	print("sub.gd の保持するBGM数: ", sub.back_music.size())
 	for data in back_music:
 		if not data.has("parsed"):
 			continue

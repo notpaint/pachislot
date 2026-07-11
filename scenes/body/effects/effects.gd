@@ -135,6 +135,18 @@ func _on_flag(value):
 	effects_seeds = mainROM.effects_seeds
 	drawing_hash_array(effects_seeds)
 
+func _on_prized_role(value):
+	if value:
+		prized_role = value["name"]
+		audio.play_prized(value["name"])
+	else:
+		prized_role = ""
+
+func _on_prized_array(value):
+	var current_reel_grid = mainROM.current_reel_grid
+	# reel_light.replay_flash()
+	# symbol_light.middle_flash(current_reel_grid)
+
 func _on_bonus_est(value):
 	bonus_state = value
 	print("effects.gd", bonus_state)
@@ -162,20 +174,6 @@ func _on_medal_bet(value):
 	reel_light.stop_flash()
 	symbol_light.stop_flash()
 	medal_bet.emit()
-
-func _on_prized_role(value):
-	print(value)
-	if value:
-		prized_role = value["name"]
-		audio.play_prized(value["name"])
-	else:
-		prized_role = ""
-
-
-func _on_prized_array(value):
-	var current_reel_grid = mainROM.current_reel_grid
-	# reel_light.replay_flash()
-	# symbol_light.middle_flash(current_reel_grid)
 
 
 func _on_reel_stopped(reel_pos, stopped_reel, _current_reel_grid):

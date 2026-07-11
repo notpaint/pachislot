@@ -137,13 +137,20 @@ SE = {
                 "priority": 1,
                 "track": "Replay",
                 "cond": "current_bonus == 'None' and prized_role == 'middleReplay' and order_node.now_RT == false"
+            },
+            {
+                "priority": 1,
+                "track": "redBB1",
+                "cond": "prized_role == 'redBB'",
+                "bet_block": 1
             }
         ],
         "sound":{
             "main": None,
             "Bell": "res://assets/SE/shake2/role/bell.ogg",
             "Bell_BB": "res://assets/SE/shake2/role/bell_bb.ogg",
-            "Replay": "res://assets/SE/shake2/role/replay.ogg"
+            "Replay": "res://assets/SE/shake2/role/replay.ogg",
+            "redBB1": "res://assets/SE/shake2/BB_jingle.ogg"
         }
     }
 }
@@ -166,7 +173,7 @@ bonus_music = {
         }
     },
     "redBB": {
-        "jingle": "res://assets/SE/shake2/BB_jingle.ogg",
+        "jingle": None,
         "rule": [
             {
                 "priority": 0,

@@ -85,20 +85,34 @@ SE = {
                 "priority": 1,
                 "track": "middleBell_RB",
                 "cond": "current_bonus == 'RB' and prized_role == 'middleBell'"
+            },
+            {
+                "priority": 1,
+                "track": "RB",
+                "cond": "prized_role == 'RB'",
+                "bet_block": 1
+            },
+            {
+                "priority": 1,
+                "track": "redBB",
+                "cond": "prized_role == 'redBB'",
+                "bet_block": 1
             }
         ],
         "sound":{
             "main": None,
             "downBell": "res://assets/SE/otoko/role/downBell.ogg",
             "Replay": "res://assets/SE/otoko/role/Replay.ogg",
-            "middleBell_RB": "res://assets/SE/otoko/role/middleBell_RB.ogg"
+            "middleBell_RB": "res://assets/SE/otoko/role/middleBell_RB.ogg",
+            "RB": "res://assets/SE/otoko/REG_jingle.ogg",
+            "redBB": "res://assets/SE/otoko/BB_jingle.ogg"
         }
     }
 }
 
 bonus_music = {
     "RB": {
-        "jingle": "res://assets/SE/otoko/REG_jingle.ogg",
+        "jingle": None,
         "rule": [
             {
                 "priority": 0,
@@ -114,7 +128,7 @@ bonus_music = {
         }
     },
     "redBB": {
-        "jingle": "res://assets/SE/otoko/BB_jingle.ogg",
+        "jingle": None,
         "rule": [
             {
                 "priority": 0,

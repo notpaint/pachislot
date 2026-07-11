@@ -881,17 +881,22 @@ func check_prize():
 	var reel_result : Array = get_reel_result()
 
 	var matched_role = get_matched_role(reel_result)
+	var role: String
+	var kind: int
+	if matched_role:
+		role = matched_role["name"]
+		kind = matched_role["kind"]
 
 	get_matched_RT_pattern(reel_result)
 
 	if matched_role:
 		role_prize(matched_role)
-		print(matched_role["name"])
 	else:
 		bet_block -= 1
 
 	prized_role.emit(matched_role)
 	prized_array.emit(reel_result)
+
 
 	if RT_game == 0:
 		end_RT()
@@ -904,22 +909,28 @@ func check_prize():
 	if current_bonus != "None" and max_bonus_payout > 0:
 		if current_bonus_payout >= max_bonus_payout:
 			end_bonus()
-	
-	if matched_role and matched_role["kind"] == 3:
-		if bet_block >0:
-			await bet_release
-		
-		bet_block += 1
-		for i in range(3):
-			bet_medals += 1
-			await get_tree().create_timer(0.08).timeout
-		bet_block -= 1
+
+	match kind:
+		1: #ボーナス
+			if bonus_data.has(role):
+				start_bonus(role)
+			else:
+				pass
+		2: #小役
+			pass
+		3: #リプレイ
+			if bet_block >0:
+				await bet_release
+			
+			bet_block += 1
+			for i in range(3):
+				bet_medals += 1
+				await get_tree().create_timer(0.08).timeout
+			bet_block -= 1
 
 
 func role_prize(matched_role):
-	var role = matched_role["name"]
 	var payout = matched_role["payout"]
-	var kind = matched_role["kind"]
 
 	medal_sum += payout
 
@@ -929,18 +940,7 @@ func role_prize(matched_role):
 	if JAC_game:
 		JAC_counter[0] -= 1
 
-
-	match kind:
-		1: #ボーナス
-			bet_block -= 1
-			if bonus_data.has(role):
-				start_bonus(role)
-			else:
-				pass
-		2: #小役
-			bet_block -= 1
-		3: #リプレイ
-			bet_block -= 1
+	bet_block -= 1
 
 
 func get_matched_role(reel_result):
