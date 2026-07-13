@@ -17,7 +17,20 @@ SE = {
             }
         ],
         "sound": {
-            "main": "res://assets/SE/otoko/bet.ogg"
+            "main": "res://assets/SE/otoko/bet.ogg",
+            "silent": None
+        }
+    },
+    "maxbet": {
+        "rule" : [
+            {
+                "priority": 0,
+                "track": "main",
+                "cond": "default"
+            }
+        ],
+        "sound": {
+            "main" : None
         }
     },
     "lever": {
@@ -112,7 +125,6 @@ SE = {
 
 bonus_music = {
     "RB": {
-        "jingle": None,
         "rule": [
             {
                 "priority": 0,

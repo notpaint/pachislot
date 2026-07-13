@@ -31,6 +31,18 @@ SE = {
             "silent": None
         }
     },
+    "maxbet": {
+        "rule" : [
+            {
+                "priority": 0,
+                "track": "main",
+                "cond": "default"
+            }
+        ],
+        "sound": {
+            "main" : None
+        }
+    },
     "lever": {
         "rule" : [
             {

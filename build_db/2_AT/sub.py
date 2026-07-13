@@ -14,10 +14,16 @@ SE = {
                 "priority": 0,
                 "track": "main",
                 "cond": "default"
+            },
+            {
+                "priority": 1,
+                "track": "silent",
+                "cond": "order_node.check_bet_sound()"
             }
         ],
         "sound": {
-            "main": "res://assets/SE/otoko/bet.ogg"
+            "main": "res://assets/SE/otoko/bet.ogg",
+            "silent": None
         }
     },
     "maxbet": {
@@ -176,7 +182,22 @@ back_music = {
 }
 
 flag_trigger = {
-    "order_bell": {
+    "213Bell": {
+        "in_bonus": {
+            "redBB": 1
+        }
+    },
+    "312Bell": {
+        "in_bonus": {
+            "redBB": 1
+        }
+    },
+    "231Bell": {
+        "in_bonus": {
+            "redBB": 1
+        }
+    },
+    "321Bell": {
         "in_bonus": {
             "redBB": 1
         }

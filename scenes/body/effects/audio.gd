@@ -17,9 +17,9 @@ var first_bet: bool = true
 
 var current_bonus: String
 var current_bonus_track: String
-var current_bonus_path: String
+var current_bonus_stream: AudioStream
 
-var current_music_path: String
+var current_music_stream: AudioStream
 
 func _ready():
 	SE_dict = weight.SE_dict
@@ -86,7 +86,7 @@ func play_bonus(value):
 		current_bonus_track = bonus_track
 
 		var start_path = current_bonus_music["tracks"][bonus_track]["start"]
-		current_bonus_path = start_path
+		current_bonus_stream = start_path
 
 		if SE.playing:
 
@@ -97,7 +97,7 @@ func play_bonus(value):
 			await effects.medal_bet
 
 		if start_path:
-			bonus.stream = load(start_path)
+			bonus.stream = start_path
 			bonus.play()
 			
 
@@ -109,10 +109,10 @@ func update_bonus_music(value):
 		var bonus_track = weight.get_track(bonus_rules, value)
 		var start_path = current_bonus_music["tracks"][bonus_track]["start"]
 
-		if current_bonus_path != start_path:
-			current_bonus_path = start_path
+		if current_bonus_stream != start_path:
+			current_bonus_stream = start_path
 			current_bonus_track = bonus_track
-			bonus.stream = load(start_path)
+			bonus.stream = start_path
 			bonus.play()
 
 
@@ -122,7 +122,7 @@ func end_bonus(value):
 		var end_path = current_bonus_music["tracks"][current_bonus_track]["end"]
 
 		if end_path:
-			bonus.stream = load(end_path)
+			bonus.stream = end_path
 			bonus.play()
 
 			mainROM.bet_block += 1
@@ -135,15 +135,15 @@ func end_bonus(value):
 func back_music(track: String = "default", bet_block: bool = false):
 
 	if track == "silent":
-		if current_music_path != "":
-			current_music_path = ""
+		if current_music_stream != null:
+			current_music_stream = null
 			bonus.stop()
 
-	var music_path = weight.back_music.get(track, "")
+	var music_path = weight.back_music.get(track, null)
 
-	if music_path != "" and current_music_path != music_path:
-		current_music_path = music_path
-		bonus.stream = load(music_path)
+	if music_path != null and current_music_stream != music_path:
+		current_music_stream = music_path
+		bonus.stream = music_path
 		bonus.play()
 
 		if bet_block:

@@ -45,6 +45,13 @@ var bonus_game: int = 0:
 		bonus_game = value
 		bonus_left.emit(value)
 
+var AT_game: int = 0:
+	set(value):
+		if AT_game == value:
+			return
+		AT_game = value
+		AT_left.emit(value)
+
 var game_condi: String = "normal" #normal, extra
 
 var morning_mode = {"A": 102, "B": 102, "C": 26, "Heaven": 26}
@@ -61,6 +68,7 @@ var RB_game: int = 5
 signal left_pre(value)
 signal bonus_pre(value)
 signal bonus_left(value)
+signal AT_left(value)
 
 var order_bell: Dictionary = {
 	"213Bell": [2, 1, 3],
@@ -369,9 +377,11 @@ func flag_in_bonus(flag_data):
 	var in_bonus_rand = effects.effects_rands[in_bonus_slot]
 
 	if in_bonus_rand < in_current_rand:
-		print("ボーナス突破")
-	else:
-		print("ボーナス非突破")
+		if base_state == "normal":
+			base_state = "AT"
+			AT_game += 50
+		else:
+			AT_game += 30
 
 
 
@@ -481,6 +491,7 @@ func end_bonus():
 		audio.end_bonus("redBB")
 	play_state = "normal"
 	current_bonus = ""
+	print(AT_game)
 
 func _on_maxbet_pushed():
 	if bonus_first_bet:
@@ -513,4 +524,14 @@ func check_bonus_prized(bonus) -> bool:
 		"redBB":
 			return current_bonus == "redBB" and result_flag == "r7_Replay"
 		
+	return false
+
+func check_bet_sound() -> bool:
+	
+	match play_state:
+		"bonus_waiting":
+			return result_flag in ["fake_Replay", "r7_Replay"]
+		"in_bonus":
+			return bonus_first_bet
+
 	return false
