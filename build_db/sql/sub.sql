@@ -11,7 +11,6 @@ CREATE TABLE SE(
 
 CREATE TABLE bonus_music(
     bonus TEXT,
-    jingle TEXT,
     rule TEXT,
     track_name TEXT,
     start TEXT,

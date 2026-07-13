@@ -152,6 +152,12 @@ func back_music(track: String = "default", bet_block: bool = false):
 			await bonus.finished
 			mainROM.bet_block -= 1
 
+func wait_se_finished():
+	if SE.playing:
+		await SE.finished
+	else:
+		await get_tree().process_frame
+
 
 	# var music_data = weight.get_track_array(trigger)
 	# if music_data:

@@ -144,12 +144,11 @@ func generate_SE_dict():
 			}
 
 func generate_bonus_music():
-	db.query("SELECT bonus, jingle, rule, track_name, start, end FROM bonus_music")
+	db.query("SELECT bonus, rule, track_name, start, end FROM bonus_music")
 	var results = db.query_result
 
 	for row in results:
 		var bonus = row["bonus"]
-		var jingle = row["jingle"]
 		var rule_array = row["rule"]
 		rule_array = JSON.parse_string(rule_array)
 		rule_array.sort_custom(func(a, b): return a["priority"] > b["priority"])
@@ -163,7 +162,6 @@ func generate_bonus_music():
 		var track_name = row["track_name"]
 		if not bonus_music.has(bonus):
 			bonus_music[bonus] = {
-				"jingle": jingle,
 				"rule": rule_array,
 				"tracks": {}
 			}

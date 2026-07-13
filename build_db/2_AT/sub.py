@@ -30,7 +30,7 @@ SE = {
             {
                 "priority": 1,
                 "track": "selected",
-                "cond": "order_node.BB_first_bet == true"
+                "cond": "order_node.bonus_first_bet == true and order_node.current_bonus in ['redBB', 'blueBB']"
             }
         ],
         "sound": {
@@ -124,8 +124,37 @@ SE = {
 }
 
 bonus_music = {
+    "RB": {
+        "rule": [
+            {
+                "priority": 0,
+                "track": "main",
+                "cond": "default"
+            }
+        ],
+        "tracks": {
+            "main": {
+                "start": "res://assets/music/otoko/RB/RB_start.ogg",
+                "end": "res://assets/music/otoko/RB/RB_end.ogg"
+            }
+        }
+    },
+    "redBB": {
+        "rule": [
+            {
+                "priority": 0,
+                "track": "todoroki",
+                "cond": "default"
+            },
+        ],
+        "tracks": {
+            "todoroki": {
+                "start": "res://assets/music/otoko2/BB/todoroki_2_start.ogg",
+                "end": "res://assets/music/otoko2/BB/todoroki_end.ogg"
+            }
+        }
+    },
     "SBB": {
-        "jingle": None,
         "rule": [
             {
                 "priority": 0,
@@ -469,9 +498,10 @@ env = {
          "flag_pre": 49,
          "map_fake_pre": 64,
          "map_pre": 65,
-         "in_bonus": 80,
-         "game": 81,
-         "add": 82
+         "BB_game": 80,
+         "in_bonus": 81,
+         "game": 82,
+         "add": 83
      }
 }
 

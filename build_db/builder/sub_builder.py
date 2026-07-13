@@ -11,20 +11,15 @@ def generate_SE(cursor_sub, config):
 
 def generate_bonus_music(cursor_main, cursor_sub, config):
     for bonus, music_data in config.bonus_music.items():
-        cursor_main.execute("SELECT name from bonus_data WHERE name = (?)", (bonus,))
-        if cursor_main.fetchone() is None:
-            print(f"ERROR on generate_bonus_music: {bonus} does not exists in main.db")
-            continue
-        jingle = music_data.get("jingle")
         rule = json.dumps(music_data.get("rule"))
         tracks = music_data.get("tracks", {})
         for track_name, track_info in tracks.items():
             start = track_info.get("start")
             end = track_info.get("end")
 
-            cursor_sub.execute("""INSERT OR IGNORE INTO bonus_music(bonus, jingle, rule, track_name, start, end)
-                           VALUES(?, ?, ?, ?, ?, ?)
-                           """, (bonus, jingle, rule, track_name, start, end))
+            cursor_sub.execute("""INSERT OR IGNORE INTO bonus_music(bonus,rule, track_name, start, end)
+                           VALUES(?, ?, ?, ?, ?)
+                           """, (bonus, rule, track_name, start, end))
             
 def generate_back_music(cursor_sub, config):
     for track, path in config.back_music.items():

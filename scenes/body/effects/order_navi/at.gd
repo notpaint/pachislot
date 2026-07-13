@@ -36,14 +36,31 @@ var play_state: String = "bonus_waiting": #normal, AT, bonus_waiting, in_bonus
 
 var bonus_condi: String = "normal" #normal, high
 var current_bonus: String = "None" #RB, redBB
-var BB_first_bet: bool = false
+var bonus_first_bet: bool = false
+
+var bonus_game: int = 0:
+	set(value):
+		if bonus_game == value:
+			return
+		bonus_game = value
+		bonus_left.emit(value)
 
 var game_condi: String = "normal" #normal, extra
 
 var morning_mode = {"A": 102, "B": 102, "C": 26, "Heaven": 26}
 
+var BB_game = {
+	40: 128,
+	60: 102,
+	80: 18,
+	100: 8
+}
+
+var RB_game: int = 5
+
 signal left_pre(value)
 signal bonus_pre(value)
+signal bonus_left(value)
 
 var order_bell: Dictionary = {
 	"213Bell": [2, 1, 3],
@@ -62,6 +79,13 @@ func _ready():
 func _on_flag(value):
 
 	result_flag = value
+
+	if bonus_first_bet:
+		bonus_first_bet = false
+		force_bonus_music()
+
+	if bonus_game > 0:
+		bonus_game -= 1
 
 	if not release_game:
 		if not current_mode:
@@ -112,12 +136,24 @@ func hit_bonus():
 				order_navi.set_navi([null, 1, null], Color.RED)
 				# play_state = "in_bonus"
 				current_bonus = "RB"
+				bonus_game = RB_game
 
 		"redBB":
 			if result_flag == "r7_Replay":
 				order_navi.set_navi([null, null, 1], Color.RED)
 				# play_state = "in_bonus"
 				current_bonus = "redBB"
+				bonus_game = assign_BB_game()
+
+func assign_BB_game():
+	var bonus_rand = effects.get_effect_rand("BB_game")
+	for game in BB_game:
+		var weight = BB_game[game]
+		bonus_rand -= weight
+		if bonus_rand < 0:
+			return game
+
+	
 
 func bell_navi():
 	if order_bell.has(result_flag):
@@ -423,24 +459,48 @@ func _on_prized(value):
 			if check_bonus_prized("RB"):
 				pre_bonus = "None"
 				play_state = "in_bonus"
+				bonus_first_bet = true
 
 			elif check_bonus_prized("redBB"):
 				pre_bonus = "None"
 				play_state = "in_bonus"
-				BB_first_bet = true
+				bonus_first_bet = true
 
-				if audio.SE.playing:
-					await audio.SE.finished
+				await audio.wait_se_finished()
 
 				audio.back_music("select")
+		
+		"in_bonus":
+			if bonus_game == 0:
+				end_bonus()
 
-				
-				
+func end_bonus():
+	if current_bonus == "RB":
+		audio.end_bonus("RB")
+	else:
+		audio.end_bonus("redBB")
+	play_state = "normal"
+	current_bonus = ""
 
 func _on_maxbet_pushed():
-	if BB_first_bet:
-		BB_first_bet = false
-		audio.back_music("silent")
+	if bonus_first_bet:
+		bonus_first_bet = false
+
+		if current_bonus == "redBB":
+			audio.back_music("silent")
+			await audio.wait_se_finished()
+			audio.play_bonus("redBB")
+
+		elif current_bonus == "RB":
+			await audio.wait_se_finished()
+			audio.play_bonus("RB")
+
+func force_bonus_music():
+	audio.back_music("silent")
+	if current_bonus == "RB":
+		audio.play_bonus("RB")
+	else:
+		audio.play_bonus("redBB")
 
 
 func check_bonus_prized(bonus) -> bool:
