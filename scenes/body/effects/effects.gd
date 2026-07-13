@@ -80,6 +80,8 @@ func connect_to_mainROM():
 		mainROM.bonus_end.connect(_on_bonus_end)
 	if mainROM.has_signal("medal_bet"):
 		mainROM.medal_bet.connect(_on_medal_bet)
+	if mainROM.has_signal("maxbet_pushed"):
+		mainROM.maxbet_pushed.connect(_on_maxbet_pushed)
 	if mainROM.has_signal("flag"):
 		mainROM.flag.connect(_on_flag)
 	if mainROM.has_signal("spin_start"):
@@ -100,6 +102,8 @@ func connect_to_mainROM():
 func connect_to_order(node):
 	if mainROM.has_signal("medal_bet") and node.has_method("_on_medal_bet"):
 		mainROM.medal_bet.connect(node._on_medal_bet)
+	if mainROM.has_signal("maxbet_pushed") and node.has_method("_on_maxbet_pushed"):
+		mainROM.maxbet_pushed.connect(node._on_maxbet_pushed)
 	if mainROM.has_signal("flag") and node.has_method("_on_flag"):
 		mainROM.flag.connect(node._on_flag)
 	if mainROM.has_signal("now_RT") and node.has_method("_on_now_RT"):
@@ -175,6 +179,8 @@ func _on_medal_bet(value):
 	symbol_light.stop_flash()
 	medal_bet.emit()
 
+func _on_maxbet_pushed():
+	audio.play_maxbet()
 
 func _on_reel_stopped(reel_pos, stopped_reel, _current_reel_grid):
 	current_reel = stopped_reel

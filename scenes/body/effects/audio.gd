@@ -37,6 +37,14 @@ func play_bet(value):
 			medal.stream = bet_stream
 			medal.play()
 
+func play_maxbet():
+	var maxbet_rules = SE_dict["maxbet"]["rule"]
+	var maxbet_track = weight.get_track(maxbet_rules, "maxbet")
+	var maxbet_stream = SE_dict["maxbet"]["sound"][maxbet_track]
+
+	if maxbet_stream:
+		SE.stream = maxbet_stream
+		SE.play()
 
 func play_reel_stop(reel_pos):
 	var stop_rules = SE_dict["reel_stop"]["rule"]

@@ -302,7 +302,7 @@ role_data = [
          ("r7", "blank", "r7"),
          ("r7", "bar", "r7"),
          ("r7", "r7", rep_any),
-         ("suica", "r7", "bar")
+         ("suica", "r7", rep_any)
      ),
      None
     ),
@@ -590,7 +590,7 @@ JAC_data = {
 
 bonus_data = {
     'SBB' : {
-        "max_payout" : 10,
+        "max_payout" : 200,
         "JACIN_type" : "RB1",
         "JAC_nums" : json.dumps(JAC_SBB),
         "before_RT" : None,

@@ -1,6 +1,7 @@
 extends Node
 
 @onready var effects = $"../.."
+@onready var audio = $"../../audio"
 @onready var order_navi = $"../../order_navi"
 
 var mode_data: Dictionary = {}
@@ -23,19 +24,19 @@ var pre_left: int = 0:
 		left_pre.emit(value)
 
 var release_game: int
-var pre_bonus: String = "None"
+var pre_bonus: String = "redBB" #RB, redBB
 
 var base_state: String = "normal" #normal, AT
-var play_state: String = "normal": #normal, AT, bonus_waiting, in_bonus
+var play_state: String = "bonus_waiting": #normal, AT, bonus_waiting, in_bonus
 	set(value):
 		if play_state == value:
 			return
 		play_state = value
 		bonus_pre.emit(value)
 
-
 var bonus_condi: String = "normal" #normal, high
-var current_bonus: String = "None" #REG, redBB
+var current_bonus: String = "None" #RB, redBB
+var BB_first_bet: bool = false
 
 var game_condi: String = "normal" #normal, extra
 
@@ -106,16 +107,16 @@ func hit_bonus():
 
 	match pre_bonus:
 
-		"REG":
+		"RB":
 			if result_flag == "fake_Replay" or result_flag == "r7_Replay":
 				order_navi.set_navi([null, 1, null], Color.RED)
-				play_state = "in_bonus"
-				current_bonus = "REG"
+				# play_state = "in_bonus"
+				current_bonus = "RB"
 
 		"redBB":
 			if result_flag == "r7_Replay":
 				order_navi.set_navi([null, null, 1], Color.RED)
-				play_state = "in_bonus"
+				# play_state = "in_bonus"
 				current_bonus = "redBB"
 
 func bell_navi():
@@ -226,7 +227,7 @@ func flag_bonus_promo(promo_data):
 
 	if promo_rand < weight:
 		match pre_bonus:
-			"REG":
+			"RB":
 				pre_bonus = "redBB"
 
 
@@ -416,4 +417,40 @@ func _on_reel_stopped(reel_pos, _stopped_reel, _current_reel_grid):
 	order_navi.frame_light_off(reel_pos)
 
 func _on_prized(value):
-	pass
+	match play_state:
+
+		"bonus_waiting":
+			if check_bonus_prized("RB"):
+				pre_bonus = "None"
+				play_state = "in_bonus"
+
+			elif check_bonus_prized("redBB"):
+				pre_bonus = "None"
+				play_state = "in_bonus"
+				BB_first_bet = true
+
+				if audio.SE.playing:
+					await audio.SE.finished
+
+				audio.back_music("select")
+
+				
+				
+
+func _on_maxbet_pushed():
+	if BB_first_bet:
+		BB_first_bet = false
+		audio.back_music("silent")
+
+
+func check_bonus_prized(bonus) -> bool:
+	if play_state != "bonus_waiting":
+		return false
+	
+	match bonus:
+		"RB":
+			return current_bonus == "RB" and result_flag in ["fake_Replay", "r7_Replay"]
+		"redBB":
+			return current_bonus == "redBB" and result_flag == "r7_Replay"
+		
+	return false

@@ -144,6 +144,7 @@ signal now_RT(current_RT)
 signal last_RT(RT_game)
 signal now_JAC(current_JAC)
 signal medal_bet(bet_medals)
+signal maxbet_pushed()
 signal medal_number(medal_sum)
 signal stop_button(reel_pos)
 signal reel_stopped(reel_pos, current_reel, current_reel_grid)
@@ -310,6 +311,8 @@ func maxbet():
 	if bet_block > 0:
 		return
 	if not is_spinning[0] and not is_spinning[1] and not is_spinning[2]:
+
+		maxbet_pushed.emit()
 		if current_JAC != "None":
 			if bet_medals != 0:
 				return

@@ -20,6 +20,24 @@ SE = {
             "main": "res://assets/SE/otoko/bet.ogg"
         }
     },
+    "maxbet": {
+        "rule": [
+            {
+                "priority": 0,
+                "track": "main",
+                "cond": "default"
+            },
+            {
+                "priority": 1,
+                "track": "selected",
+                "cond": "order_node.BB_first_bet == true"
+            }
+        ],
+        "sound": {
+            "main": None,
+            "selected": "res://assets/SE/otoko2/selected.ogg"
+        }
+    },
     "lever": {
         "rule" : [
             {
@@ -51,11 +69,6 @@ SE = {
                 "priority": 0,
                 "track": "main",
                 "cond": "default"
-            },
-            {
-                "priority": 1,
-                "track": "SBB",
-                "cond": "current_reel == ['r7', 'b7', 'r7']"
             }
         ],
         "sound": {
@@ -69,17 +82,50 @@ SE = {
                 "priority": 0,
                 "track": "main",
                 "cond": "default"
+            },
+            {
+                "priority": 1,
+                "track": "downBell",
+                "cond": "order_node.play_state == 'normal' and prized_role == 'downBell'"
+            },
+            {
+                "priority": 1,
+                "track": "Replay",
+                "cond": "order_node.play_state == 'normal' and prized_role == 'middleReplay'"
+            },
+            {
+                "priority": 2,
+                "track": "RB",
+                "cond": "order_node.check_bonus_prized('RB')",
+                "bet_block": 1
+            },
+            {
+                "priority": 2,
+                "track": "redBB",
+                "cond": "order_node.check_bonus_prized('redBB')",
+                "bet_block": 1
+            },
+            {
+                "priority": 777,
+                "track": "SBB",
+                "cond": "prized_role == 'SBB'",
+                "bet_block": 1
             }
         ],
         "sound":{
-            "main": None
+            "main": None,
+            "downBell": "res://assets/SE/otoko/role/downBell.ogg",
+            "Replay": "res://assets/SE/otoko/role/Replay.ogg",
+            "RB": "res://assets/SE/otoko/REG_jingle.ogg",
+            "redBB": "res://assets/SE/otoko/BB_jingle.ogg",
+            "SBB": "res://assets/SE/otoko2/SBB_jingle.ogg"
         }
     }
 }
 
 bonus_music = {
     "SBB": {
-        "jingle": "res://assets/SE/otoko2/SBB_jingle.ogg",
+        "jingle": None,
         "rule": [
             {
                 "priority": 0,
@@ -302,7 +348,7 @@ pseudo_bonus_mode = {
         },
         "ratio": {
             "redBB": 128,
-            "REG": 128
+            "RB": 128
         }
     },
     "B": {
@@ -320,7 +366,7 @@ pseudo_bonus_mode = {
         },
         "ratio": {
             "redBB": 64,
-            "REG": 192
+            "RB": 192
         }
     },
     "C": {
@@ -336,7 +382,7 @@ pseudo_bonus_mode = {
         },
         "ratio": {
             "redBB": 128,
-            "REG": 128
+            "RB": 128
         }
     },
     "Heaven": {
@@ -352,7 +398,7 @@ pseudo_bonus_mode = {
         },
         "ratio": {
             "redBB": 179,
-            "REG": 77
+            "RB": 77
         }
     }
 }
@@ -401,9 +447,7 @@ premonition_map = {
 }
 
 back_music = {
-    "": "res://assets/music/shake2/RT/Into_the_real_part1.ogg",
-    "RT2": "res://assets/music/shake2/RT/Into_the_real_part2.ogg",
-    "RT_end": "res://assets/music/shake2/RT/Into_the_real_end.ogg"
+    "select": "res://assets/music/otoko/bonus/select.ogg"
 }
 
 
