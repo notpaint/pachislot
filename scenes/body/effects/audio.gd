@@ -152,6 +152,10 @@ func back_music(track: String = "default", bet_block: bool = false):
 			await bonus.finished
 			mainROM.bet_block -= 1
 
+func stop_back_music():
+	current_music_stream = null
+	bonus.stop()
+
 func wait_se_finished():
 	if SE.playing:
 		await SE.finished

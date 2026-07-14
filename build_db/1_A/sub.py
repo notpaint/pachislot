@@ -118,7 +118,7 @@ SE = {
             "Replay": "res://assets/SE/otoko/role/Replay.ogg",
             "middleBell_RB": "res://assets/SE/otoko/role/middleBell_RB.ogg",
             "RB": "res://assets/SE/otoko/REG_jingle.ogg",
-            "redBB": "res://assets/SE/otoko/BB_jingle.ogg"
+            "redBB": "res://assets/SE/otoko/redBB_jingle.ogg"
         }
     }
 }

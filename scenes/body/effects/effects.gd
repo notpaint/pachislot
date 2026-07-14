@@ -106,6 +106,8 @@ func connect_to_order(node):
 		mainROM.maxbet_pushed.connect(node._on_maxbet_pushed)
 	if mainROM.has_signal("flag") and node.has_method("_on_flag"):
 		mainROM.flag.connect(node._on_flag)
+	if mainROM.has_signal("bonus_est") and node.has_method("_on_bonus_est"):
+		mainROM.bonus_est.connect(node._on_bonus_est)
 	if mainROM.has_signal("now_RT") and node.has_method("_on_now_RT"):
 		mainROM.now_RT.connect(node._on_now_RT)
 	if mainROM.has_signal("prized_role") and node.has_method("_on_prized"):

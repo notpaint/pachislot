@@ -123,7 +123,7 @@ SE = {
             "downBell": "res://assets/SE/otoko/role/downBell.ogg",
             "Replay": "res://assets/SE/otoko/role/Replay.ogg",
             "RB": "res://assets/SE/otoko/REG_jingle.ogg",
-            "redBB": "res://assets/SE/otoko/BB_jingle.ogg",
+            "redBB": "res://assets/SE/otoko/redBB_jingle.ogg",
             "SBB": "res://assets/SE/otoko2/SBB_jingle.ogg"
         }
     }
@@ -497,7 +497,10 @@ premonition_map = {
 }
 
 back_music = {
-    "select": "res://assets/music/otoko/bonus/select.ogg"
+    "select": "res://assets/music/otoko/bonus/select.ogg",
+    "bonus_waiting": "res://assets/music/otoko2/bonus/waiting.ogg",
+    "itadaki_keikoku": "res://assets/music/otoko2/AT/itadaki_keikoku.ogg",
+    "itadaki_end": "res://assets/music/otoko2/AT/itadaki_end.ogg"
 }
 
 

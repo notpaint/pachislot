@@ -15,119 +15,90 @@ var parrot_weight = 205
 var JAC_counter: Array = []
 var last_bonus_payout: int = 0
 var get_bonus_payout: int = 0
+var total_payout: int = 0
 
+var order_node: Node
 var active_data_node: Node = null
 
 var bonus_variety:Array = []
 
+
 func _ready():
 	bb_data_node.visible = false
 	rb_data_node.visible = false
+	total_data_node.visible = false
+
+	if effects and effects.order_node:
+		order_node = effects.order_node
+		connect_to_order_node(order_node)
 
 	bonus_variety = main.bonus_variety
 
 
-func _on_bonus_est(value):
-	if not effects.bonus_state:
+func connect_to_order_node(node):
+	if node.has_signal("active_bonus_up"):
+		node.active_bonus_up.connect(_on_active_bonus)
+	if node.has_signal("BB_data"):
+		node.BB_data.connect(_on_BB_data)
+	if node.has_signal("RB_data"):
+		node.RB_data.connect(_on_RB_data)
+	if node.has_signal("parrot_animation"):
+		node.parrot_animation.connect(_on_parrot_animation)
 
+
+func _on_active_bonus(type):
+
+	if type != "":
 		await mainROM.medal_bet
 
-		stop_parrot(parrot)
-		stop_parrot(reverseparrot)
-		return
-	
-	if value != "RB":
-		var parrot_rand = effects.get_effect_rand("parrot")
-		if parrot_rand >= parrot_weight:
-			await mainROM.spin_start
-	parrot.play("parrot")
-	reverseparrot.play("reverseparrot")
-
-func _on_prized(value):
-
-	if value:
-		if value["name"] in bonus_variety:
-			await mainROM.medal_bet
-			switch_bonus(value)
-
-	if bb_data_node.visible:
-		if not value:
-			return
-		var payout = value["payout"]
-		get_bonus_payout += payout
-		bb_data_node.get_node("GET_PAY").text = str(get_bonus_payout)
-
-		last_bonus_payout -= payout
-		last_bonus_payout = max(last_bonus_payout, 0)
-		bb_data_node.get_node("LAST_PAY").text = str(last_bonus_payout)
-
-		if last_bonus_payout <= 0:
-			bb_data_node.visible = false
-			total_data_node.visible = true
-			active_data_node = total_data_node
-			total_data_node.get_node("TOTAL").text = str(get_bonus_payout)
-
-
-	if rb_data_node.visible:
-		JAC_counter = mainROM.JAC_counter.duplicate(true)
-		var last_play = JAC_counter[1]
-		var last_play_str = "%2d" % last_play
-		var last_prize = JAC_counter[0]
-		var last_prize_str = "%2d" % last_prize
-		if value:
-			var payout = value["payout"]
-			get_bonus_payout += payout
-		rb_data_node.get_node("LAST_PRIZE").text = last_prize_str
-		rb_data_node.get_node("LAST_PLAY").text = last_play_str
-
-		if last_prize <= 0 or last_play <= 0:
-			rb_data_node.visible = false
-			total_data_node.visible = true
-			active_data_node = total_data_node
-			total_data_node.get_node("TOTAL").text = str(get_bonus_payout)
-
-
-func switch_bonus(_value):
-
+	bb_data_node.visible = false
+	rb_data_node.visible = false
+	total_data_node.visible = false
 	parrot.visible = false
 	
-	if mainROM.max_bonus_payout > 0:
-		bb_data_node.visible = true
-		active_data_node = bb_data_node
-		last_bonus_payout = mainROM.max_bonus_payout
-		get_bonus_payout = 0
-		bb_data_node.get_node("LAST_PAY").text = str(last_bonus_payout)
-		bb_data_node.get_node("GET_PAY").text = str(get_bonus_payout)
+	match type:
+		"BB":
+			bb_data_node.visible = true
+			active_data_node = bb_data_node
+			bb_data_node.get_node("GET_PAY").text = str(order_node.get_bonus_payout)
+			bb_data_node.get_node("LAST_PAY").text = str(order_node.last_bonus_payout)
+		"RB":
+			rb_data_node.visible = true
+			active_data_node = rb_data_node
+			var counter = order_node.JAC_counter
+			rb_data_node.get_node("LAST_PRIZE").text = "%2d" % counter[0]
+			rb_data_node.get_node("LAST_PLAY").text = "%2d" % counter[1]
+		"":
+			total_data_node.visible = true
+			active_data_node = total_data_node
+			total_data_node.get_node("TOTAL").text = str(order_node.get_bonus_payout)
+
+			await mainROM.medal_bet
+
+			total_data_node.visible = false
+			parrot.visible = true
+			active_data_node = null
+			total_payout = 0
+
+
+func _on_BB_data(get_pay, last_pay):
+	if active_data_node == bb_data_node:
+		bb_data_node.get_node("GET_PAY").text = str(get_pay)
+		bb_data_node.get_node("LAST_PAY").text = str(last_pay)
+
+func _on_RB_data(counter):
+	if active_data_node == rb_data_node:
+		rb_data_node.get_node("LAST_PRIZE").text = "%2d" % counter[0]
+		rb_data_node.get_node("LAST_PLAY").text = "%2d" % counter[1]
+
+func _on_parrot_animation(value):
+	if value:
+		parrot.play("parrot")
+		reverseparrot.play("reverseparrot")
 	else:
-		rb_data_node.visible = true
-		active_data_node = rb_data_node
-		JAC_counter = mainROM.JAC_counter.duplicate(true)
-		var last_prize = JAC_counter[0]
-		last_prize = "%2d" % last_prize
-		var last_play = JAC_counter[1]
-		last_play = "%2d" % last_play
-		rb_data_node.get_node("LAST_PRIZE").text = last_prize
-		rb_data_node.get_node("LAST_PLAY").text = last_play
-
-
-func _on_medal_bet(value):
-	if value == 0:
-		return
-
-	if effects.current_bonus == "None" and active_data_node and active_data_node.visible:
-		active_data_node.visible = false
-		parrot.visible = true
-		active_data_node = null
-	
-	if bb_data_node.visible:
-		get_bonus_payout -= 1
-		get_bonus_payout = max(get_bonus_payout, 0)
-		bb_data_node.get_node("GET_PAY").text = str(get_bonus_payout)
-	
-
-func _on_spin_start():
-	pass
-
+		await mainROM.medal_bet
+		stop_parrot(parrot)
+		stop_parrot(reverseparrot)
 
 func stop_parrot(sprite):
 	if sprite.is_playing():

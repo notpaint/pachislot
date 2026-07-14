@@ -11,28 +11,28 @@ var premonition_data: Dictionary = {}
 var current_game: int = 0
 var result_flag: String
 
-var current_mode: String
+var current_mode: String = "A"
 var premonition_map: Dictionary = {}
 var premonition_array: Array = []
 
 var fake_pre_left: int
-var pre_left: int = 0:
+var pre_left: int = 5:
 	set(value):
 		if pre_left == value:
 			return
 		pre_left = value
 		left_pre.emit(value)
 
-var release_game: int
-var pre_bonus: String = "redBB" #RB, redBB
+var release_game: int = -1
+var pre_bonus: String = "redBB" #None, RB, redBB
 
 var base_state: String = "normal" #normal, AT
-var play_state: String = "bonus_waiting": #normal, AT, bonus_waiting, in_bonus
+var play_state: String = "normal": #normal, AT, bonus_waiting, in_bonus
 	set(value):
 		if play_state == value:
 			return
 		play_state = value
-		bonus_pre.emit(value)
+		play_state_update.emit(value)
 
 var bonus_condi: String = "normal" #normal, high
 var current_bonus: String = "None" #RB, redBB
@@ -45,7 +45,7 @@ var bonus_game: int = 0:
 		bonus_game = value
 		bonus_left.emit(value)
 
-var AT_game: int = 0:
+var AT_game: int = 10:
 	set(value):
 		if AT_game == value:
 			return
@@ -57,7 +57,7 @@ var game_condi: String = "normal" #normal, extra
 var morning_mode = {"A": 102, "B": 102, "C": 26, "Heaven": 26}
 
 var BB_game = {
-	40: 128,
+	5: 256,
 	60: 102,
 	80: 18,
 	100: 8
@@ -65,8 +65,11 @@ var BB_game = {
 
 var RB_game: int = 5
 
+signal _on_flaged(value)
+
 signal left_pre(value)
-signal bonus_pre(value)
+signal play_state_update(value)
+signal bonus_ended(bonus)
 signal bonus_left(value)
 signal AT_left(value)
 
@@ -94,12 +97,6 @@ func _on_flag(value):
 
 	if bonus_game > 0:
 		bonus_game -= 1
-
-	if not release_game:
-		if not current_mode:
-			drawing_mode("morning")
-		drawing_release_game(current_mode)
-		print(premonition_map)
 	
 	current_game += 1
 
@@ -110,6 +107,11 @@ func _on_flag(value):
 	match play_state:
 
 		"normal":
+			if release_game == -1:
+				if not current_mode:
+					drawing_mode("morning")
+				drawing_release_game(current_mode)
+
 			if flag_data:
 				flag_bonus(flag_data)
 
@@ -125,15 +127,27 @@ func _on_flag(value):
 			bell_navi()
 
 		"AT":
+			if release_game == -1:
+				audio.back_music("itadaki_keikoku")
+
+			if release_game == -1:
+				if not current_mode:
+					drawing_mode("morning")
+				drawing_release_game(current_mode)
+			
 			if flag_data:
 				flag_game(flag_data)
 				flag_bonus(flag_data)
 			bell_navi()
 
+			AT_game -= 1
+
 		"penalty":
 			pass
 
 	check_premonition()
+
+	_on_flaged.emit(value)
 
 func hit_bonus():
 
@@ -162,11 +176,11 @@ func assign_BB_game():
 			return game
 
 	
-
 func bell_navi():
 	if order_bell.has(result_flag):
 		var order = Array(order_bell[result_flag])
 		order_navi.set_navi(order, Color.YELLOW)
+
 
 func check_current_game():
 
@@ -175,9 +189,10 @@ func check_current_game():
 
 	if pre_left > 0:
 		pre_left -= 1
-		if pre_left == 0:
-			play_state = "bonus_waiting"
-
+	
+	elif pre_left == 0:
+		play_state = "bonus_waiting"
+		pre_left = -1
 
 	for game in premonition_map:
 		if current_game == game:
@@ -279,7 +294,7 @@ func flag_mode_promo(promo_data):
 	var promo_slot = effects.effect_slot["mode_promo"]
 	var promo_rand = effects.effects_rands[promo_slot]
 
-	var weight = promo_data[current_mode]
+	var weight = promo_data.get(current_mode,0)
 
 	if promo_rand < weight:
 		match current_mode:
@@ -358,9 +373,14 @@ func flag_add(flag_data):
 		var weight = add_data[add]
 		add_rand -= weight
 		if add_rand < 0:
-			print("上乗せ当選", add)
+			AT_game += int(add)
+			print(AT_game)
 			break
 
+func end_AT():
+	base_state = "normal"
+	play_state = "normal"
+	audio.back_music("itadaki_end", true)
 
 func flag_in_bonus(flag_data):
 	var in_bonus_data = flag_data.get("in_bonus", null)
@@ -432,14 +452,14 @@ func check_premonition():
 		var data = premonition_array[i]
 
 		if data["type"] == "fake":
-			if fake_pre_left != 0 or pre_left != 0:
+			if fake_pre_left != 0 or pre_left >= 0:
 				premonition_array.remove_at(i)
 				continue
 			fake_pre_left = data["length"]
 			premonition_array.remove_at(i)
 
 		else:
-			if pre_left != 0:
+			if pre_left >= 0:
 				i += 1
 				continue
 			pre_left = data["length"]
@@ -462,16 +482,21 @@ func _on_stop_button(reel_pos):
 func _on_reel_stopped(reel_pos, _stopped_reel, _current_reel_grid):
 	order_navi.frame_light_off(reel_pos)
 
-func _on_prized(value):
+
+func _on_prized(_value):
 	match play_state:
 
 		"bonus_waiting":
 			if check_bonus_prized("RB"):
+				audio.stop_back_music()
+				release_game = -1
 				pre_bonus = "None"
 				play_state = "in_bonus"
 				bonus_first_bet = true
 
 			elif check_bonus_prized("redBB"):
+				audio.stop_back_music()
+				release_game = -1
 				pre_bonus = "None"
 				play_state = "in_bonus"
 				bonus_first_bet = true
@@ -481,30 +506,54 @@ func _on_prized(value):
 				audio.back_music("select")
 		
 		"in_bonus":
-			if bonus_game == 0:
+			if bonus_game <= 0:
 				end_bonus()
 
+		"AT":
+			if AT_game <= 0:
+				end_AT()
+
 func end_bonus():
-	if current_bonus == "RB":
-		audio.end_bonus("RB")
+
+	bonus_ended.emit(current_bonus)
+
+	current_bonus = "None"
+
+	if base_state == "AT":
+		play_state = "AT"
 	else:
-		audio.end_bonus("redBB")
-	play_state = "normal"
-	current_bonus = ""
-	print(AT_game)
+		play_state = "normal"
+	
 
 func _on_maxbet_pushed():
-	if bonus_first_bet:
-		bonus_first_bet = false
 
-		if current_bonus == "redBB":
-			audio.back_music("silent")
-			await audio.wait_se_finished()
-			audio.play_bonus("redBB")
+	match play_state:
 
-		elif current_bonus == "RB":
-			await audio.wait_se_finished()
-			audio.play_bonus("RB")
+		"normal":
+			if pre_left == 0:
+				audio.back_music("bonus_waiting")
+
+		"in_bonus":
+			if bonus_first_bet:
+				bonus_first_bet = false
+
+				if current_bonus == "redBB":
+					audio.back_music("silent")
+					await audio.wait_se_finished()
+					audio.play_bonus("redBB")
+
+				elif current_bonus == "RB":
+					await audio.wait_se_finished()
+					audio.play_bonus("RB")
+
+		"AT":
+			if release_game == -1:
+				audio.back_music("itadaki_keikoku")
+
+			if pre_left == 0:
+				audio.back_music("bonus_waiting")
+
+
 
 func force_bonus_music():
 	audio.back_music("silent")
@@ -525,6 +574,7 @@ func check_bonus_prized(bonus) -> bool:
 			return current_bonus == "redBB" and result_flag == "r7_Replay"
 		
 	return false
+
 
 func check_bet_sound() -> bool:
 	
