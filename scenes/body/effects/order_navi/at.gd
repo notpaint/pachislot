@@ -16,7 +16,7 @@ var premonition_map: Dictionary = {}
 var premonition_array: Array = []
 
 var fake_pre_left: int
-var pre_left: int = 5:
+var pre_left: int = -1:
 	set(value):
 		if pre_left == value:
 			return
@@ -27,7 +27,7 @@ var release_game: int = -1
 var pre_bonus: String = "redBB" #None, RB, redBB
 
 var base_state: String = "normal" #normal, AT
-var play_state: String = "normal": #normal, AT, bonus_waiting, in_bonus
+var play_state: String = "bonus_waiting": #normal, AT, bonus_waiting, in_bonus
 	set(value):
 		if play_state == value:
 			return
@@ -36,7 +36,6 @@ var play_state: String = "normal": #normal, AT, bonus_waiting, in_bonus
 
 var bonus_condi: String = "normal" #normal, high
 var current_bonus: String = "None" #RB, redBB
-var bonus_first_bet: bool = false
 
 var bonus_game: int = 0:
 	set(value):
@@ -65,13 +64,16 @@ var BB_game = {
 
 var RB_game: int = 5
 
-signal _on_flaged(value)
+signal flaged(value)
 
 signal left_pre(value)
 signal play_state_update(value)
 signal bonus_ended(bonus)
 signal bonus_left(value)
 signal AT_left(value)
+
+signal bonus_start(bonus, game)
+signal maxbet()
 
 var order_bell: Dictionary = {
 	"213Bell": [2, 1, 3],
@@ -91,14 +93,8 @@ func _on_flag(value):
 
 	result_flag = value
 
-	if bonus_first_bet:
-		bonus_first_bet = false
-		force_bonus_music()
-
 	if bonus_game > 0:
 		bonus_game -= 1
-	
-	current_game += 1
 
 	check_current_game()
 		
@@ -107,6 +103,8 @@ func _on_flag(value):
 	match play_state:
 
 		"normal":
+			current_game += 1
+
 			if release_game == -1:
 				if not current_mode:
 					drawing_mode("morning")
@@ -116,6 +114,8 @@ func _on_flag(value):
 				flag_bonus(flag_data)
 
 		"bonus_waiting":
+			current_game += 1
+
 			if flag_data:
 				flag_bonus(flag_data)
 			hit_bonus()
@@ -127,6 +127,8 @@ func _on_flag(value):
 			bell_navi()
 
 		"AT":
+			current_game += 1
+
 			if release_game == -1:
 				audio.back_music("itadaki_keikoku")
 
@@ -147,7 +149,7 @@ func _on_flag(value):
 
 	check_premonition()
 
-	_on_flaged.emit(value)
+	flaged.emit(value)
 
 func hit_bonus():
 
@@ -156,14 +158,12 @@ func hit_bonus():
 		"RB":
 			if result_flag == "fake_Replay" or result_flag == "r7_Replay":
 				order_navi.set_navi([null, 1, null], Color.RED)
-				# play_state = "in_bonus"
 				current_bonus = "RB"
 				bonus_game = RB_game
 
 		"redBB":
 			if result_flag == "r7_Replay":
 				order_navi.set_navi([null, null, 1], Color.RED)
-				# play_state = "in_bonus"
 				current_bonus = "redBB"
 				bonus_game = assign_BB_game()
 
@@ -487,24 +487,13 @@ func _on_prized(_value):
 	match play_state:
 
 		"bonus_waiting":
-			if check_bonus_prized("RB"):
-				audio.stop_back_music()
+			if check_bonus_prized(current_bonus):
 				release_game = -1
 				pre_bonus = "None"
 				play_state = "in_bonus"
-				bonus_first_bet = true
+				
+				bonus_start.emit(current_bonus, bonus_game)
 
-			elif check_bonus_prized("redBB"):
-				audio.stop_back_music()
-				release_game = -1
-				pre_bonus = "None"
-				play_state = "in_bonus"
-				bonus_first_bet = true
-
-				await audio.wait_se_finished()
-
-				audio.back_music("select")
-		
 		"in_bonus":
 			if bonus_game <= 0:
 				end_bonus()
@@ -527,24 +516,13 @@ func end_bonus():
 
 func _on_maxbet_pushed():
 
+	maxbet.emit()
+
 	match play_state:
 
 		"normal":
 			if pre_left == 0:
 				audio.back_music("bonus_waiting")
-
-		"in_bonus":
-			if bonus_first_bet:
-				bonus_first_bet = false
-
-				if current_bonus == "redBB":
-					audio.back_music("silent")
-					await audio.wait_se_finished()
-					audio.play_bonus("redBB")
-
-				elif current_bonus == "RB":
-					await audio.wait_se_finished()
-					audio.play_bonus("RB")
 
 		"AT":
 			if release_game == -1:
@@ -552,15 +530,6 @@ func _on_maxbet_pushed():
 
 			if pre_left == 0:
 				audio.back_music("bonus_waiting")
-
-
-
-func force_bonus_music():
-	audio.back_music("silent")
-	if current_bonus == "RB":
-		audio.play_bonus("RB")
-	else:
-		audio.play_bonus("redBB")
 
 
 func check_bonus_prized(bonus) -> bool:
@@ -575,13 +544,3 @@ func check_bonus_prized(bonus) -> bool:
 		
 	return false
 
-
-func check_bet_sound() -> bool:
-	
-	match play_state:
-		"bonus_waiting":
-			return result_flag in ["fake_Replay", "r7_Replay"]
-		"in_bonus":
-			return bonus_first_bet
-
-	return false

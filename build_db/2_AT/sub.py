@@ -18,7 +18,7 @@ SE = {
             {
                 "priority": 1,
                 "track": "silent",
-                "cond": "order_node.check_bet_sound()"
+                "cond": "display_node.check_bet_sound()"
             }
         ],
         "sound": {
@@ -36,7 +36,7 @@ SE = {
             {
                 "priority": 1,
                 "track": "selected",
-                "cond": "order_node.bonus_first_bet == true and order_node.current_bonus in ['redBB', 'blueBB']"
+                "cond": "display_node.bonus_first_bet == true and order_node.current_bonus in ['redBB', 'blueBB']"
             }
         ],
         "sound": {
