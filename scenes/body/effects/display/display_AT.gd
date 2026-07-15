@@ -12,12 +12,17 @@ var first_bet: bool = false
 
 var result_flag: String
 var current_bonus: String
+var selected_char: String = "misao"
+
+var current_mode: String = "Heaven"
 
 var play_state: String: 
 	set(value):
 		if play_state == value:
 			return
 		play_state = value
+
+var AT_game: int = 200
 
 var order_bell: Dictionary = {
 	"213Bell": [2, 1, 3],
@@ -148,7 +153,7 @@ func play_bonus_music(bonus):
 	if bonus == "RB":
 		audio.play_bonus("RB")
 	else:
-		audio.play_bonus("redBB")
+		audio.play_bonus("redBB", selected_char)
 
 func _on_bonus_pre(value):
 	pass
@@ -177,7 +182,7 @@ func force_music_start():
 			if current_bonus == "RB":
 				audio.play_bonus("RB")
 			else:
-				audio.play_bonus("redBB")
+				audio.play_bonus("redBB", selected_char)
 
 		"AT":
 			audio.back_music("silent")
@@ -188,3 +193,14 @@ func bell_navi():
 	if order_bell.has(result_flag):
 		var order = Array(order_bell[result_flag])
 		order_navi.set_navi(order, Color.YELLOW)
+
+func check_heaven_music(track):
+
+	if AT_game < 99 or current_mode != "Heaven":
+		return false
+
+	match track:
+		'todoroki':
+			return selected_char == "todoroki"
+		'distance':
+			return selected_char == "misao"

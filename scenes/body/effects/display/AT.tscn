@@ -2,6 +2,8 @@
 
 [ext_resource type="Script" uid="uid://m4gc3t8qgl0d" path="res://scenes/body/effects/display/display_AT.gd" id="1_eqxh7"]
 [ext_resource type="FontFile" uid="uid://dn83hpd1vj6w4" path="res://assets/fonts/x12y16pxSolidLinker.ttf" id="2_3i1b0"]
+[ext_resource type="FontFile" uid="uid://b3h8o2i0f08ma" path="res://assets/fonts/x8y12pxDenkiChip.ttf" id="2_yqyk0"]
+[ext_resource type="PackedScene" uid="uid://dgo8yji46qgjq" path="res://scenes/body/mainROM/main_rom.tscn" id="4_0hfuy"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_7bvsb"]
 font = ExtResource("2_3i1b0")
@@ -10,7 +12,37 @@ font_size = 80
 [node name="AT" type="Node2D" unique_id=2090441174]
 script = ExtResource("1_eqxh7")
 
+[node name="bonus_type" type="Node2D" parent="." unique_id=1844927580]
+
+[node name="todoroki" type="Label" parent="bonus_type" unique_id=732164302]
+offset_left = 410.0
+offset_top = 105.0
+offset_right = 844.0
+offset_bottom = 206.0
+theme_override_fonts/font = ExtResource("2_yqyk0")
+theme_override_font_sizes/font_size = 100
+text = "チャンス告知"
+
+[node name="kaoru" type="Label" parent="bonus_type" unique_id=1982526553]
+offset_left = 50.0
+offset_top = -2.0
+offset_right = 383.0
+offset_bottom = 99.0
+theme_override_fonts/font = ExtResource("2_yqyk0")
+theme_override_font_sizes/font_size = 100
+text = "完全告知"
+
+[node name="misao" type="Label" parent="bonus_type" unique_id=690072320]
+offset_left = 857.0
+offset_top = -3.0
+offset_right = 1190.0
+offset_bottom = 98.0
+theme_override_fonts/font = ExtResource("2_yqyk0")
+theme_override_font_sizes/font_size = 100
+text = "最終告知"
+
 [node name="test" type="Node2D" parent="." unique_id=1470600320]
+visible = false
 
 [node name="LEFT" type="Label" parent="test" unique_id=871947013]
 offset_left = 10.0
@@ -41,3 +73,6 @@ offset_top = 118.0
 offset_right = 547.0
 offset_bottom = 203.0
 label_settings = SubResource("LabelSettings_7bvsb")
+
+[node name="mainROM" parent="." unique_id=1739790333 instance=ExtResource("4_0hfuy")]
+metadata/_edit_lock_ = true

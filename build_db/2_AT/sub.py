@@ -163,10 +163,16 @@ bonus_music = {
                 "cond": "misao"
             },
             {
-                "priority": 1,
+                "priority": 2,
                 "track": "distance",
-                "cond": "misao and ",
-                "weight": 64
+                "cond": "display_node.check_heaven_music('distance')",
+                "weight": 256
+            },
+            {
+                "priority": 2,
+                "track": "todoroki",
+                "cond": "display_node.check_heaven_music('todoroki')",
+                "weight": 256
             }
         ],
         "tracks": {
@@ -177,6 +183,10 @@ bonus_music = {
             "windsong": {
                 "start": "res://assets/music/otoko2/BB/windsong_start.ogg",
                 "end": "res://assets/music/otoko2/BB/misao_end.ogg"
+            },
+            "todoroki": {
+                "start": "res://assets/music/otoko/BB/todoroki_start.ogg",
+                "end": "res://assets/music/otoko2/BB/todoroki_end.ogg",
             },
             "distance": {
                 "start": "res://assets/music/otoko/BB/distance_start.ogg",
@@ -554,6 +564,7 @@ env = {
      "effect_rand": {
          "lever": 0,
          "reel_start": 1,
+         "redBB": 31,
          "next_mode": 32,
          "release_game": 33,
          "flag_release": 34,

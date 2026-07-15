@@ -10,7 +10,7 @@ var premonition_data: Dictionary = {}
 var current_game: int = 0
 var result_flag: String
 
-var current_mode: String = "A"
+var current_mode: String = "Heaven" #A, B, C, Heaven
 var premonition_map: Dictionary = {}
 var premonition_array: Array = []
 
@@ -23,7 +23,7 @@ var pre_left: int = -1:
 		left_pre.emit(value)
 
 var release_game: int = -1
-var pre_bonus: String = "None" #None, RB, redBB
+var pre_bonus: String = "redBB" #None, RB, redBB
 
 var base_state: String = "AT":#normal, AT
 	set(value):
@@ -32,7 +32,7 @@ var base_state: String = "AT":#normal, AT
 		base_state = value
 		base_state_update.emit(value)
 
-var play_state: String = "in_bonus": #normal, AT, bonus_waiting, in_bonus
+var play_state: String = "bonus_waiting": #normal, AT, bonus_waiting, in_bonus
 	set(value):
 		if play_state == value:
 			return
@@ -56,7 +56,7 @@ var bonus_game: int = 1:
 		bonus_game = value
 		bonus_left.emit(value)
 
-var AT_game: int = 30:
+var AT_game: int = 300:
 	set(value):
 		if AT_game == value:
 			return

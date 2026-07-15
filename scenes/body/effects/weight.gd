@@ -73,8 +73,7 @@ func get_rule(rules, event, variant: String = "default"):
 		if expression.execute([], effects) == true:
 			if rule.has("weight"):
 				var weight = rule["weight"]
-				var rand_slot = effects.effect_slot[event]
-				var rand_number = effects.effects_rands[rand_slot]
+				var rand_number = effects.get_effect_rand(event)
 
 				if rand_number < weight:
 					return rule
