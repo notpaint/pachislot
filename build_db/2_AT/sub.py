@@ -36,7 +36,7 @@ SE = {
             {
                 "priority": 1,
                 "track": "selected",
-                "cond": "display_node.bonus_first_bet == true and order_node.current_bonus in ['redBB', 'blueBB']"
+                "cond": "display_node.play_state == 'in_bonus' and display_node.first_bet == true and order_node.current_bonus in ['redBB', 'blueBB']"
             }
         ],
         "sound": {
@@ -149,14 +149,38 @@ bonus_music = {
         "rule": [
             {
                 "priority": 0,
-                "track": "todoroki",
+                "track": "gouketu",
                 "cond": "default"
             },
+            {
+                "priority": 1,
+                "track": "gouketu",
+                "cond": "todoroki"
+            },
+            {
+                "priority": 1,
+                "track": "windsong",
+                "cond": "misao"
+            },
+            {
+                "priority": 1,
+                "track": "distance",
+                "cond": "misao and ",
+                "weight": 64
+            }
         ],
         "tracks": {
-            "todoroki": {
-                "start": "res://assets/music/otoko2/BB/todoroki_2_start.ogg",
+            "gouketu": {
+                "start": "res://assets/music/otoko2/BB/gouketu_start.ogg",
                 "end": "res://assets/music/otoko2/BB/todoroki_end.ogg"
+            },
+            "windsong": {
+                "start": "res://assets/music/otoko2/BB/windsong_start.ogg",
+                "end": "res://assets/music/otoko2/BB/misao_end.ogg"
+            },
+            "distance": {
+                "start": "res://assets/music/otoko/BB/distance_start.ogg",
+                "end": "res://assets/music/otoko2/BB/misao_end.ogg"
             }
         }
     },
@@ -239,6 +263,9 @@ flag_trigger = {
             "C": 0,
             "Heaven": 20
         },
+        "condi_promo": {
+            "normal": 102
+        },
         "game": {
             "normal": 32
         },
@@ -272,8 +299,11 @@ flag_trigger = {
             "C": 8,
             "Heaven": 8
         },
-        "game": {
+        "condi_promo": {
             "normal": 85
+        },
+        "game": {
+            "normal": 39
         },
         "add": {
             10: 174,
@@ -299,6 +329,9 @@ flag_trigger = {
             "B": 64,
             "C": 64,
             "Heaven": 102
+        },
+        "condi_promo": {
+            "normal": 85
         },
         "in_bonus": {
             "RB": 115,
@@ -337,6 +370,9 @@ flag_trigger = {
             "C": 25,
             "Heaven": 64
         },
+        "condi_promo": {
+            "normal": 26
+        },
         "game": {
             "normal": 256
         },
@@ -364,6 +400,9 @@ flag_trigger = {
             "B": 25,
             "C": 25,
             "Heaven": 64
+        },
+        "condi_promo": {
+            "normal": 26
         },
         "in_bonus": {
             "RB": 39,
@@ -477,7 +516,7 @@ premonition_map = {
             },
             "Cherry_A": {
                 False: {
-                    5: 128, 6: 77, 7: 51
+                    6: 128, 7: 77, 8: 51
                 },
                 True: {
                     3: 51, 6: 77, 7: 102, 8: 26
@@ -499,7 +538,10 @@ premonition_map = {
 back_music = {
     "select": "res://assets/music/otoko/bonus/select.ogg",
     "bonus_waiting": "res://assets/music/otoko2/bonus/waiting.ogg",
+    "itadaki_start": "res://assets/music/otoko2/AT/itadaki_start.ogg",
     "itadaki_keikoku": "res://assets/music/otoko2/AT/itadaki_keikoku.ogg",
+    "itadaki_zeppeki": "res://assets/music/otoko2/AT/itadaki_zeppeki.ogg",
+    "itadaki_santyou": "res://assets/music/otoko2/AT/itadaki_santyou.ogg",
     "itadaki_end": "res://assets/music/otoko2/AT/itadaki_end.ogg"
 }
 
@@ -525,7 +567,8 @@ env = {
          "BB_game": 80,
          "in_bonus": 81,
          "game": 82,
-         "add": 83
+         "add": 83,
+         "condi": 84
      }
 }
 

@@ -77,12 +77,12 @@ func play_prized(_value):
 			await SE.finished
 			mainROM.bet_block -= 1
 
-func play_bonus(value):
+func play_bonus(value, various: String = "default"):
 	if value != "None":
 		var current_bonus_music = bonus_music[value]
 
 		var bonus_rules = current_bonus_music["rule"]
-		var bonus_track = weight.get_track(bonus_rules, value)
+		var bonus_track = weight.get_track(bonus_rules, value, various)
 		current_bonus_track = bonus_track
 
 		var start_path = current_bonus_music["tracks"][bonus_track]["start"]

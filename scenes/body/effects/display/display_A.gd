@@ -16,7 +16,6 @@ var JAC_counter: Array = []
 var last_bonus_payout: int = 0
 var get_bonus_payout: int = 0
 var total_payout: int = 0
-
 var order_node: Node
 var active_data_node: Node = null
 

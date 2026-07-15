@@ -1,7 +1,6 @@
 extends Node
 
 @onready var effects = $"../.."
-@onready var audio = $"../../audio"
 @onready var order_navi = $"../../order_navi"
 
 var mode_data: Dictionary = {}
@@ -24,27 +23,40 @@ var pre_left: int = -1:
 		left_pre.emit(value)
 
 var release_game: int = -1
-var pre_bonus: String = "redBB" #None, RB, redBB
+var pre_bonus: String = "None" #None, RB, redBB
 
-var base_state: String = "normal" #normal, AT
-var play_state: String = "bonus_waiting": #normal, AT, bonus_waiting, in_bonus
+var base_state: String = "AT":#normal, AT
+	set(value):
+		if base_state == value:
+			return
+		base_state = value
+		base_state_update.emit(value)
+
+var play_state: String = "in_bonus": #normal, AT, bonus_waiting, in_bonus
 	set(value):
 		if play_state == value:
 			return
 		play_state = value
 		play_state_update.emit(value)
+		_on_play_state_update(value)
 
-var bonus_condi: String = "normal" #normal, high
+var bonus_condi: String = "normal":
+	set(value):
+		if bonus_condi == value:
+			return
+		bonus_condi = value
+		bonus_condi_update.emit(value)
+var condi_game: int = 0
 var current_bonus: String = "None" #RB, redBB
 
-var bonus_game: int = 0:
+var bonus_game: int = 1:
 	set(value):
 		if bonus_game == value:
 			return
 		bonus_game = value
 		bonus_left.emit(value)
 
-var AT_game: int = 10:
+var AT_game: int = 30:
 	set(value):
 		if AT_game == value:
 			return
@@ -64,37 +76,35 @@ var BB_game = {
 
 var RB_game: int = 5
 
+signal maxbet()
 signal flaged(value)
 
 signal left_pre(value)
+signal base_state_update(value)
 signal play_state_update(value)
-signal bonus_ended(bonus)
 signal bonus_left(value)
 signal AT_left(value)
 
-signal bonus_start(bonus, game)
-signal maxbet()
+signal bonus_wait()
 
-var order_bell: Dictionary = {
-	"213Bell": [2, 1, 3],
-	"312Bell": [3, 1, 2],
-	"231Bell": [2, 3, 1],
-	"321Bell": [3, 2, 1]
-}
+signal bonus_condi_update(value)
+
+signal bonus_start(bonus, game)
+signal bonus_ended(bonus)
+
+signal AT_start()
+signal AT_ended()
+
 
 func _ready():
 	mode_data = sub.mode_data
 	flag_trigger = sub.flag_trigger
 	premonition_data = sub.premonition_data
-	# print(premonition_map)
 
 
 func _on_flag(value):
 
 	result_flag = value
-
-	if bonus_game > 0:
-		bonus_game -= 1
 
 	check_current_game()
 		
@@ -119,18 +129,18 @@ func _on_flag(value):
 			if flag_data:
 				flag_bonus(flag_data)
 			hit_bonus()
-			bell_navi()
 
 		"in_bonus":
+			if bonus_game > 0:
+				bonus_game -= 1
 			if flag_data:
 				flag_in_bonus(flag_data)
-			bell_navi()
 
 		"AT":
 			current_game += 1
 
-			if release_game == -1:
-				audio.back_music("itadaki_keikoku")
+			if bonus_condi != "normal":
+				condi_game += 1
 
 			if release_game == -1:
 				if not current_mode:
@@ -140,7 +150,7 @@ func _on_flag(value):
 			if flag_data:
 				flag_game(flag_data)
 				flag_bonus(flag_data)
-			bell_navi()
+				flag_condi(flag_data)
 
 			AT_game -= 1
 
@@ -175,12 +185,6 @@ func assign_BB_game():
 		if bonus_rand < 0:
 			return game
 
-	
-func bell_navi():
-	if order_bell.has(result_flag):
-		var order = Array(order_bell[result_flag])
-		order_navi.set_navi(order, Color.YELLOW)
-
 
 func check_current_game():
 
@@ -189,10 +193,7 @@ func check_current_game():
 
 	if pre_left > 0:
 		pre_left -= 1
-	
-	elif pre_left == 0:
-		play_state = "bonus_waiting"
-		pre_left = -1
+
 
 	for game in premonition_map:
 		if current_game == game:
@@ -377,10 +378,27 @@ func flag_add(flag_data):
 			print(AT_game)
 			break
 
+func flag_condi(flag_data):
+	var condi_data = flag_data.get("condi_promo", null)
+	var condi_rand = effects.get_effect_rand("condi")
+
+	if not condi_data:
+		if bonus_condi != "normal" and condi_game > 13:
+			if condi_rand < 85:
+				bonus_condi = "normal"
+				condi_game = 0
+		return
+
+	var weight = condi_data.get(bonus_condi, 0)
+
+	if condi_rand < weight:
+		bonus_condi = "high"
+
+
 func end_AT():
 	base_state = "normal"
 	play_state = "normal"
-	audio.back_music("itadaki_end", true)
+	AT_ended.emit()
 
 func flag_in_bonus(flag_data):
 	var in_bonus_data = flag_data.get("in_bonus", null)
@@ -486,19 +504,25 @@ func _on_reel_stopped(reel_pos, _stopped_reel, _current_reel_grid):
 func _on_prized(_value):
 	match play_state:
 
+		"normal":
+			if pre_left == 0:
+				play_state = "bonus_waiting"
+				pre_left = -1
+
 		"bonus_waiting":
 			if check_bonus_prized(current_bonus):
 				release_game = -1
 				pre_bonus = "None"
 				play_state = "in_bonus"
-				
-				bonus_start.emit(current_bonus, bonus_game)
 
 		"in_bonus":
 			if bonus_game <= 0:
 				end_bonus()
 
 		"AT":
+			if pre_left == 0:
+				play_state = "bonus_waiting"
+				pre_left = -1
 			if AT_game <= 0:
 				end_AT()
 
@@ -515,21 +539,19 @@ func end_bonus():
 	
 
 func _on_maxbet_pushed():
-
 	maxbet.emit()
 
-	match play_state:
 
-		"normal":
-			if pre_left == 0:
-				audio.back_music("bonus_waiting")
+func _on_play_state_update(value):
 
+	match value:
+
+		"bonus_waiting":
+			bonus_wait.emit()
+		"in_bonus":
+			bonus_start.emit(current_bonus, bonus_game)
 		"AT":
-			if release_game == -1:
-				audio.back_music("itadaki_keikoku")
-
-			if pre_left == 0:
-				audio.back_music("bonus_waiting")
+			AT_start.emit()
 
 
 func check_bonus_prized(bonus) -> bool:
@@ -543,4 +565,3 @@ func check_bonus_prized(bonus) -> bool:
 			return current_bonus == "redBB" and result_flag == "r7_Replay"
 		
 	return false
-

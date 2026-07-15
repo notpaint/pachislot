@@ -953,10 +953,9 @@ HUD_flag_data = {
     "Special_A": "チャンス目A",
     "Special_B": "チャンス目B",
     "downSuica": "右下がりスイカ",
-    "middleSuica": "中段スイカ",
+    "middleSuica": "強スイカ",
     "RB": "RB",
-    "SBB": "超BB",
-    "Cherry_A_with_BB1": "弱チェリー+BB1"
+    "SBB": "超BB"
 }
 
 #現在のフラグの内訳を表示
