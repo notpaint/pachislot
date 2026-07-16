@@ -34,6 +34,8 @@ var bonus_get: int = 0:
 		bonus_get = value
 		bonus_get_update()
 
+var bonus_get_target: int = 0
+
 var AT_game: int = 200
 
 var order_bell: Dictionary = {
@@ -42,6 +44,8 @@ var order_bell: Dictionary = {
 	"231Bell": [2, 3, 1],
 	"321Bell": [3, 2, 1]
 }
+
+var count_tween:Tween
 
 func _ready():
 	if effects and effects.order_node:
@@ -95,8 +99,6 @@ func _on_flaged(value):
 
 		"in_bonus":
 			bell_navi()
-
-			bonus_get = max(0, bonus_get-3)
 
 		"AT":
 			bell_navi()
@@ -189,7 +191,20 @@ func _on_bonus_left(value):
 
 
 func _on_bonus_payout(value):
-	bonus_get = value
+	bonus_get_target = value
+	bonus_count_up()
+
+func bonus_count_up():
+	if count_tween:
+		count_tween.kill()
+	var steps := bonus_get_target - bonus_get
+	if steps <= 0:
+		bonus_get = bonus_get_target
+		return
+	count_tween = create_tween()
+	count_tween.set_loops(steps)
+	count_tween.tween_callback(func(): bonus_get += 1)
+	count_tween.tween_interval(0.3 / steps)
 
 func bonus_get_update():
 	if not showing_layer or showing_layer.name != "in_bonus":

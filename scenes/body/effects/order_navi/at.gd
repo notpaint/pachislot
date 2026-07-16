@@ -141,6 +141,7 @@ func _on_flag(value):
 			hit_bonus()
 
 		"in_bonus":
+			bonus_get = max(0, bonus_get - 3)
 			if bonus_game > 0:
 				bonus_game -= 1
 			if flag_data:
@@ -512,7 +513,7 @@ func _on_reel_stopped(reel_pos, _stopped_reel, _current_reel_grid):
 
 
 func _on_prized(value):
-	var payout:int
+	var payout: int
 	if value:
 		payout = int(value["payout"])
 	match play_state:
