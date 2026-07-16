@@ -5,6 +5,14 @@
 [ext_resource type="FontFile" uid="uid://b3h8o2i0f08ma" path="res://assets/fonts/x8y12pxDenkiChip.ttf" id="2_yqyk0"]
 [ext_resource type="PackedScene" uid="uid://dgo8yji46qgjq" path="res://scenes/body/mainROM/main_rom.tscn" id="4_0hfuy"]
 
+[sub_resource type="Theme" id="Theme_yqyk0"]
+default_font = ExtResource("2_yqyk0")
+default_font_size = 100
+
+[sub_resource type="Theme" id="Theme_0hfuy"]
+default_font = ExtResource("2_3i1b0")
+default_font_size = 64
+
 [sub_resource type="LabelSettings" id="LabelSettings_7bvsb"]
 font = ExtResource("2_3i1b0")
 font_size = 80
@@ -12,34 +20,87 @@ font_size = 80
 [node name="AT" type="Node2D" unique_id=2090441174]
 script = ExtResource("1_eqxh7")
 
-[node name="bonus_type" type="Node2D" parent="." unique_id=1844927580]
+[node name="layers" type="Control" parent="." unique_id=1744314770]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
 
-[node name="todoroki" type="Label" parent="bonus_type" unique_id=732164302]
+[node name="bonus_waiting" type="Control" parent="layers" unique_id=1825266970]
+visible = false
+anchors_preset = 0
+theme = SubResource("Theme_yqyk0")
+
+[node name="todoroki" type="Label" parent="layers/bonus_waiting" unique_id=732164302]
+layout_mode = 0
 offset_left = 410.0
 offset_top = 105.0
 offset_right = 844.0
 offset_bottom = 206.0
-theme_override_fonts/font = ExtResource("2_yqyk0")
-theme_override_font_sizes/font_size = 100
 text = "チャンス告知"
 
-[node name="kaoru" type="Label" parent="bonus_type" unique_id=1982526553]
-offset_left = 50.0
-offset_top = -2.0
-offset_right = 383.0
-offset_bottom = 99.0
-theme_override_fonts/font = ExtResource("2_yqyk0")
-theme_override_font_sizes/font_size = 100
+[node name="kaoru" type="Label" parent="layers/bonus_waiting" unique_id=1982526553]
+layout_mode = 0
+offset_left = 881.0
+offset_top = 6.0
+offset_right = 1214.0
+offset_bottom = 107.0
 text = "完全告知"
 
-[node name="misao" type="Label" parent="bonus_type" unique_id=690072320]
-offset_left = 857.0
-offset_top = -3.0
-offset_right = 1190.0
-offset_bottom = 98.0
-theme_override_fonts/font = ExtResource("2_yqyk0")
-theme_override_font_sizes/font_size = 100
+[node name="misao" type="Label" parent="layers/bonus_waiting" unique_id=690072320]
+layout_mode = 0
+offset_left = 37.0
+offset_top = 6.0
+offset_right = 370.0
+offset_bottom = 107.0
 text = "最終告知"
+
+[node name="in_bonus" type="Control" parent="layers" unique_id=1879864853]
+visible = false
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+theme = SubResource("Theme_0hfuy")
+
+[node name="playing" type="Control" parent="layers/in_bonus" unique_id=1076145002]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="GAME" type="Label" parent="layers/in_bonus/playing" unique_id=1840283884]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 207.0
+offset_bottom = 74.0
+text = "GAME"
+
+[node name="LAST_GAME" type="Label" parent="layers/in_bonus/playing" unique_id=417056863]
+layout_mode = 0
+offset_left = 215.0
+offset_top = 10.0
+offset_right = 424.0
+offset_bottom = 74.0
+
+[node name="GET" type="Label" parent="layers/in_bonus/playing" unique_id=1446709603]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 90.0
+offset_right = 207.0
+offset_bottom = 154.0
+text = " GET"
+
+[node name="GET_PAY" type="Label" parent="layers/in_bonus/playing" unique_id=1185558277]
+layout_mode = 0
+offset_left = 215.0
+offset_top = 90.0
+offset_right = 424.0
+offset_bottom = 154.0
+
+[node name="result" type="Control" parent="layers/in_bonus" unique_id=668986227]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
 
 [node name="test" type="Node2D" parent="." unique_id=1470600320]
 visible = false
@@ -75,4 +136,5 @@ offset_bottom = 203.0
 label_settings = SubResource("LabelSettings_7bvsb")
 
 [node name="mainROM" parent="." unique_id=1739790333 instance=ExtResource("4_0hfuy")]
+visible = false
 metadata/_edit_lock_ = true

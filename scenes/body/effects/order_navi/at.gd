@@ -46,6 +46,7 @@ var bonus_condi: String = "normal":
 			return
 		bonus_condi = value
 		bonus_condi_update.emit(value)
+
 var condi_game: int = 0
 var current_bonus: String = "None" #RB, redBB
 
@@ -55,6 +56,14 @@ var bonus_game: int = 1:
 			return
 		bonus_game = value
 		bonus_left.emit(value)
+
+var bonus_get: int = 0:
+	set(value):
+		if bonus_get == value:
+			return
+		bonus_get = value
+		bonus_payout.emit(value)
+		
 
 var AT_game: int = 300:
 	set(value):
@@ -82,7 +91,6 @@ signal flaged(value)
 signal left_pre(value)
 signal base_state_update(value)
 signal play_state_update(value)
-signal bonus_left(value)
 signal AT_left(value)
 
 signal bonus_wait()
@@ -90,6 +98,8 @@ signal bonus_wait()
 signal bonus_condi_update(value)
 
 signal bonus_start(bonus, game)
+signal bonus_left(value)
+signal bonus_payout(value)
 signal bonus_ended(bonus)
 
 signal AT_start()
@@ -501,7 +511,10 @@ func _on_reel_stopped(reel_pos, _stopped_reel, _current_reel_grid):
 	order_navi.frame_light_off(reel_pos)
 
 
-func _on_prized(_value):
+func _on_prized(value):
+	var payout:int
+	if value:
+		payout = int(value["payout"])
 	match play_state:
 
 		"normal":
@@ -516,6 +529,7 @@ func _on_prized(_value):
 				play_state = "in_bonus"
 
 		"in_bonus":
+			bonus_get += payout
 			if bonus_game <= 0:
 				end_bonus()
 
