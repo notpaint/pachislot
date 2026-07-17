@@ -132,7 +132,7 @@ func generate_SE_dict():
 
 		for rule in rule_json:
 			var cond = rule["cond"]
-			if cond != "default":
+			if cond != "default" and (cond.contains(".") or cond.contains("(")):
 				var expr = Expression.new()
 				expr.parse(cond)
 				rule["parsed"] = expr
@@ -154,7 +154,7 @@ func generate_bonus_music():
 		rule_array.sort_custom(func(a, b): return a["priority"] > b["priority"])
 		for rule in rule_array:
 			var cond = rule["cond"]
-			if cond != "default":
+			if cond != "default" and (cond.contains(".") or cond.contains("(")):
 				var expr = Expression.new()
 				expr.parse(cond)
 				rule["parsed"] = expr

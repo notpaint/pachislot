@@ -5,8 +5,13 @@ extends Node
 
 var bonus_variety:Array = []
 
-var last_bonus_payout: int
-var get_bonus_payout: int
+var last_bonus_payout: int = 0
+var get_bonus_payout: int = 0:
+	set(value):
+		if get_bonus_payout == value:
+			return
+		get_bonus_payout = value
+		bonus_payout.emit(value)
 
 var JAC_counter: Array = []
 
@@ -21,6 +26,7 @@ var active_bonus: String = "":
 
 var parrot_weight = 205
 
+signal bonus_payout(value)
 signal active_bonus_up(value)
 signal BB_data(get_pay, last_pay)
 signal RB_data(jac)

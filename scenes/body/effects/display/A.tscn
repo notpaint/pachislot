@@ -161,9 +161,13 @@ animations = [{
 "speed": 5.0
 }]
 
-[sub_resource type="LabelSettings" id="LabelSettings_ghu4r"]
-font = ExtResource("4_twd8f")
-font_size = 80
+[sub_resource type="Theme" id="Theme_qvpms"]
+default_font = ExtResource("4_twd8f")
+default_font_size = 80
+
+[sub_resource type="Theme" id="Theme_twd8f"]
+default_font = ExtResource("4_twd8f")
+default_font_size = 80
 
 [sub_resource type="LabelSettings" id="LabelSettings_twd8f"]
 font = ExtResource("4_twd8f")
@@ -188,72 +192,78 @@ animation = &"reverseparrot"
 speed_scale = 4.0
 centered = false
 
-[node name="bb_data" type="Node2D" parent="." unique_id=55544232]
+[node name="bb_data" type="Control" parent="." unique_id=1614357941]
 visible = false
+layout_mode = 3
+anchors_preset = 0
+theme = SubResource("Theme_qvpms")
 
 [node name="LAST" type="Label" parent="bb_data" unique_id=366489271]
+layout_mode = 0
 offset_left = 10.0
 offset_top = 10.0
 offset_right = 254.0
 offset_bottom = 95.0
 text = "LAST"
-label_settings = SubResource("LabelSettings_ghu4r")
 
 [node name="LAST_PAY" type="Label" parent="bb_data" unique_id=826626826]
+layout_mode = 0
 offset_left = 266.0
 offset_top = 10.0
 offset_right = 466.0
 offset_bottom = 95.0
-label_settings = SubResource("LabelSettings_ghu4r")
 
 [node name="GET" type="Label" parent="bb_data" unique_id=1352900033]
+layout_mode = 0
 offset_left = 10.0
 offset_top = 120.0
 offset_right = 252.0
 offset_bottom = 200.0
 text = " GET"
-label_settings = SubResource("LabelSettings_ghu4r")
 
 [node name="GET_PAY" type="Label" parent="bb_data" unique_id=1595645661]
+layout_mode = 0
 offset_left = 266.0
 offset_top = 120.0
 offset_right = 466.0
 offset_bottom = 205.0
-label_settings = SubResource("LabelSettings_ghu4r")
 
-[node name="rb_data" type="Node2D" parent="." unique_id=1924112508]
+[node name="rb_data" type="Control" parent="." unique_id=1355251807]
 visible = false
+layout_mode = 3
+anchors_preset = 0
+theme = SubResource("Theme_twd8f")
 
 [node name="PRIZE" type="Label" parent="rb_data" unique_id=1729008459]
+layout_mode = 0
 offset_left = 40.0
 offset_top = 10.0
 offset_right = 322.0
 offset_bottom = 95.0
 text = "PRIZE"
-label_settings = SubResource("LabelSettings_ghu4r")
 
 [node name="LAST_PRIZE" type="Label" parent="rb_data" unique_id=1714001717]
+layout_mode = 0
 offset_left = 115.0
 offset_top = 110.0
 offset_right = 255.0
 offset_bottom = 195.0
-label_settings = SubResource("LabelSettings_ghu4r")
 
 [node name="PLAY" type="Label" parent="rb_data" unique_id=2120579169]
+layout_mode = 0
 offset_left = 415.0
 offset_top = 10.0
 offset_right = 657.0
 offset_bottom = 90.0
 text = "PLAY"
-label_settings = SubResource("LabelSettings_ghu4r")
 
 [node name="LAST_PLAY" type="Label" parent="rb_data" unique_id=1731002546]
+layout_mode = 0
 offset_left = 466.0
 offset_top = 110.0
 offset_right = 601.0
 offset_bottom = 195.0
 text = " "
-label_settings = SubResource("LabelSettings_ghu4r")
 
 [node name="total_data" type="Node2D" parent="." unique_id=1442509146]
 visible = false

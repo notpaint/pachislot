@@ -3,9 +3,10 @@ extends Node2D
 
 @onready var effects = $"../.."
 @onready var audio = $"../../audio"
-@onready var test = $"test"
 @onready var order_navi = $"../../order_navi"
 @onready var layer_root = $"layers"
+
+
 
 var mainROM: Node
 var order_node: Node
@@ -14,7 +15,7 @@ var first_bet: bool = false
 
 var result_flag: String
 var current_bonus: String
-var selected_char: String = "todoroki"
+var selected_char: String = "misao"
 
 var current_mode: String = "Heaven"
 
@@ -36,7 +37,14 @@ var bonus_get: int = 0:
 
 var bonus_get_target: int = 0
 
-var AT_game: int = 200
+var AT_game: int = 100
+var total_get_target: int = 0
+var total_get: int = 0:
+	set(value):
+		if total_get == value:
+			return
+		total_get = value
+		total_get_update()
 
 var order_bell: Dictionary = {
 	"213Bell": [2, 1, 3],
@@ -45,12 +53,17 @@ var order_bell: Dictionary = {
 	"321Bell": [3, 2, 1]
 }
 
-var count_tween:Tween
+var bonus_tween:Tween
+var total_tween:Tween
 
 func _ready():
 	if effects and effects.order_node:
 		order_node = effects.order_node
 		connect_to_order_node(order_node)
+	var char_select = layer_root.get_node_or_null("char_select")
+	if char_select:
+		_connect_signal(char_select, "character", _on_character)
+
 
 func connect_to_order_node(node):
 	#common
@@ -69,6 +82,7 @@ func connect_to_order_node(node):
 	_connect_signal(node, "AT_start", _on_AT_start)
 	_connect_signal(node, "AT_left", _on_AT_left)
 	_connect_signal(node, "AT_ended", _on_AT_ended)
+	_connect_signal(node, "total_pay", _on_total_pay)
 
 func _connect_signal(node: Node, signal_name: StringName, callable: Callable) -> void:
 	if node.has_signal(signal_name):
@@ -113,8 +127,17 @@ func _on_play_state(value):
 		"bonus_waiting":
 			pass
 
-func _on_AT_left(game):
-	test.get_node("bonus").text = str(game)
+func _on_AT_left(value):
+	AT_game = value
+
+	if not showing_layer or showing_layer.name != "AT":
+		return
+
+	var playing = showing_layer.get_node_or_null("playing")
+	if not playing or not playing.visible:
+		return
+	
+	playing.get_node("LEFT_GAME").text = "%dG" % AT_game
 
 
 func _on_play_state_update(value):
@@ -132,6 +155,7 @@ func _on_bonus_start(bonus, game):
 
 	if bonus != "RB":
 		audio.back_music("select")
+		switch_layers("char_select")
 
 func _on_bonus_ended(bonus):
 	audio.end_bonus(bonus)
@@ -161,18 +185,19 @@ func _on_maxbet():
 			if first_bet:
 				first_bet = false
 				audio.back_music("itadaki_start")
+				switch_layers("AT")
 
 
 
 func play_bonus_music(bonus):
 	audio.back_music("silent")
 	await audio.wait_se_finished()
+	switch_layers("in_bonus")
 
 	if bonus == "RB":
 		audio.play_bonus("RB")
 	else:
 		audio.play_bonus("redBB", selected_char)
-		switch_layers("in_bonus")
 
 func _on_bonus_pre(value):
 	pass
@@ -194,17 +219,31 @@ func _on_bonus_payout(value):
 	bonus_get_target = value
 	bonus_count_up()
 
+
+func _on_total_pay(value):
+	total_get_target = value
+	total_count_up()
+
+
 func bonus_count_up():
-	if count_tween:
-		count_tween.kill()
-	var steps := bonus_get_target - bonus_get
-	if steps <= 0:
+	if bonus_tween:
+		bonus_tween.kill()
+	if bonus_get_target <= bonus_get:
 		bonus_get = bonus_get_target
 		return
-	count_tween = create_tween()
-	count_tween.set_loops(steps)
-	count_tween.tween_callback(func(): bonus_get += 1)
-	count_tween.tween_interval(0.3 / steps)
+	bonus_tween = create_tween()
+	bonus_tween.tween_property(self, "bonus_get", bonus_get_target, 0.3)
+
+
+func total_count_up():
+	if total_tween:
+		total_tween.kill()
+	if total_get_target <= total_get:
+		total_get = total_get_target
+		return
+	total_tween = create_tween()
+	total_tween.tween_property(self, "total_get", total_get_target, 0.3)
+
 
 func bonus_get_update():
 	if not showing_layer or showing_layer.name != "in_bonus":
@@ -216,6 +255,18 @@ func bonus_get_update():
 	
 	playing.get_node("GET_PAY").text = "%d" % bonus_get
 
+func total_get_update():
+	if not showing_layer:
+		return
+
+	var playing = showing_layer.get_node_or_null("playing")
+	if not playing or not playing.visible:
+		return
+	
+	playing.get_node("TOTAL_PAY").text = "%d" % total_get
+
+func _on_character(char_name: String):
+	selected_char = char_name
 
 func check_bet_sound() -> bool:
 	
@@ -241,6 +292,7 @@ func force_music_start():
 				audio.play_bonus("redBB", selected_char)
 
 		"AT":
+			switch_layers("AT")
 			audio.back_music("silent")
 			audio.back_music("itadaki_start")
 
@@ -249,6 +301,7 @@ func bell_navi():
 	if order_bell.has(result_flag):
 		var order = Array(order_bell[result_flag])
 		order_navi.set_navi(order, Color.YELLOW)
+
 
 func switch_layers(layer: String) -> void:
 	for child in layer_root.get_children():
@@ -260,12 +313,30 @@ func switch_layers(layer: String) -> void:
 		"bonus_waiting":
 			pass
 
+		"char_select":
+			pass
+
 		"in_bonus":
 			showing_layer.get_node("playing").visible = true
 			showing_layer.get_node("result").visible = false
 
 			showing_layer.get_node("playing/LAST_GAME").text = "%dG" % bonus_game
 			showing_layer.get_node("playing/GET_PAY").text = str(0)
+			if total_get_target <= 250:
+				showing_layer.get_node("playing/TOTAL").visible = false
+				showing_layer.get_node("playing/TOTAL_PAY").visible = false
+			else:
+				showing_layer.get_node("playing/TOTAL").visible = true
+				showing_layer.get_node("playing/TOTAL_PAY").visible = true
+				showing_layer.get_node("playing/TOTAL_PAY").text = str(total_get_target)
+
+
+		"AT":
+			showing_layer.get_node("playing").visible = true
+			showing_layer.get_node("result").visible = false
+
+			showing_layer.get_node("playing/LEFT_GAME").text = "%dG" % AT_game
+			showing_layer.get_node("playing/TOTAL_PAY").text = str(total_get_target)
 
 
 func in_bonus_layer():
@@ -280,5 +351,7 @@ func check_heaven_music(track):
 	match track:
 		'todoroki':
 			return selected_char == "todoroki"
+		'hanamiti':
+			return selected_char == "kaoru"
 		'distance':
 			return selected_char == "misao"

@@ -3,13 +3,18 @@
 [ext_resource type="Script" uid="uid://m4gc3t8qgl0d" path="res://scenes/body/effects/display/display_AT.gd" id="1_eqxh7"]
 [ext_resource type="FontFile" uid="uid://dn83hpd1vj6w4" path="res://assets/fonts/x12y16pxSolidLinker.ttf" id="2_3i1b0"]
 [ext_resource type="FontFile" uid="uid://b3h8o2i0f08ma" path="res://assets/fonts/x8y12pxDenkiChip.ttf" id="2_yqyk0"]
-[ext_resource type="PackedScene" uid="uid://dgo8yji46qgjq" path="res://scenes/body/mainROM/main_rom.tscn" id="4_0hfuy"]
+[ext_resource type="Script" uid="uid://drjo4wbpm61t6" path="res://scenes/body/effects/display/misc/char_select.gd" id="3_28emo"]
+[ext_resource type="FontFile" uid="uid://b08ucvepng0wf" path="res://assets/fonts/x14y20pxScoreDozer.ttf" id="4_28emo"]
 
 [sub_resource type="Theme" id="Theme_yqyk0"]
 default_font = ExtResource("2_yqyk0")
 default_font_size = 100
 
 [sub_resource type="Theme" id="Theme_0hfuy"]
+default_font = ExtResource("2_3i1b0")
+default_font_size = 64
+
+[sub_resource type="Theme" id="Theme_28emo"]
 default_font = ExtResource("2_3i1b0")
 default_font_size = 64
 
@@ -26,12 +31,13 @@ anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="bonus_waiting" type="Control" parent="layers" unique_id=1825266970]
+[node name="char_select" type="Control" parent="layers" unique_id=1825266970]
 visible = false
 anchors_preset = 0
 theme = SubResource("Theme_yqyk0")
+script = ExtResource("3_28emo")
 
-[node name="todoroki" type="Label" parent="layers/bonus_waiting" unique_id=732164302]
+[node name="todoroki" type="Label" parent="layers/char_select" unique_id=732164302]
 layout_mode = 0
 offset_left = 410.0
 offset_top = 105.0
@@ -39,7 +45,7 @@ offset_right = 844.0
 offset_bottom = 206.0
 text = "チャンス告知"
 
-[node name="kaoru" type="Label" parent="layers/bonus_waiting" unique_id=1982526553]
+[node name="kaoru" type="Label" parent="layers/char_select" unique_id=1982526553]
 layout_mode = 0
 offset_left = 881.0
 offset_top = 6.0
@@ -47,13 +53,14 @@ offset_right = 1214.0
 offset_bottom = 107.0
 text = "完全告知"
 
-[node name="misao" type="Label" parent="layers/bonus_waiting" unique_id=690072320]
+[node name="misao" type="Label" parent="layers/char_select" unique_id=690072320]
 layout_mode = 0
 offset_left = 37.0
 offset_top = 6.0
 offset_right = 370.0
 offset_bottom = 107.0
 text = "最終告知"
+horizontal_alignment = 1
 
 [node name="in_bonus" type="Control" parent="layers" unique_id=1879864853]
 visible = false
@@ -77,27 +84,94 @@ text = "GAME"
 
 [node name="LAST_GAME" type="Label" parent="layers/in_bonus/playing" unique_id=417056863]
 layout_mode = 0
-offset_left = 215.0
+offset_left = 230.0
 offset_top = 10.0
-offset_right = 424.0
-offset_bottom = 74.0
+offset_right = 438.0
+offset_bottom = 80.0
 
 [node name="GET" type="Label" parent="layers/in_bonus/playing" unique_id=1446709603]
 layout_mode = 0
-offset_left = 10.0
+offset_left = 30.0
 offset_top = 90.0
-offset_right = 207.0
-offset_bottom = 154.0
-text = " GET"
+offset_right = 176.0
+offset_bottom = 159.0
+text = "GET"
 
 [node name="GET_PAY" type="Label" parent="layers/in_bonus/playing" unique_id=1185558277]
 layout_mode = 0
-offset_left = 215.0
-offset_top = 90.0
-offset_right = 424.0
-offset_bottom = 154.0
+offset_left = 230.0
+offset_top = 91.0
+offset_right = 433.0
+offset_bottom = 163.0
+text = "0"
+
+[node name="TOTAL" type="Label" parent="layers/in_bonus/playing" unique_id=1104059702]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 162.0
+offset_right = 193.0
+offset_bottom = 212.0
+theme_override_fonts/font = ExtResource("4_28emo")
+theme_override_font_sizes/font_size = 50
+text = "TOTAL"
+
+[node name="TOTAL_PAY" type="Label" parent="layers/in_bonus/playing" unique_id=411934744]
+layout_mode = 0
+offset_left = 242.0
+offset_top = 162.0
+offset_right = 417.0
+offset_bottom = 212.0
+theme_override_fonts/font = ExtResource("4_28emo")
+theme_override_font_sizes/font_size = 50
 
 [node name="result" type="Control" parent="layers/in_bonus" unique_id=668986227]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="AT" type="Control" parent="layers" unique_id=318852365]
+visible = false
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+theme = SubResource("Theme_28emo")
+
+[node name="playing" type="Control" parent="layers/AT" unique_id=2095989021]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="LEFT" type="Label" parent="layers/AT/playing" unique_id=1830338279]
+layout_mode = 0
+offset_left = 15.0
+offset_top = 10.0
+offset_right = 200.0
+offset_bottom = 74.0
+text = "LEFT"
+
+[node name="LEFT_GAME" type="Label" parent="layers/AT/playing" unique_id=1558541198]
+layout_mode = 0
+offset_left = 230.0
+offset_top = 10.0
+offset_right = 438.0
+offset_bottom = 80.0
+
+[node name="TOTAL" type="Label" parent="layers/AT/playing" unique_id=71360764]
+layout_mode = 0
+offset_left = 27.5
+offset_top = 90.0
+offset_right = 173.5
+offset_bottom = 159.0
+text = "GET"
+
+[node name="TOTAL_PAY" type="Label" parent="layers/AT/playing" unique_id=125268645]
+layout_mode = 0
+offset_left = 230.0
+offset_top = 91.0
+offset_right = 431.0
+offset_bottom = 169.0
+
+[node name="result" type="Control" parent="layers/AT" unique_id=314888421]
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
@@ -134,7 +208,3 @@ offset_top = 118.0
 offset_right = 547.0
 offset_bottom = 203.0
 label_settings = SubResource("LabelSettings_7bvsb")
-
-[node name="mainROM" parent="." unique_id=1739790333 instance=ExtResource("4_0hfuy")]
-visible = false
-metadata/_edit_lock_ = true

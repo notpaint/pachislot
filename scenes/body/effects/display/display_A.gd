@@ -13,14 +13,23 @@ extends Node2D
 var parrot_weight = 205
 
 var JAC_counter: Array = []
+
 var last_bonus_payout: int = 0
-var get_bonus_payout: int = 0
+var get_bonus_payout: int = 0:
+	set(value):
+		if get_bonus_payout == value:
+			return
+		get_bonus_payout = value
+		bonus_get_update()
+
+var bonus_payout_target: int = 0
 var total_payout: int = 0
 var order_node: Node
 var active_data_node: Node = null
 
 var bonus_variety:Array = []
 
+var count_tween: Tween
 
 func _ready():
 	bb_data_node.visible = false
@@ -82,13 +91,32 @@ func _on_active_bonus(type):
 
 func _on_BB_data(get_pay, last_pay):
 	if active_data_node == bb_data_node:
-		bb_data_node.get_node("GET_PAY").text = str(get_pay)
+		bonus_payout_target = get_pay
+		bonus_count_up()
 		bb_data_node.get_node("LAST_PAY").text = str(last_pay)
 
 func _on_RB_data(counter):
 	if active_data_node == rb_data_node:
 		rb_data_node.get_node("LAST_PRIZE").text = "%2d" % counter[0]
 		rb_data_node.get_node("LAST_PLAY").text = "%2d" % counter[1]
+
+func bonus_count_up():
+	if count_tween:
+		count_tween.kill()
+	var steps := bonus_payout_target - get_bonus_payout
+	if steps <= 0:
+		get_bonus_payout = bonus_payout_target
+		return
+	count_tween = create_tween()
+	count_tween.set_loops(steps)
+	count_tween.tween_callback(func(): get_bonus_payout += 1)
+	count_tween.tween_interval(0.5 / steps)
+
+func bonus_get_update():
+	if not bb_data_node.visible == true:
+		return
+	
+	bb_data_node.get_node("GET_PAY").text = "%d" % get_bonus_payout
 
 func _on_parrot_animation(value):
 	if value:

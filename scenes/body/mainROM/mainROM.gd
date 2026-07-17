@@ -56,7 +56,7 @@ var max_spin_speed : float = (reel_rpm / 60.0) * reel_length
 var acceleration : float = 10000 #10000
 var current_spin_speed : Array = [0.0, 0.0, 0.0]
 
-var wait_time : int = 4100 #4100
+var wait_time : int = 2000 #4100
 var is_waiting : bool = false
 var last_spin_time : int = 0
 

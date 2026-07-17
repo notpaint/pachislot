@@ -12,7 +12,7 @@ var result_flag: String
 
 var current_mode: String = "Heaven" #A, B, C, Heaven
 var premonition_map: Dictionary = {}
-var premonition_array: Array = []
+var premonition_pool: Array = []
 
 var fake_pre_left: int
 var pre_left: int = -1:
@@ -65,12 +65,21 @@ var bonus_get: int = 0:
 		bonus_payout.emit(value)
 		
 
-var AT_game: int = 300:
+var AT_game: int = 100:
 	set(value):
 		if AT_game == value:
 			return
 		AT_game = value
 		AT_left.emit(value)
+
+
+var total_get: int = 300:
+	set(value):
+		if total_get == value:
+			return
+		total_get = value
+		total_pay.emit(value)
+		
 
 var game_condi: String = "normal" #normal, extra
 
@@ -78,6 +87,7 @@ var morning_mode = {"A": 102, "B": 102, "C": 26, "Heaven": 26}
 
 var BB_game = {
 	5: 256,
+	40: 128,
 	60: 102,
 	80: 18,
 	100: 8
@@ -91,7 +101,6 @@ signal flaged(value)
 signal left_pre(value)
 signal base_state_update(value)
 signal play_state_update(value)
-signal AT_left(value)
 
 signal bonus_wait()
 
@@ -103,7 +112,10 @@ signal bonus_payout(value)
 signal bonus_ended(bonus)
 
 signal AT_start()
+signal AT_left(value)
 signal AT_ended()
+
+signal total_pay(value)
 
 
 func _ready():
@@ -136,12 +148,16 @@ func _on_flag(value):
 		"bonus_waiting":
 			current_game += 1
 
+			total_get = max(0, total_get - 3)
+
 			if flag_data:
 				flag_bonus(flag_data)
 			hit_bonus()
 
 		"in_bonus":
 			bonus_get = max(0, bonus_get - 3)
+			total_get = max(0, total_get - 3)
+
 			if bonus_game > 0:
 				bonus_game -= 1
 			if flag_data:
@@ -149,6 +165,8 @@ func _on_flag(value):
 
 		"AT":
 			current_game += 1
+
+			total_get = max(0, total_get - 3)
 
 			if bonus_condi != "normal":
 				condi_game += 1
@@ -168,8 +186,6 @@ func _on_flag(value):
 		"penalty":
 			pass
 
-	check_premonition()
-
 	flaged.emit(value)
 
 func hit_bonus():
@@ -187,6 +203,8 @@ func hit_bonus():
 				order_navi.set_navi([null, null, 1], Color.RED)
 				current_bonus = "redBB"
 				bonus_game = assign_BB_game()
+	
+	pre_bonus = "None"
 
 func assign_BB_game():
 	var bonus_rand = effects.get_effect_rand("BB_game")
@@ -199,9 +217,6 @@ func assign_BB_game():
 
 func check_current_game():
 
-	if fake_pre_left > 0:
-		fake_pre_left -= 1
-
 	if pre_left > 0:
 		pre_left -= 1
 
@@ -210,37 +225,50 @@ func check_current_game():
 		if current_game == game:
 			var length = premonition_map[game]["length"]
 			var win = premonition_map[game]["win"]
-			if win == true:
-				assign_bonus(length, true)
-			else:
-				assign_bonus(length, false)
+			var type = draw_bonus_type(win)
+			start_premonition(length, type)
 
 
-func assign_bonus(length, win: bool = false):
-	var type = "fake"
+func draw_bonus_type(win: bool = false) -> String:
+	if not win:
+		return "None"
+	
+	var ratio_data = mode_data[current_mode]["ratio"]
+	var assign_rand = effects.get_effect_rand("bonus_assign")
 
-	if win:
-		var ratio_data = mode_data[current_mode]["ratio"]
-		var assign_rand = effects.get_effect_rand("bonus_assign")
+	for bonus in ratio_data:
+		var weight = ratio_data[bonus]
+		assign_rand -= weight
+		if assign_rand < 0:
+			return bonus
 
-		for bonus in ratio_data:
-			var weight = ratio_data[bonus]
-			assign_rand -= weight
-			if assign_rand < 0:
-				type = bonus
-				break
+	return "None"
 
-	var data = {
-		"length": length,
-		"type": type
-	}
+func start_premonition(length: int, type: String):
 
-	append_premonition(data)
+	if pre_left == -1:
+		pre_left = length
+		pre_bonus = type
+		if type != "None":
+			drawing_mode(current_mode)
+			print("前兆開始 type:", type, "length:", length)
+		return
 
-func append_premonition(data):
-
-	premonition_array.append(data)
-
+	if type == "None":
+		return
+	
+	if length <= pre_left:
+		pre_bonus = type
+		drawing_mode(current_mode)
+		print("フェイク前兆上書き発生")
+	else:
+		var data = {
+			"type": type,
+			"length": length - pre_left
+		}
+		print("本前兆当選")
+		print(data)
+		premonition_pool.append(data)
 
 func drawing_mode(mode):
 	var mode_slot = effects.effect_slot["next_mode"]
@@ -259,17 +287,16 @@ func drawing_mode(mode):
 			current_mode = key
 			break
 
-
 func flag_bonus(flag_data):
-	
-	if pre_bonus != "None":
-		var bonus_promo_data = flag_data.get("bonus_promo", null)
-		if bonus_promo_data != null:
-			flag_bonus_promo(bonus_promo_data)
-		
-		var mode_promo_data = flag_data.get("mode_promo", null)
-		if mode_promo_data != null:
-			flag_mode_promo(mode_promo_data)
+
+	var pre_active = (pre_bonus != "None")
+	var pool_active = (not premonition_pool.is_empty())
+
+	if pre_active or pool_active:
+		var is_pooled = pool_active and not pre_active
+
+		flag_bonus_promo(flag_data, is_pooled)
+		flag_mode_promo(flag_data)
 
 		return
 	
@@ -279,8 +306,8 @@ func flag_bonus(flag_data):
 		return
 
 	var bonus_weight = bonus_data[bonus_condi]
-	var flag_release_slot = effects.effect_slot["flag_release"]
-	var flag_release_rand = effects.effects_rands[flag_release_slot]
+	
+	var flag_release_rand = effects.get_effect_rand("flag_release")
 
 	if flag_release_rand < bonus_weight:
 		print("当選")
@@ -290,21 +317,41 @@ func flag_bonus(flag_data):
 		flag_premonition(flag_data, false)
 
 
-func flag_bonus_promo(promo_data):
-	var promo_slot = effects.effect_slot["bonus_promo"]
-	var promo_rand = effects.effects_rands[promo_slot]
+func flag_bonus_promo(flag_data, is_pooled: bool = false):
 
-	var weight = promo_data.get(pre_bonus, 0)
+	var promo_data = flag_data.get("bonus_promo", null)
+
+	if not promo_data:
+		return
+
+	var target_bonus: String = "None"
+
+	if is_pooled:
+		if not premonition_pool.is_empty():
+			target_bonus = premonition_pool[0]["type"]
+	else:
+		target_bonus = pre_bonus
+
+	if target_bonus == "None":
+		return 
+
+	var weight = promo_data.get(target_bonus, 0)
+	var promo_rand = effects.get_effect_rand("bonus_promo")
 
 	if promo_rand < weight:
-		match pre_bonus:
+
+		match target_bonus:
 			"RB":
-				pre_bonus = "redBB"
+				target_bonus = "redBB"
+
+	if is_pooled:
+		premonition_pool[0]["type"] = target_bonus
+	else:
+		pre_bonus = target_bonus
 
 
 func flag_mode_promo(promo_data):
-	var promo_slot = effects.effect_slot["mode_promo"]
-	var promo_rand = effects.effects_rands[promo_slot]
+	var promo_rand = effects.get_effect_rand("mode_promo")
 
 	var weight = promo_data.get(current_mode,0)
 
@@ -331,11 +378,7 @@ func flag_premonition(flag_data, win: bool = false):
 		if fake_pre_weight == null:
 			fake_pre_weight = fake_pre_data.get("default", 0)
 
-		var fake_pre_slot = effects.effect_slot["flag_fake_pre"]
-		var fake_pre_rand = effects.effects_rands[fake_pre_slot]
-
-		print(fake_pre_rand)
-		print(fake_pre_weight)
+		var fake_pre_rand = effects.get_effect_rand("flag_fake_pre")
 
 		if fake_pre_rand < fake_pre_weight:
 			culc_flag_pre(pre_data, false)
@@ -343,18 +386,19 @@ func flag_premonition(flag_data, win: bool = false):
 	else:
 		culc_flag_pre(pre_data, true)
 
+
 func culc_flag_pre(pre_data, win: bool = false):
 	var length_data = pre_data.get(win, {})
 
-	var flag_pre_slot = effects.effect_slot["flag_pre"]
-	var flag_pre_rand = effects.effects_rands[flag_pre_slot]
+	var flag_pre_rand = effects.get_effect_rand("flag_pre")
 
 	for length in length_data:
 		var weight = length_data[length]
 		flag_pre_rand -= weight
 
 		if flag_pre_rand < 0:
-			assign_bonus(length, win)
+			var type = draw_bonus_type(win)
+			start_premonition(length, type)
 			break
 
 func flag_game(flag_data):
@@ -396,6 +440,7 @@ func flag_condi(flag_data):
 	if not condi_data:
 		if bonus_condi != "normal" and condi_game > 13:
 			if condi_rand < 85:
+				print("MODE DOWN")
 				bonus_condi = "normal"
 				condi_game = 0
 		return
@@ -403,13 +448,18 @@ func flag_condi(flag_data):
 	var weight = condi_data.get(bonus_condi, 0)
 
 	if condi_rand < weight:
+		if bonus_condi == "high":
+			condi_game = 0
+		print("MODE UP")
 		bonus_condi = "high"
 
 
 func end_AT():
 	base_state = "normal"
 	play_state = "normal"
+	total_get = 0
 	AT_ended.emit()
+
 
 func flag_in_bonus(flag_data):
 	var in_bonus_data = flag_data.get("in_bonus", null)
@@ -431,7 +481,6 @@ func flag_in_bonus(flag_data):
 			AT_game += 50
 		else:
 			AT_game += 30
-
 
 
 func drawing_release_game(mode):
@@ -474,36 +523,6 @@ func drawing_release_game(mode):
 					map_pre_slot += 1
 					break
 
-
-func check_premonition():
-	var i = 0
-	while i < premonition_array.size():
-		var data = premonition_array[i]
-
-		if data["type"] == "fake":
-			if fake_pre_left != 0 or pre_left >= 0:
-				premonition_array.remove_at(i)
-				continue
-			fake_pre_left = data["length"]
-			premonition_array.remove_at(i)
-
-		else:
-			if pre_left >= 0:
-				i += 1
-				continue
-			pre_left = data["length"]
-			pre_bonus = data["type"]
-
-			print("本前兆開始、前回モード:", current_mode)
-
-			drawing_mode(current_mode)
-
-			print("残りゲーム数:", pre_left, "ボーナス種別:", pre_bonus, "次回モード:", current_mode)
-
-			premonition_array.remove_at(i)
-			continue
-
-
 func _on_stop_button(reel_pos):
 	order_navi.push_navi(reel_pos)
 
@@ -520,10 +539,10 @@ func _on_prized(value):
 
 		"normal":
 			if pre_left == 0:
-				play_state = "bonus_waiting"
-				pre_left = -1
+				check_premonition_pool()
 
 		"bonus_waiting":
+			total_get += payout
 			if check_bonus_prized(current_bonus):
 				release_game = -1
 				pre_bonus = "None"
@@ -531,21 +550,38 @@ func _on_prized(value):
 
 		"in_bonus":
 			bonus_get += payout
+			total_get += payout
 			if bonus_game <= 0:
 				end_bonus()
 
 		"AT":
+			total_get += payout
 			if pre_left == 0:
-				play_state = "bonus_waiting"
-				pre_left = -1
+				check_premonition_pool()
 			if AT_game <= 0:
 				end_AT()
 
+func check_premonition_pool() -> void:
+	pre_left = -1
+	if pre_bonus != "None":
+		play_state = "bonus_waiting"
+	else:
+		if not premonition_pool.is_empty():
+			var data = premonition_pool[0]
+
+			pre_left = data["length"]
+			pre_bonus = data["type"]
+			drawing_mode(current_mode)
+			premonition_pool.remove_at(0)
+
+			
 func end_bonus():
 
 	bonus_ended.emit(current_bonus)
 
 	current_bonus = "None"
+
+	bonus_get = 0
 
 	if base_state == "AT":
 		play_state = "AT"

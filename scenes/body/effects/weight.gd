@@ -69,8 +69,11 @@ func get_rule(rules, event, variant: String = "default"):
 		if cond == variant:
 			return rule
 
+		if not rule.has("parsed"):
+			continue
+
 		var expression = rule["parsed"]
-		if expression.execute([], effects) == true:
+		if expression.execute([], effects):
 			if rule.has("weight"):
 				var weight = rule["weight"]
 				var rand_number = effects.get_effect_rand(event)

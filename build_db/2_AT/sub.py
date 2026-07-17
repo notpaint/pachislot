@@ -159,19 +159,29 @@ bonus_music = {
             },
             {
                 "priority": 1,
+                "track": "rakotasu",
+                "cond": "kaoru"
+            },
+            {
+                "priority": 1,
                 "track": "windsong",
                 "cond": "misao"
             },
             {
                 "priority": 2,
-                "track": "distance",
-                "cond": "display_node.check_heaven_music('distance')",
+                "track": "todoroki",
+                "cond": "display_node.check_heaven_music('todoroki')",
                 "weight": 256
             },
             {
                 "priority": 2,
-                "track": "todoroki",
-                "cond": "display_node.check_heaven_music('todoroki')",
+                "track": "hanamiti",
+                "cond":"display_node.check_heaven_music('hanamiti')"
+            },
+            {
+                "priority": 2,
+                "track": "distance",
+                "cond": "display_node.check_heaven_music('distance')",
                 "weight": 256
             }
         ],
@@ -180,6 +190,10 @@ bonus_music = {
                 "start": "res://assets/music/otoko2/BB/gouketu_start.ogg",
                 "end": "res://assets/music/otoko2/BB/todoroki_end.ogg"
             },
+            "rakutasu": {
+                "start": "res://assets/music/otoko2/BB/rakotasu_start.ogg",
+                "end": "res://assets/music/otoko2/BB/rakutasu_end.ogg"
+            },
             "windsong": {
                 "start": "res://assets/music/otoko2/BB/windsong_start.ogg",
                 "end": "res://assets/music/otoko2/BB/misao_end.ogg"
@@ -187,6 +201,10 @@ bonus_music = {
             "todoroki": {
                 "start": "res://assets/music/otoko/BB/todoroki_start.ogg",
                 "end": "res://assets/music/otoko2/BB/todoroki_end.ogg",
+            },
+            "hanamiti": {
+                "start": "res://assets/music/otoko/BB/hanamiti_start.ogg",
+                "end": "res://assets/music/otoko2/BB/rakutasu_end.ogg"
             },
             "distance": {
                 "start": "res://assets/music/otoko/BB/distance_start.ogg",
