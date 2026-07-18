@@ -4,14 +4,15 @@ extends Node2D
 @onready var effects = $"../.."
 @onready var audio = $"../../audio"
 @onready var order_navi = $"../../order_navi"
+
 @onready var layer_root = $"layers"
-
-
+@onready var char_select = $"layers/char_select"
+@onready var shatter = $"layers/shatter"
 
 var mainROM: Node
 var order_node: Node
 
-var first_bet: bool = false
+var first_bet: bool = true
 
 var result_flag: String
 var current_bonus: String
@@ -60,9 +61,8 @@ func _ready():
 	if effects and effects.order_node:
 		order_node = effects.order_node
 		connect_to_order_node(order_node)
-	var char_select = layer_root.get_node_or_null("char_select")
 	if char_select:
-		_connect_signal(char_select, "character", _on_character)
+		char_select.character.connect(_on_character)
 
 
 func connect_to_order_node(node):
@@ -175,6 +175,7 @@ func _on_maxbet():
 
 		"bonus_waiting":
 			if first_bet:
+				shatter.in_bonus_shatter()
 				first_bet = false
 				audio.back_music("bonus_waiting")
 		"in_bonus":

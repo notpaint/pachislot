@@ -197,14 +197,15 @@ func hit_bonus():
 				order_navi.set_navi([null, 1, null], Color.RED)
 				current_bonus = "RB"
 				bonus_game = RB_game
+				pre_bonus = "None"
 
 		"redBB":
 			if result_flag == "r7_Replay":
 				order_navi.set_navi([null, null, 1], Color.RED)
 				current_bonus = "redBB"
 				bonus_game = assign_BB_game()
+				pre_bonus = "None"
 	
-	pre_bonus = "None"
 
 func assign_BB_game():
 	var bonus_rand = effects.get_effect_rand("BB_game")
@@ -258,6 +259,7 @@ func start_premonition(length: int, type: String):
 		return
 	
 	if length <= pre_left:
+		pre_left = length
 		pre_bonus = type
 		drawing_mode(current_mode)
 		print("フェイク前兆上書き発生")
@@ -582,6 +584,8 @@ func end_bonus():
 	current_bonus = "None"
 
 	bonus_get = 0
+	current_game = 0
+	premonition_map.clear()
 
 	if base_state == "AT":
 		play_state = "AT"

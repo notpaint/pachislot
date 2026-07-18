@@ -8,7 +8,6 @@
 [ext_resource type="Script" uid="uid://bbe4jfct41a8m" path="res://scenes/body/effects/display/shatter.gd" id="6_4kndm"]
 [ext_resource type="Texture2D" uid="uid://d0otc5qa0nrnp" path="res://assets/images/display/shatter.png" id="6_28emo"]
 [ext_resource type="Shader" uid="uid://buwgbedofsm8r" path="res://scenes/body/effects/display/shader_script/shatter.gdshader" id="7_j4y43"]
-[ext_resource type="PackedScene" uid="uid://dgo8yji46qgjq" path="res://scenes/body/mainROM/main_rom.tscn" id="7_xps8p"]
 
 [sub_resource type="Theme" id="Theme_yqyk0"]
 default_font = ExtResource("2_yqyk0")
@@ -192,8 +191,6 @@ offset_bottom = 40.0
 
 [node name="shatter" type="Control" parent="layers" unique_id=2027273629]
 anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
 script = ExtResource("6_4kndm")
 
 [node name="shatter_l" type="Sprite2D" parent="layers/shatter" unique_id=827959467]
@@ -240,6 +237,3 @@ offset_top = 118.0
 offset_right = 547.0
 offset_bottom = 203.0
 label_settings = SubResource("LabelSettings_7bvsb")
-
-[node name="mainROM" parent="." unique_id=1739790333 instance=ExtResource("7_xps8p")]
-metadata/_edit_lock_ = true
