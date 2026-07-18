@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://bconqf8kb6ahe" path="res://assets/images/UI/parrot.png" id="1_th24x"]
 [ext_resource type="Texture2D" uid="uid://cuewhqjjwujg2" path="res://assets/images/UI/reverseparrot.png" id="3_twd8f"]
 [ext_resource type="FontFile" uid="uid://dn83hpd1vj6w4" path="res://assets/fonts/x12y16pxSolidLinker.ttf" id="4_twd8f"]
+[ext_resource type="Texture2D" uid="uid://d07yh0tg4emjs" path="res://assets/images/reel_image/shatter.png" id="5_ghu4r"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_aoqrr"]
 atlas = ExtResource("1_th24x")
@@ -283,3 +284,11 @@ offset_right = 697.0
 offset_bottom = 163.0
 text = "300"
 label_settings = SubResource("LabelSettings_twd8f")
+
+[node name="Shatter" type="Sprite2D" parent="." unique_id=661141072]
+position = Vector2(413, 116)
+
+[node name="Shatter2" type="Sprite2D" parent="." unique_id=1055631668]
+position = Vector2(645, 2)
+texture = ExtResource("5_ghu4r")
+centered = false
