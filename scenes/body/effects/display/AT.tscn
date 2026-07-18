@@ -130,13 +130,13 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="AT" type="Control" parent="layers" unique_id=318852365]
-visible = false
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 theme = SubResource("Theme_28emo")
 
 [node name="playing" type="Control" parent="layers/AT" unique_id=2095989021]
+visible = false
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
@@ -176,10 +176,13 @@ anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="test" type="Node2D" parent="." unique_id=1470600320]
+[node name="test" type="Control" parent="." unique_id=428275691]
 visible = false
+layout_mode = 3
+anchors_preset = 0
 
 [node name="LEFT" type="Label" parent="test" unique_id=871947013]
+layout_mode = 0
 offset_left = 10.0
 offset_top = 10.0
 offset_right = 315.0
@@ -188,6 +191,7 @@ text = "left  "
 label_settings = SubResource("LabelSettings_7bvsb")
 
 [node name="left" type="Label" parent="test" unique_id=661973069]
+layout_mode = 0
 offset_left = 266.0
 offset_top = 10.0
 offset_right = 466.0
@@ -195,6 +199,7 @@ offset_bottom = 95.0
 label_settings = SubResource("LabelSettings_7bvsb")
 
 [node name="BONUS" type="Label" parent="test" unique_id=483434534]
+layout_mode = 0
 offset_left = 10.0
 offset_top = 120.0
 offset_right = 311.0
@@ -203,6 +208,7 @@ text = "bonus"
 label_settings = SubResource("LabelSettings_7bvsb")
 
 [node name="bonus" type="Label" parent="test" unique_id=756035692]
+layout_mode = 0
 offset_left = 347.0
 offset_top = 118.0
 offset_right = 547.0

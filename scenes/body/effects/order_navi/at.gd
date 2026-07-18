@@ -249,9 +249,9 @@ func start_premonition(length: int, type: String):
 	if pre_left == -1:
 		pre_left = length
 		pre_bonus = type
+		print("前兆開始 type:", type, "length:", length)
 		if type != "None":
 			drawing_mode(current_mode)
-			print("前兆開始 type:", type, "length:", length)
 		return
 
 	if type == "None":
@@ -266,7 +266,7 @@ func start_premonition(length: int, type: String):
 			"type": type,
 			"length": length - pre_left
 		}
-		print("本前兆当選")
+		print("本前兆当選 前兆をプール")
 		print(data)
 		premonition_pool.append(data)
 
@@ -563,6 +563,7 @@ func _on_prized(value):
 
 func check_premonition_pool() -> void:
 	pre_left = -1
+	print("前兆終了")
 	if pre_bonus != "None":
 		play_state = "bonus_waiting"
 	else:
