@@ -55,8 +55,7 @@ func update_layout() -> void:
 
         var target_pos = target_center - (characters[i].size / 2.0)
 
-        layout_tween.tween_property(characters[i], "position", target_pos, 0.3)\
-        .set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+        layout_tween.tween_property(characters[i], "position", target_pos, 0.3).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 
 
 func get_position_index(char_idx: int) -> Vector2:

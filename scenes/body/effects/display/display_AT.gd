@@ -4,14 +4,15 @@ extends Node2D
 @onready var effects = $"../.."
 @onready var audio = $"../../audio"
 @onready var order_navi = $"../../order_navi"
+
 @onready var layer_root = $"layers"
-
-
+@onready var char_select = $"layers/char_select"
+@onready var shatter = $"shatter"
 
 var mainROM: Node
 var order_node: Node
 
-var first_bet: bool = false
+var first_bet: bool = true
 
 var result_flag: String
 var current_bonus: String
@@ -60,9 +61,8 @@ func _ready():
 	if effects and effects.order_node:
 		order_node = effects.order_node
 		connect_to_order_node(order_node)
-	var char_select = layer_root.get_node_or_null("char_select")
 	if char_select:
-		_connect_signal(char_select, "character", _on_character)
+		char_select.character.connect(_on_character)
 
 
 func connect_to_order_node(node):
@@ -177,6 +177,7 @@ func _on_maxbet():
 			if first_bet:
 				first_bet = false
 				audio.back_music("bonus_waiting")
+				switch_layers("bonus_waiting")
 		"in_bonus":
 			if first_bet:
 				first_bet = false
@@ -268,17 +269,6 @@ func total_get_update():
 func _on_character(char_name: String):
 	selected_char = char_name
 
-func check_bet_sound() -> bool:
-	
-	match play_state:
-		"bonus_waiting":
-			return result_flag in ["fake_Replay", "r7_Replay"]
-		"in_bonus":
-			return first_bet
-
-	return false
-
-
 func force_music_start():
 	match play_state:
 		"bonus_waiting":
@@ -311,7 +301,7 @@ func switch_layers(layer: String) -> void:
 	match layer:
 
 		"bonus_waiting":
-			pass
+			shatter.in_bonus_shatter()
 
 		"char_select":
 			pass
@@ -342,8 +332,17 @@ func switch_layers(layer: String) -> void:
 func in_bonus_layer():
 	pass
 
+func check_bet_sound() -> bool:
+	
+	match play_state:
+		"bonus_waiting":
+			return result_flag in ["fake_Replay", "r7_Replay"]
+		"in_bonus":
+			return first_bet
 
-func check_heaven_music(track):
+	return false
+
+func check_heaven_music(track) -> bool:
 
 	if AT_game < 99 or current_mode != "Heaven":
 		return false
@@ -355,3 +354,5 @@ func check_heaven_music(track):
 			return selected_char == "kaoru"
 		'distance':
 			return selected_char == "misao"
+
+	return false

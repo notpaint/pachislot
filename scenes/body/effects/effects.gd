@@ -98,6 +98,8 @@ func connect_to_mainROM():
 		mainROM.prized_role.connect(_on_prized_role)
 	if mainROM.has_signal("prized_array"):
 		mainROM.prized_array.connect(_on_prized_array)
+	if mainROM.has_signal("stop_button"):
+		mainROM.stop_button.connect(_on_stop_button)
 
 func connect_to_order(node):
 	if mainROM.has_signal("medal_bet") and node.has_method("_on_medal_bet"):
@@ -190,6 +192,9 @@ func _on_reel_stopped(reel_pos, stopped_reel, _current_reel_grid):
 
 	if order_node and order_node.has_method("_on_reel_stopped"):
 		order_node._on_reel_stopped(reel_pos, stopped_reel, _current_reel_grid)
+
+func _on_stop_button(_value):
+	audio.play_stop_button()
 
 func _on_now_RT(value):
 	current_RT = value

@@ -15,6 +15,11 @@ func _ready():
 	A_RT.pressed.connect(_on_A_RT_pressed)
 	highres.pressed.connect(_on_highres_pressed)
 	lowres.pressed.connect(_on_lowres_pressed)
+
+	get_window().content_scale_size = Vector2i(1920, 1080)
+	get_window().content_scale_mode = Window.CONTENT_SCALE_MODE_CANVAS_ITEMS
+	get_window().content_scale_aspect = Window.CONTENT_SCALE_ASPECT_KEEP
+
 	get_resolution()
 
 

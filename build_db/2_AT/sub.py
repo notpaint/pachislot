@@ -69,6 +69,24 @@ SE = {
             "silent": None
         }
     },
+    "stop_button": {
+        "rule" :[
+            {
+                "priority": 0,
+                "track": "silent",
+                "cond": "default"
+            },
+            {
+                "priority": 1,
+                "track": "navi",
+                "cond": "order_node.play_state in ['bonus_waiting', 'in_bonus', 'AT'] and not order_navi.navi_miss"
+            }
+        ],
+        "sound": {
+            "silent": None,
+            "navi": "res://assets/SE/otoko2/navi.ogg"
+        }
+    },
     "reel_stop": {
         "rule": [
             {

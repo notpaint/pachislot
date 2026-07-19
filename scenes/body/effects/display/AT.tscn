@@ -5,6 +5,9 @@
 [ext_resource type="FontFile" uid="uid://b3h8o2i0f08ma" path="res://assets/fonts/x8y12pxDenkiChip.ttf" id="2_yqyk0"]
 [ext_resource type="Script" uid="uid://drjo4wbpm61t6" path="res://scenes/body/effects/display/misc/char_select.gd" id="3_28emo"]
 [ext_resource type="FontFile" uid="uid://b08ucvepng0wf" path="res://assets/fonts/x14y20pxScoreDozer.ttf" id="4_28emo"]
+[ext_resource type="Script" uid="uid://bbe4jfct41a8m" path="res://scenes/body/effects/display/shatter.gd" id="6_4kndm"]
+[ext_resource type="Texture2D" uid="uid://d0otc5qa0nrnp" path="res://assets/images/display/shatter.png" id="6_28emo"]
+[ext_resource type="Shader" uid="uid://buwgbedofsm8r" path="res://scenes/body/effects/display/shader_script/shatter.gdshader" id="7_j4y43"]
 
 [sub_resource type="Theme" id="Theme_yqyk0"]
 default_font = ExtResource("2_yqyk0")
@@ -17,6 +20,16 @@ default_font_size = 64
 [sub_resource type="Theme" id="Theme_28emo"]
 default_font = ExtResource("2_3i1b0")
 default_font_size = 64
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_57rp4"]
+shader = ExtResource("7_j4y43")
+shader_parameter/alpha_toggle = 1.0
+shader_parameter/fill_color = Color(0, 0, 0, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_j4y43"]
+shader = ExtResource("7_j4y43")
+shader_parameter/alpha_toggle = 0.0
+shader_parameter/fill_color = Color(0, 0, 0, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_7bvsb"]
 font = ExtResource("2_3i1b0")
@@ -175,6 +188,23 @@ offset_bottom = 169.0
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
+
+[node name="shatter" type="Control" parent="." unique_id=2027273629]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("6_4kndm")
+
+[node name="shatter_l" type="Sprite2D" parent="shatter" unique_id=827959467]
+material = SubResource("ShaderMaterial_57rp4")
+position = Vector2(-807, 0)
+texture = ExtResource("6_28emo")
+centered = false
+
+[node name="shatter_r" type="Sprite2D" parent="shatter" unique_id=1534282084]
+material = SubResource("ShaderMaterial_j4y43")
+position = Vector2(1260, 0)
+texture = ExtResource("6_28emo")
+centered = false
 
 [node name="test" type="Control" parent="." unique_id=428275691]
 visible = false
