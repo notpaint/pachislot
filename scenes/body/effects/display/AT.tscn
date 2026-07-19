@@ -189,17 +189,18 @@ anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="shatter" type="Control" parent="layers" unique_id=2027273629]
+[node name="shatter" type="Control" parent="." unique_id=2027273629]
+layout_mode = 3
 anchors_preset = 0
 script = ExtResource("6_4kndm")
 
-[node name="shatter_l" type="Sprite2D" parent="layers/shatter" unique_id=827959467]
+[node name="shatter_l" type="Sprite2D" parent="shatter" unique_id=827959467]
 material = SubResource("ShaderMaterial_57rp4")
 position = Vector2(-807, 0)
 texture = ExtResource("6_28emo")
 centered = false
 
-[node name="shatter_r" type="Sprite2D" parent="layers/shatter" unique_id=1534282084]
+[node name="shatter_r" type="Sprite2D" parent="shatter" unique_id=1534282084]
 material = SubResource("ShaderMaterial_j4y43")
 position = Vector2(1260, 0)
 texture = ExtResource("6_28emo")

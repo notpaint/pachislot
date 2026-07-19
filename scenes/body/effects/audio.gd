@@ -55,6 +55,15 @@ func play_reel_stop(reel_pos):
 		player.stream = stop_stream
 		player.play()
 
+func play_stop_button():
+	if SE_dict.has("stop_button"):
+		var stop_rules = SE_dict["stop_button"]["rule"]
+		var stop_track = weight.get_track(stop_rules, "stop_button")
+		var stop_stream = SE_dict["stop_button"]["sound"][stop_track]
+
+		if stop_stream:
+			SE.stream = stop_stream
+			SE.play()
 
 func play_spin_start(track):
 	var start_stream = SE_dict["reel_start"]["sound"][track]
