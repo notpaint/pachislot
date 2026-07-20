@@ -28,6 +28,7 @@ func clear_navi():
 
 
 func set_navi(order, frame_color: Color = Color.WHITE, number_color: Color = Color.WHITE):
+
 	L_reel.text = str(order[0]) if order[0] != null else ""
 	C_reel.text = str(order[1]) if order[1] != null else ""
 	R_reel.text = str(order[2]) if order[2] != null else ""
@@ -70,5 +71,3 @@ func push_navi(reel_pos):
 			if stopped_count + 1 == int(reel_array[i].text):
 				frame_light_on(i, current_frame_color)
 
-	if stopped_count >= 3:
-		clear_navi()

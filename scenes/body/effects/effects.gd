@@ -17,6 +17,9 @@ extends Node
 
 var rare_flag = sub.rare_flags
 
+var game_count: int = 0
+var total_count: int = 0
+
 var current_RT: String = "RT0"
 var RT_game: int
 var bonus_state = null
@@ -47,6 +50,9 @@ signal main_flag(value)
 signal jac_count()
 signal bonus_end()
 signal prized()
+
+signal game_count_update(game)
+signal total_count_update(game)
 
 func _ready():
 	display_scene_path = sub.display_scene_path
@@ -114,8 +120,8 @@ func connect_to_order(node):
 		mainROM.now_RT.connect(node._on_now_RT)
 	if mainROM.has_signal("prized_role") and node.has_method("_on_prized"):
 		mainROM.prized_role.connect(node._on_prized)
-	if mainROM.has_signal("stop_button") and node.has_method("_on_stop_button"):
-		mainROM.stop_button.connect(node._on_stop_button)
+	# if mainROM.has_signal("stop_button") and node.has_method("_on_stop_button"):
+	# 	mainROM.stop_button.connect(node._on_stop_button)
 
 func connect_to_display(node):
 	if mainROM.has_signal("medal_bet") and node.has_method("_on_medal_bet"):
@@ -193,7 +199,10 @@ func _on_reel_stopped(reel_pos, stopped_reel, _current_reel_grid):
 	if order_node and order_node.has_method("_on_reel_stopped"):
 		order_node._on_reel_stopped(reel_pos, stopped_reel, _current_reel_grid)
 
-func _on_stop_button(_value):
+func _on_stop_button(value):
+	if order_node and order_node.has_method("_on_stop_button"):
+		order_node._on_stop_button(value)
+
 	audio.play_stop_button()
 
 func _on_now_RT(value):
@@ -202,6 +211,15 @@ func _on_now_RT(value):
 func _on_last_RT(value):
 	RT_game = value
 	
+func count_up_game():
+	game_count += 1
+	game_count_update.emit(game_count)
+
+	total_count += 1
+
+func reset_game_count():
+	game_count = 0
+	game_count_update.emit(game_count)
 
 func get_effect_rand(key):
 

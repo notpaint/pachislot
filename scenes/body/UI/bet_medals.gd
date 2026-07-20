@@ -1,4 +1,4 @@
-extends HBoxContainer
+extends VBoxContainer
 
 const OFF : Color = Color(0.5,0.5,0.5)
 const ON : Color = Color(1.0,1.0,1.0)
@@ -20,5 +20,5 @@ func _on_bet(value):
 	var n : int = clampi(value, 0, children.size())
 
 	for i in range(n):
-		var child = children[i]
+		var child = children[children.size() - 1 - i]
 		child.modulate = ON

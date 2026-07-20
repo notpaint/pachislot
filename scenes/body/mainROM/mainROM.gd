@@ -64,14 +64,6 @@ var active_tweens : Array[Tween] = [null, null, null]
 
 var effects_seeds : PackedInt32Array
 
-var game: int = 0:
-	set(value):
-		if game == value:
-			return
-		game = value
-		game_count.emit(game)
-		Datahub.game = value
-
 var result_flag : String = "None": #当選フラグ
 	set(value):
 		if result_flag == value:
@@ -149,7 +141,6 @@ signal medal_number(medal_sum)
 signal stop_button(reel_pos)
 signal reel_stopped(reel_pos, current_reel, current_reel_grid)
 signal JAC_IN()
-signal game_count(game)
 
 @onready var L_reel = $window/L_reel
 @onready var C_reel = $window/C_reel

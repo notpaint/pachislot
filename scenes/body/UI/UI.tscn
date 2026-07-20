@@ -3,31 +3,39 @@
 [ext_resource type="Texture2D" uid="uid://2ncl3nlr7ogs" path="res://assets/images/UI/bet_medals.png" id="1_0wsoe"]
 [ext_resource type="Script" uid="uid://cmjo6u52vbx58" path="res://scenes/body/UI/UI.gd" id="1_thnqs"]
 [ext_resource type="Script" uid="uid://cxmncakshufhi" path="res://scenes/body/UI/bet_medals.gd" id="2_gl4co"]
+[ext_resource type="FontFile" uid="uid://b08ucvepng0wf" path="res://assets/fonts/x14y20pxScoreDozer.ttf" id="5_mm473"]
+
+[sub_resource type="Theme" id="Theme_mm473"]
+default_font = ExtResource("5_mm473")
+default_font_size = 50
+
+[sub_resource type="Theme" id="Theme_q1odj"]
+default_font = ExtResource("5_mm473")
+default_font_size = 50
 
 [node name="UI" type="CanvasLayer" unique_id=122271127]
-offset = Vector2(1260, 0)
-transform = Transform2D(1, 0, 0, 1, 1260, 0)
 
 [node name="UI" type="Control" parent="." unique_id=1984206647]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = -1920.0
-offset_bottom = -1080.0
+offset_left = 1260.0
+offset_top = 860.0
+offset_right = -660.0
+offset_bottom = -220.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_thnqs")
 
-[node name="bet_medals" type="HBoxContainer" parent="UI" unique_id=28854234]
+[node name="bet_medals" type="VBoxContainer" parent="UI" unique_id=2716053]
 layout_mode = 0
-offset_top = 1018.65
-offset_right = 1259.0
-offset_bottom = 1427.65
-scale = Vector2(0.15, 0.15)
+offset_right = 417.0
+offset_bottom = 1235.0
+scale = Vector2(0.18, 0.18)
 script = ExtResource("2_gl4co")
 
-[node name="1_bet" type="TextureRect" parent="UI/bet_medals" unique_id=1647989460]
+[node name="3_bet" type="TextureRect" parent="UI/bet_medals" unique_id=1647989460]
 layout_mode = 2
 texture = ExtResource("1_0wsoe")
 
@@ -35,15 +43,41 @@ texture = ExtResource("1_0wsoe")
 layout_mode = 2
 texture = ExtResource("1_0wsoe")
 
-[node name="3_bet" type="TextureRect" parent="UI/bet_medals" unique_id=1924764780]
+[node name="1_bet" type="TextureRect" parent="UI/bet_medals" unique_id=1924764780]
 layout_mode = 2
 texture = ExtResource("1_0wsoe")
 
-[node name="medal_sum" type="Label" parent="UI" unique_id=439335713]
+[node name="medal_pay" type="VBoxContainer" parent="UI" unique_id=1221004858]
 layout_mode = 0
-offset_left = 10.0
-offset_top = 900.0
-offset_right = 190.0
-offset_bottom = 1022.7
-theme_override_font_sizes/font_size = 50
+offset_left = 132.0
+offset_top = 10.0
+offset_right = 237.0
+offset_bottom = 114.0
+theme = SubResource("Theme_mm473")
+
+[node name="head" type="Label" parent="UI/medal_pay" unique_id=2104160907]
+layout_mode = 2
+text = "PAY"
+horizontal_alignment = 1
+
+[node name="status" type="Label" parent="UI/medal_pay" unique_id=284645194]
+layout_mode = 2
+text = "0"
+horizontal_alignment = 1
+
+[node name="medal_sum" type="VBoxContainer" parent="UI" unique_id=1346340529]
+layout_mode = 0
+offset_left = 98.0
+offset_top = 111.0
+offset_right = 273.0
+offset_bottom = 215.0
+theme = SubResource("Theme_q1odj")
+
+[node name="head" type="Label" parent="UI/medal_sum" unique_id=788052417]
+layout_mode = 2
+text = "MEDAL"
+horizontal_alignment = 1
+
+[node name="status" type="Label" parent="UI/medal_sum" unique_id=439335713]
+layout_mode = 2
 horizontal_alignment = 1

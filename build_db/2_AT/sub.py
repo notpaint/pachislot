@@ -79,7 +79,7 @@ SE = {
             {
                 "priority": 1,
                 "track": "navi",
-                "cond": "order_node.play_state in ['bonus_waiting', 'in_bonus', 'AT'] and not order_navi.navi_miss"
+                "cond": "display_node.check_button_sound()"
             }
         ],
         "sound": {
@@ -93,11 +93,18 @@ SE = {
                 "priority": 0,
                 "track": "main",
                 "cond": "default"
-            }
+            },
+            {
+                "priority": 1,
+                "track": "silent",
+                "cond": "display_node.check_button_sound()"
+            },
+
         ],
         "sound": {
             "main": "res://assets/SE/otoko/stop.ogg",
-            "SBB": "res://assets/SE/otoko2/SBB_stopped.ogg"
+            "SBB": "res://assets/SE/otoko2/SBB_stopped.ogg",
+            "silent": None
         }
     },
     "prized": {
@@ -208,7 +215,7 @@ bonus_music = {
                 "start": "res://assets/music/otoko2/BB/gouketu_start.ogg",
                 "end": "res://assets/music/otoko2/BB/todoroki_end.ogg"
             },
-            "rakutasu": {
+            "rakotasu": {
                 "start": "res://assets/music/otoko2/BB/rakotasu_start.ogg",
                 "end": "res://assets/music/otoko2/BB/rakutasu_end.ogg"
             },

@@ -70,11 +70,15 @@ func end_bonus():
 	last_bonus_payout = 0
 	get_bonus_payout = 0
 	JAC_counter = []
+	effects.reset_game_count()
 
 func _on_medal_bet(_value):
 	bet_medals = min(3, bet_medals + 1)
 
 func _on_flag(_value):
+
+	effects.count_up_game()
+
 	if active_bonus != "":
 		get_bonus_payout = max(0, get_bonus_payout - bet_medals)
 	bet_medals = 0

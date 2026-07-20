@@ -13,6 +13,7 @@ var mainROM: Node
 var order_node: Node
 
 var first_bet: bool = true
+var navi_game: bool = true
 
 var result_flag: String
 var current_bonus: String
@@ -38,7 +39,7 @@ var bonus_get: int = 0:
 
 var bonus_get_target: int = 0
 
-var AT_game: int = 100
+var AT_game: int = 80
 var total_get_target: int = 0
 var total_get: int = 0:
 	set(value):
@@ -99,6 +100,9 @@ func _on_flaged(value):
 
 	result_flag = value
 
+	order_navi.clear_navi()
+	navi_game = false
+
 	if first_bet:
 		first_bet = false
 		force_music_start()
@@ -109,12 +113,15 @@ func _on_flaged(value):
 			pass
 		
 		"bonus_waiting":
+			navi_game = true
 			bell_navi()
 
 		"in_bonus":
+			navi_game = true
 			bell_navi()
 
 		"AT":
+			navi_game = true
 			bell_navi()
 
 
@@ -168,6 +175,8 @@ func _on_AT_ended():
 
 
 func _on_maxbet():
+	order_navi.clear_navi()
+
 	if play_state == "":
 		play_state = order_node.play_state
 
@@ -288,6 +297,7 @@ func force_music_start():
 
 
 func bell_navi():
+
 	if order_bell.has(result_flag):
 		var order = Array(order_bell[result_flag])
 		order_navi.set_navi(order, Color.YELLOW)
@@ -341,6 +351,14 @@ func check_bet_sound() -> bool:
 			return first_bet
 
 	return false
+
+func check_button_sound() -> bool:
+
+	if play_state == "in_bonus" or play_state == "bonus_waiting":
+		return false
+
+	return result_flag in order_bell and not order_navi.navi_miss and navi_game
+
 
 func check_heaven_music(track) -> bool:
 
