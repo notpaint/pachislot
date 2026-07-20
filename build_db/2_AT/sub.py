@@ -180,17 +180,17 @@ bonus_music = {
             {
                 "priority": 1,
                 "track": "gouketu",
-                "cond": "todoroki"
+                "cond": "@todoroki"
             },
             {
                 "priority": 1,
                 "track": "rakotasu",
-                "cond": "kaoru"
+                "cond": "@kaoru"
             },
             {
                 "priority": 1,
                 "track": "windsong",
-                "cond": "misao"
+                "cond": "@misao"
             },
             {
                 "priority": 2,

@@ -1,10 +1,13 @@
 extends Control
 
 @onready var mainROM = $"../../mainROM"
+@onready var effects = $"../../effects"
 
 @onready var bet_medals = $"bet_medals"
 @onready var medal_pay = $"medal_pay/status"
 @onready var medal_sum = $"medal_sum/status"
+@onready var game_count = $"game_count/status"
+@onready var total_count = $"total_count/status"
 
 var total_medal: int:
 	set(value):
@@ -12,6 +15,8 @@ var total_medal: int:
 			return
 		update_total_medal(total_medal, value)
 		total_medal = value
+
+
 
 var pay_tween: Tween
 var sum_tween: Tween
@@ -36,6 +41,11 @@ func _ready():
 			mainROM.prized_role.connect(_on_prized)
 		if mainROM.has_signal("bonus_prized"):
 			mainROM.bonus_prized.connect(_on_bonus_prized)
+	if effects:
+		if effects.has_signal("game_count_update"):
+			effects.game_count_update.connect(_on_game_count_update)
+		if effects.has_signal("total_count_update"):
+			effects.total_count_update.connect(_on_total_count_update)
 	if bet_medals and bet_medals.has_method("_on_bet"):
 		bet.connect(Callable(bet_medals, "_on_bet"))
 
@@ -49,6 +59,12 @@ func _on_medal_number(value):
 
 func update_total_medal(start, goal):
 	sum_tween = count_up(medal_sum, sum_tween, start, goal)
+
+func _on_game_count_update(game):
+	game_count.text = str(game)
+
+func _on_total_count_update(game):
+	total_count.text = str(game)
 
 func _on_bonus_est(value):
 	bonus.emit(value)

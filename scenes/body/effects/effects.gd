@@ -178,6 +178,7 @@ func _on_bonus_prized(value):
 		print("bonus_end: effects")
 		jac_counter = 0
 
+
 func _on_bonus_end(value):
 	if value != "None":
 		audio.end_bonus(value)
@@ -212,10 +213,10 @@ func _on_last_RT(value):
 	RT_game = value
 	
 func count_up_game():
-	game_count += 1
-	game_count_update.emit(game_count)
-
 	total_count += 1
+	game_count += 1
+	total_count_update.emit(total_count)
+	game_count_update.emit(game_count)
 
 func reset_game_count():
 	game_count = 0

@@ -132,10 +132,12 @@ func generate_SE_dict():
 
 		for rule in rule_json:
 			var cond = rule["cond"]
-			if cond != "default" and (cond.contains(".") or cond.contains("(")):
+			if cond != "default" and not cond.begins_with("@"):
 				var expr = Expression.new()
 				expr.parse(cond)
 				rule["parsed"] = expr
+			elif cond.begins_with("@"):
+				rule["cond"] = cond.trim_prefix("@")
 
 		if not SE_dict.has(item):
 			SE_dict[item] = {
@@ -154,10 +156,12 @@ func generate_bonus_music():
 		rule_array.sort_custom(func(a, b): return a["priority"] > b["priority"])
 		for rule in rule_array:
 			var cond = rule["cond"]
-			if cond != "default" and (cond.contains(".") or cond.contains("(")):
+			if cond != "default" and not cond.begins_with("@"):
 				var expr = Expression.new()
 				expr.parse(cond)
 				rule["parsed"] = expr
+			elif cond.begins_with("@"):
+				rule["cond"] = cond.trim_prefix("@")
 
 		var track_name = row["track_name"]
 		if not bonus_music.has(bonus):

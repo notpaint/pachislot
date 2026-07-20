@@ -17,7 +17,7 @@ var navi_game: bool = true
 
 var result_flag: String
 var current_bonus: String
-var selected_char: String = "misao"
+var selected_char: String = "todoroki"
 
 var current_mode: String = "Heaven"
 
@@ -39,7 +39,7 @@ var bonus_get: int = 0:
 
 var bonus_get_target: int = 0
 
-var AT_game: int = 80
+var AT_game: int = 200
 var total_get_target: int = 0
 var total_get: int = 0:
 	set(value):
