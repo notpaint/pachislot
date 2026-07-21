@@ -1,3 +1,6 @@
 [gd_scene format=3 uid="uid://dvh6dohk38uyt"]
 
+[ext_resource type="Script" uid="uid://crnnbdit7ii5f" path="res://scenes/body/effects/display/display_A+RT.gd" id="1_hd316"]
+
 [node name="A+RT" type="Node2D" unique_id=1917747404]
+script = ExtResource("1_hd316")

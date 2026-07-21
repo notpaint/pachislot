@@ -1,17 +1,32 @@
 [gd_scene format=3 uid="uid://cwsebe3rj3wrk"]
 
 [ext_resource type="Script" uid="uid://ckasi0h2d33su" path="res://scenes/body/HUD/HUD.gd" id="1_c0cnr"]
+[ext_resource type="FontFile" uid="uid://dfywurfh0ra2a" path="res://assets/fonts/CP_Revenge.otf" id="2_g07l2"]
+
+[sub_resource type="Theme" id="Theme_sxkco"]
+default_font = ExtResource("2_g07l2")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p54iv"]
 bg_color = Color(0.004019165, 0.004019165, 0.004019165, 1)
 
+[sub_resource type="Theme" id="Theme_pkmnd"]
+default_font_size = 45
+
+[sub_resource type="Theme" id="Theme_2r3x5"]
+
+[sub_resource type="Theme" id="Theme_p54iv"]
+default_font_size = 26
+
+[sub_resource type="Theme" id="Theme_g07l2"]
+
 [node name="HUD" type="CanvasLayer" unique_id=636280993]
-offset = Vector2(1500, 0)
-transform = Transform2D(1, 0, 0, 1, 1500, 0)
+offset = Vector2(1520, 0)
+transform = Transform2D(1, 0, 0, 1, 1520, 0)
 
 [node name="HUD" type="Control" parent="." unique_id=227198013]
 layout_mode = 3
 anchors_preset = 0
+theme = SubResource("Theme_sxkco")
 script = ExtResource("1_c0cnr")
 
 [node name="info" type="PanelContainer" parent="HUD" unique_id=1260329532]
@@ -20,75 +35,74 @@ offset_right = 660.0
 offset_bottom = 1200.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_p54iv")
 
-[node name="info" type="HBoxContainer" parent="HUD/info" unique_id=1788027666]
-layout_mode = 2
+[node name="detail" type="HBoxContainer" parent="HUD" unique_id=1788027666]
+layout_mode = 0
+offset_right = 652.0
+offset_bottom = 96.0
+theme = SubResource("Theme_pkmnd")
 theme_override_constants/separation = 50
 
-[node name="est" type="VBoxContainer" parent="HUD/info/info" unique_id=773901035]
+[node name="est" type="VBoxContainer" parent="HUD/detail" unique_id=773901035]
 layout_mode = 2
 
-[node name="head" type="Label" parent="HUD/info/info/est" unique_id=1738692154]
+[node name="head" type="Label" parent="HUD/detail/est" unique_id=1738692154]
 layout_mode = 2
-theme_override_font_sizes/font_size = 52
 text = "成立中"
 horizontal_alignment = 1
 
-[node name="status" type="Label" parent="HUD/info/info/est" unique_id=1456996462]
+[node name="status" type="Label" parent="HUD/detail/est" unique_id=1456996462]
 layout_mode = 2
-theme_override_font_sizes/font_size = 50
 text = "ー"
 horizontal_alignment = 1
 
-[node name="now" type="VBoxContainer" parent="HUD/info/info" unique_id=1473324546]
+[node name="now" type="VBoxContainer" parent="HUD/detail" unique_id=1473324546]
 layout_mode = 2
 
-[node name="head" type="Label" parent="HUD/info/info/now" unique_id=1431792376]
+[node name="head" type="Label" parent="HUD/detail/now" unique_id=1431792376]
 layout_mode = 2
-theme_override_font_sizes/font_size = 52
 text = "作動中"
 
-[node name="status" type="Label" parent="HUD/info/info/now" unique_id=1166534242]
+[node name="status" type="Label" parent="HUD/detail/now" unique_id=1166534242]
 layout_mode = 2
-theme_override_font_sizes/font_size = 50
 text = "ー"
 horizontal_alignment = 1
 
-[node name="rt" type="VBoxContainer" parent="HUD/info/info" unique_id=53119738]
+[node name="rt" type="VBoxContainer" parent="HUD/detail" unique_id=53119738]
 layout_mode = 2
 
-[node name="head" type="Label" parent="HUD/info/info/rt" unique_id=137043638]
+[node name="head" type="Label" parent="HUD/detail/rt" unique_id=137043638]
 layout_mode = 2
-theme_override_font_sizes/font_size = 52
 text = "RT"
 horizontal_alignment = 1
 
-[node name="status" type="HBoxContainer" parent="HUD/info/info/rt" unique_id=915514695]
+[node name="status" type="HBoxContainer" parent="HUD/detail/rt" unique_id=915514695]
 layout_mode = 2
-theme_override_constants/separation = 60
+theme_override_constants/separation = 40
 
-[node name="name" type="Label" parent="HUD/info/info/rt/status" unique_id=1423303866]
+[node name="name" type="Label" parent="HUD/detail/rt/status" unique_id=1423303866]
 layout_mode = 2
-theme_override_font_sizes/font_size = 50
 text = "RT0"
 
-[node name="count" type="Label" parent="HUD/info/info/rt/status" unique_id=693651326]
+[node name="count" type="Label" parent="HUD/detail/rt/status" unique_id=693651326]
 layout_mode = 2
-theme_override_font_sizes/font_size = 50
-text = "ー"
+text = "300"
 
 [node name="flag_name" type="RichTextLabel" parent="HUD" unique_id=534987250]
 layout_mode = 0
 offset_top = 146.0
 offset_right = 714.0
 offset_bottom = 260.0
+theme = SubResource("Theme_2r3x5")
 theme_override_font_sizes/normal_font_size = 40
 bbcode_enabled = true
 
 [node name="result_roles" type="HBoxContainer" parent="HUD" unique_id=1413038289]
 layout_mode = 0
+offset_left = 5.0
 offset_top = 260.0
-offset_right = 620.0
+offset_right = 625.0
 offset_bottom = 580.0
+theme = SubResource("Theme_p54iv")
 
 [node name="roles" type="VBoxContainer" parent="HUD/result_roles" unique_id=369957832]
 custom_minimum_size = Vector2(620, 320)
@@ -121,5 +135,13 @@ stretch_mode = 5
 
 [node name="Control" type="Control" parent="HUD" unique_id=229931722]
 anchors_preset = 0
+offset_top = 580.0
+offset_right = 620.0
+offset_bottom = 900.0
+theme = SubResource("Theme_g07l2")
+
+[node name="Label" type="Label" parent="HUD/Control" unique_id=862741059]
+layout_mode = 0
 offset_right = 40.0
-offset_bottom = 40.0
+offset_bottom = 23.0
+text = "test massege"

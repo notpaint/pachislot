@@ -15,10 +15,10 @@ var HUD_data : Dictionary
 @onready var flag_name = $flag_name
 @onready var result_roles = $result_roles
 @onready var roles = $"result_roles/roles"
-@onready var est_bonus = $"info/info/est/status"
-@onready var now_bonus = $"info/info/now/status"
-@onready var RT_name = $"info/info/rt/status/name"
-@onready var RT_count = $"info/info/rt/status/count"
+@onready var est_bonus = $"detail/est/status"
+@onready var now_bonus = $"detail/now/status"
+@onready var RT_name = $"detail/rt/status/name"
+@onready var RT_count = $"detail/rt/status/count"
 
 func _ready():
 	HUD_data = main.HUD_data

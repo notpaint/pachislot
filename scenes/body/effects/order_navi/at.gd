@@ -7,10 +7,22 @@ var mode_data: Dictionary = {}
 var flag_trigger: Dictionary = {}
 var premonition_data: Dictionary = {}
 
-var current_game: int = 0
+var current_game: int = 0:
+	set(value):
+		if current_game == value:
+			return
+		current_game = value
+		effects.count_up_game()
+
 var result_flag: String
 
-var current_mode: String = "Heaven" #A, B, C, Heaven
+var current_mode: String = "Heaven": #A, B, C, Heaven
+	set(value):
+		if current_mode == value:
+			return
+		current_mode = value
+		mode_update.emit(value)
+
 var premonition_map: Dictionary = {}
 var premonition_pool: Array = []
 
@@ -102,6 +114,8 @@ signal left_pre(value)
 signal base_state_update(value)
 signal play_state_update(value)
 
+signal mode_update(value)
+
 signal bonus_wait()
 
 signal bonus_condi_update(value)
@@ -186,7 +200,13 @@ func _on_flag(value):
 		"penalty":
 			pass
 
+	print("ゲーム数", current_game)
+	print("規定ゲーム数", release_game)
+
 	flaged.emit(value)
+
+func _on_stop_button(reel_pos):
+	order_navi.push_navi(reel_pos)
 
 func hit_bonus():
 
@@ -249,6 +269,7 @@ func start_premonition(length: int, type: String):
 
 	if pre_left == -1:
 		pre_left = length
+		pre_left = length - 1
 		pre_bonus = type
 		print("前兆開始 type:", type, "length:", length)
 		if type != "None":
@@ -260,6 +281,7 @@ func start_premonition(length: int, type: String):
 	
 	if length <= pre_left:
 		pre_left = length
+		pre_left = length - 1
 		pre_bonus = type
 		drawing_mode(current_mode)
 		print("フェイク前兆上書き発生")
@@ -525,9 +547,6 @@ func drawing_release_game(mode):
 					map_pre_slot += 1
 					break
 
-func _on_stop_button(reel_pos):
-	order_navi.push_navi(reel_pos)
-
 
 func _on_reel_stopped(reel_pos, _stopped_reel, _current_reel_grid):
 	order_navi.frame_light_off(reel_pos)
@@ -558,10 +577,12 @@ func _on_prized(value):
 
 		"AT":
 			total_get += payout
-			if pre_left == 0:
+			if pre_left == 0 and pre_bonus != "None":
 				check_premonition_pool()
-			if AT_game <= 0:
+			elif AT_game <= 0:
 				end_AT()
+			elif pre_left == 0:
+				check_premonition_pool()
 
 func check_premonition_pool() -> void:
 	pre_left = -1
@@ -587,6 +608,8 @@ func end_bonus():
 	bonus_get = 0
 	current_game = 0
 	premonition_map.clear()
+
+	effects.reset_game_count()
 
 	if base_state == "AT":
 		play_state = "AT"

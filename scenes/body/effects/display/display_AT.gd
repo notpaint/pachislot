@@ -72,6 +72,7 @@ func connect_to_order_node(node):
 	_connect_signal(node, "flaged", _on_flaged)
 	_connect_signal(node, "left_pre", _on_left_pre)
 	_connect_signal(node, "play_state_update", _on_play_state_update)
+	_connect_signal(node, "mode_update", _on_mode_update)
 	_connect_signal(node, "bonus_wait", _on_bonus_wait)
 	#bonus
 	_connect_signal(node, "bonus_start", _on_bonus_start)
@@ -127,6 +128,9 @@ func _on_flaged(value):
 
 func _on_left_pre(value):
 	pass
+
+func _on_mode_update(value) -> void:
+	current_mode = value
 
 func _on_play_state(value):
 	
