@@ -5,18 +5,6 @@
 [ext_resource type="Script" uid="uid://cxmncakshufhi" path="res://scenes/body/UI/bet_medals.gd" id="2_gl4co"]
 [ext_resource type="FontFile" uid="uid://b08ucvepng0wf" path="res://assets/fonts/x14y20pxScoreDozer.ttf" id="5_mm473"]
 
-[sub_resource type="Theme" id="Theme_mm473"]
-default_font = ExtResource("5_mm473")
-default_font_size = 50
-
-[sub_resource type="Theme" id="Theme_q1odj"]
-default_font = ExtResource("5_mm473")
-default_font_size = 50
-
-[sub_resource type="Theme" id="Theme_r28es"]
-default_font = ExtResource("5_mm473")
-default_font_size = 50
-
 [sub_resource type="Theme" id="Theme_lw1ae"]
 default_font = ExtResource("5_mm473")
 default_font_size = 50
@@ -34,7 +22,13 @@ offset_right = -660.0
 offset_bottom = -220.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = SubResource("Theme_lw1ae")
 script = ExtResource("1_thnqs")
+
+[node name="Panel" type="Panel" parent="UI" unique_id=2146749159]
+layout_mode = 0
+offset_right = 660.0
+offset_bottom = 219.0
 
 [node name="bet_medals" type="VBoxContainer" parent="UI" unique_id=2716053]
 layout_mode = 0
@@ -56,12 +50,12 @@ layout_mode = 2
 texture = ExtResource("1_0wsoe")
 
 [node name="medal_pay" type="VBoxContainer" parent="UI" unique_id=1221004858]
+custom_minimum_size = Vector2(245, 104)
 layout_mode = 0
-offset_left = 169.0
-offset_top = 10.0
-offset_right = 274.0
-offset_bottom = 114.0
-theme = SubResource("Theme_mm473")
+offset_left = 110.0
+offset_top = 5.0
+offset_right = 355.0
+offset_bottom = 109.0
 
 [node name="head" type="Label" parent="UI/medal_pay" unique_id=2104160907]
 layout_mode = 2
@@ -70,16 +64,16 @@ horizontal_alignment = 1
 
 [node name="status" type="Label" parent="UI/medal_pay" unique_id=284645194]
 layout_mode = 2
-text = "0"
+text = "1000000"
 horizontal_alignment = 1
 
 [node name="medal_sum" type="VBoxContainer" parent="UI" unique_id=1346340529]
+custom_minimum_size = Vector2(245, 104)
 layout_mode = 0
-offset_left = 93.0
+offset_left = 110.0
 offset_top = 111.0
-offset_right = 347.0
+offset_right = 355.0
 offset_bottom = 215.0
-theme = SubResource("Theme_q1odj")
 
 [node name="head" type="Label" parent="UI/medal_sum" unique_id=788052417]
 layout_mode = 2
@@ -88,15 +82,16 @@ horizontal_alignment = 1
 
 [node name="status" type="Label" parent="UI/medal_sum" unique_id=439335713]
 layout_mode = 2
+text = "1000000"
 horizontal_alignment = 1
 
 [node name="game_count" type="VBoxContainer" parent="UI" unique_id=127830662]
+custom_minimum_size = Vector2(245, 104)
 layout_mode = 0
-offset_left = 349.0
-offset_top = 10.0
-offset_right = 630.0
-offset_bottom = 114.0
-theme = SubResource("Theme_r28es")
+offset_left = 393.0
+offset_top = 5.0
+offset_right = 638.0
+offset_bottom = 109.0
 
 [node name="head" type="Label" parent="UI/game_count" unique_id=535546621]
 layout_mode = 2
@@ -105,15 +100,16 @@ horizontal_alignment = 1
 
 [node name="status" type="Label" parent="UI/game_count" unique_id=41284957]
 layout_mode = 2
+text = "1000000"
 horizontal_alignment = 1
 
 [node name="total_count" type="VBoxContainer" parent="UI" unique_id=218925496]
+custom_minimum_size = Vector2(245, 104)
 layout_mode = 0
-offset_left = 355.0
+offset_left = 393.0
 offset_top = 111.0
-offset_right = 636.0
+offset_right = 638.0
 offset_bottom = 215.0
-theme = SubResource("Theme_lw1ae")
 
 [node name="head" type="Label" parent="UI/total_count" unique_id=1118429698]
 layout_mode = 2
@@ -122,4 +118,5 @@ horizontal_alignment = 1
 
 [node name="status" type="Label" parent="UI/total_count" unique_id=1805395511]
 layout_mode = 2
+text = "1000000"
 horizontal_alignment = 1

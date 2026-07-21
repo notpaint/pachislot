@@ -49,6 +49,15 @@ func _ready():
 	if bet_medals and bet_medals.has_method("_on_bet"):
 		bet.connect(Callable(bet_medals, "_on_bet"))
 
+	initialize_data()
+
+func initialize_data() -> void:
+	game_count.text = str(effects.game_count)
+	total_count.text = str(effects.total_count)
+	medal_sum.text = str(mainROM.medal_sum)
+	medal_pay.text = str(0)
+
+
 
 func _on_medal_bet(value):
 	medal_pay.text = str(0)
@@ -95,12 +104,3 @@ func count_up(target: Label, tween: Tween, start: int, goal: int) -> Tween:
 
 	return tween
 
-
-# func bonus_count_up():
-# 	if bonus_tween:
-# 		bonus_tween.kill()
-# 	if bonus_get_target <= bonus_get:
-# 		bonus_get = bonus_get_target
-# 		return
-# 	bonus_tween = create_tween()
-# 	bonus_tween.tween_property(self, "bonus_get", bonus_get_target, 0.3)

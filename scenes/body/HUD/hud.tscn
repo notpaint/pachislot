@@ -2,6 +2,10 @@
 
 [ext_resource type="Script" uid="uid://ckasi0h2d33su" path="res://scenes/body/HUD/HUD.gd" id="1_c0cnr"]
 [ext_resource type="FontFile" uid="uid://dfywurfh0ra2a" path="res://assets/fonts/CP_Revenge.otf" id="2_g07l2"]
+[ext_resource type="Script" uid="uid://7gk4p7f4a8ll" path="res://scenes/body/HUD/detail_header.gd" id="3_5301k"]
+[ext_resource type="PackedScene" uid="uid://c0mdijyni82bw" path="res://scenes/body/HUD/order_info/HUD_AT.tscn" id="3_g07l2"]
+[ext_resource type="Script" uid="uid://duym6prukx80e" path="res://scenes/body/HUD/flag_header.gd" id="4_qxo3e"]
+[ext_resource type="Script" uid="uid://rj0fajkm0jo1" path="res://scenes/body/HUD/role_header.gd" id="5_vbh7n"]
 
 [sub_resource type="Theme" id="Theme_sxkco"]
 default_font = ExtResource("2_g07l2")
@@ -9,15 +13,46 @@ default_font = ExtResource("2_g07l2")
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p54iv"]
 bg_color = Color(0.004019165, 0.004019165, 0.004019165, 1)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g07l2"]
+bg_color = Color(0.60038817, 0.60038817, 0.60038817, 0)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+
 [sub_resource type="Theme" id="Theme_pkmnd"]
 default_font_size = 45
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sxkco"]
+bg_color = Color(0.8992859, 0.41687015, 0.56294864, 0)
+border_width_left = 4
+border_width_top = 2
+border_width_right = 4
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+
 [sub_resource type="Theme" id="Theme_2r3x5"]
+default_font_size = 55
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2r3x5"]
+bg_color = Color(0.60038817, 0.60038817, 0.60038817, 0)
+border_width_left = 4
+border_width_top = 2
+border_width_right = 4
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
 
 [sub_resource type="Theme" id="Theme_p54iv"]
-default_font_size = 26
+default_font_size = 38
 
-[sub_resource type="Theme" id="Theme_g07l2"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5301k"]
+bg_color = Color(0.60038817, 0.60038817, 0.60038817, 0)
+border_width_left = 4
+border_width_top = 2
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(1, 1, 1, 1)
 
 [node name="HUD" type="CanvasLayer" unique_id=636280993]
 offset = Vector2(1520, 0)
@@ -32,80 +67,110 @@ script = ExtResource("1_c0cnr")
 [node name="info" type="PanelContainer" parent="HUD" unique_id=1260329532]
 layout_mode = 0
 offset_right = 660.0
-offset_bottom = 1200.0
+offset_bottom = 855.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_p54iv")
 
-[node name="detail" type="HBoxContainer" parent="HUD" unique_id=1788027666]
+[node name="detail_header" type="PanelContainer" parent="HUD" unique_id=474358799]
 layout_mode = 0
-offset_right = 652.0
-offset_bottom = 96.0
-theme = SubResource("Theme_pkmnd")
-theme_override_constants/separation = 50
+offset_right = 660.0
+offset_bottom = 105.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_g07l2")
+script = ExtResource("3_5301k")
 
-[node name="est" type="VBoxContainer" parent="HUD/detail" unique_id=773901035]
+[node name="detail" type="HBoxContainer" parent="HUD/detail_header" unique_id=1788027666]
+layout_mode = 2
+theme = SubResource("Theme_pkmnd")
+theme_override_constants/separation = 34
+
+[node name="est" type="VBoxContainer" parent="HUD/detail_header/detail" unique_id=773901035]
+custom_minimum_size = Vector2(135, 0)
 layout_mode = 2
 
-[node name="head" type="Label" parent="HUD/detail/est" unique_id=1738692154]
+[node name="head" type="Label" parent="HUD/detail_header/detail/est" unique_id=1738692154]
 layout_mode = 2
 text = "成立中"
 horizontal_alignment = 1
 
-[node name="status" type="Label" parent="HUD/detail/est" unique_id=1456996462]
+[node name="status" type="Label" parent="HUD/detail_header/detail/est" unique_id=1456996462]
 layout_mode = 2
 text = "ー"
 horizontal_alignment = 1
 
-[node name="now" type="VBoxContainer" parent="HUD/detail" unique_id=1473324546]
+[node name="now" type="VBoxContainer" parent="HUD/detail_header/detail" unique_id=1473324546]
+custom_minimum_size = Vector2(135, 0)
 layout_mode = 2
 
-[node name="head" type="Label" parent="HUD/detail/now" unique_id=1431792376]
+[node name="head" type="Label" parent="HUD/detail_header/detail/now" unique_id=1431792376]
 layout_mode = 2
 text = "作動中"
 
-[node name="status" type="Label" parent="HUD/detail/now" unique_id=1166534242]
+[node name="status" type="Label" parent="HUD/detail_header/detail/now" unique_id=1166534242]
 layout_mode = 2
 text = "ー"
 horizontal_alignment = 1
 
-[node name="rt" type="VBoxContainer" parent="HUD/detail" unique_id=53119738]
+[node name="rt" type="VBoxContainer" parent="HUD/detail_header/detail" unique_id=53119738]
+custom_minimum_size = Vector2(287, 0)
 layout_mode = 2
 
-[node name="head" type="Label" parent="HUD/detail/rt" unique_id=137043638]
+[node name="head" type="Label" parent="HUD/detail_header/detail/rt" unique_id=137043638]
 layout_mode = 2
 text = "RT"
 horizontal_alignment = 1
 
-[node name="status" type="HBoxContainer" parent="HUD/detail/rt" unique_id=915514695]
+[node name="status" type="HBoxContainer" parent="HUD/detail_header/detail/rt" unique_id=915514695]
 layout_mode = 2
-theme_override_constants/separation = 40
+theme_override_constants/separation = 30
 
-[node name="name" type="Label" parent="HUD/detail/rt/status" unique_id=1423303866]
+[node name="name" type="Label" parent="HUD/detail_header/detail/rt/status" unique_id=1423303866]
 layout_mode = 2
 text = "RT0"
+horizontal_alignment = 1
 
-[node name="count" type="Label" parent="HUD/detail/rt/status" unique_id=693651326]
+[node name="count" type="Label" parent="HUD/detail_header/detail/rt/status" unique_id=693651326]
 layout_mode = 2
-text = "300"
+text = "1000"
+horizontal_alignment = 1
 
-[node name="flag_name" type="RichTextLabel" parent="HUD" unique_id=534987250]
+[node name="flag_header" type="PanelContainer" parent="HUD" unique_id=227965628]
 layout_mode = 0
-offset_top = 146.0
-offset_right = 714.0
-offset_bottom = 260.0
+offset_top = 105.0
+offset_right = 660.0
+offset_bottom = 180.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_sxkco")
+script = ExtResource("4_qxo3e")
+
+[node name="flag_name" type="RichTextLabel" parent="HUD/flag_header" unique_id=534987250]
+layout_mode = 2
 theme = SubResource("Theme_2r3x5")
-theme_override_font_sizes/normal_font_size = 40
 bbcode_enabled = true
+text = "強チェリー+赤BB"
+vertical_alignment = 1
 
-[node name="result_roles" type="HBoxContainer" parent="HUD" unique_id=1413038289]
+[node name="role_header" type="PanelContainer" parent="HUD" unique_id=1427497963]
 layout_mode = 0
-offset_left = 5.0
-offset_top = 260.0
-offset_right = 625.0
-offset_bottom = 580.0
+offset_top = 180.0
+offset_right = 660.0
+offset_bottom = 525.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_2r3x5")
+script = ExtResource("5_vbh7n")
+
+[node name="result_roles" type="HBoxContainer" parent="HUD/role_header" unique_id=1413038289]
+layout_mode = 2
 theme = SubResource("Theme_p54iv")
 
-[node name="roles" type="VBoxContainer" parent="HUD/result_roles" unique_id=369957832]
-custom_minimum_size = Vector2(620, 320)
+[node name="roles" type="VBoxContainer" parent="HUD/role_header/result_roles" unique_id=369957832]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="order_header" type="PanelContainer" parent="HUD" unique_id=223272872]
+layout_mode = 0
+offset_top = 525.0
+offset_right = 660.0
+offset_bottom = 855.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_5301k")
+
+[node name="HUD_AT" parent="HUD/order_header" unique_id=1524333454 instance=ExtResource("3_g07l2")]
 layout_mode = 2
 
 [node name="reel_result_UI" type="HBoxContainer" parent="HUD" unique_id=845910839]
@@ -132,16 +197,3 @@ custom_minimum_size = Vector2(137.5, 97)
 layout_mode = 2
 expand_mode = 1
 stretch_mode = 5
-
-[node name="Control" type="Control" parent="HUD" unique_id=229931722]
-anchors_preset = 0
-offset_top = 580.0
-offset_right = 620.0
-offset_bottom = 900.0
-theme = SubResource("Theme_g07l2")
-
-[node name="Label" type="Label" parent="HUD/Control" unique_id=862741059]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 23.0
-text = "test massege"

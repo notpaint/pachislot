@@ -12,25 +12,33 @@ var HUD_data : Dictionary
 ]
 
 @onready var mainROM = $"../../mainROM"
-@onready var flag_name = $flag_name
-@onready var result_roles = $result_roles
-@onready var roles = $"result_roles/roles"
-@onready var est_bonus = $"detail/est/status"
-@onready var now_bonus = $"detail/now/status"
-@onready var RT_name = $"detail/rt/status/name"
-@onready var RT_count = $"detail/rt/status/count"
+
+@onready var detail_header = $"detail_header"
+@onready var flag_header = $"flag_header"
+@onready var role_header = $"role_header"
+@onready var order_header = $"order_header"
+
 
 func _ready():
 	HUD_data = main.HUD_data
 	if mainROM:
-		mainROM.flag.connect(_on_flaged)
-		mainROM.roles.connect(_on_roles)
-		mainROM.prized_array.connect(_on_prized_array)
-		mainROM.spin_start.connect(_on_spin_start)
-		mainROM.bonus_est.connect(_on_bonus_est)
-		mainROM.bonus_prized.connect(_on_bonus_prized)
-		mainROM.now_RT.connect(_on_now_RT)
-		mainROM.last_RT.connect(_on_last_RT)
+		if detail_header:
+			_connect_signal(mainROM, "now_RT", detail_header._on_now_RT)
+			_connect_signal(mainROM, "bonus_est", detail_header._on_bonus_est)
+			_connect_signal(mainROM, "bonus_prized", detail_header._on_bonus_prized)
+			_connect_signal(mainROM, "last_RT", detail_header._on_last_RT)
+		if flag_header:
+			_connect_signal(mainROM, "flag", flag_header._on_flaged)
+		if role_header:
+			_connect_signal(mainROM, "roles", role_header._on_roles)
+		if order_header:
+			pass
+
+
+func _connect_signal(sender: Node, signal_name: StringName, method: Callable) -> void:
+	if sender.has_signal(signal_name):
+		sender.connect(signal_name, method)
+
 
 func _on_prized_array(reel_result):
 	for i in range(3):
@@ -44,58 +52,6 @@ func _on_prized_array(reel_result):
 		var texture = load(symbol_image_path)
 		reel_result_image[i].texture = texture
 
-
-func _on_flaged(result_flag):
-	if HUD_data.has(result_flag):
-		var display_name = HUD_data[result_flag]
-		flag_name.text = display_name
-	else:
-		flag_name.text = result_flag
-
-func _on_roles(value):
-	for child in roles.get_children():
-		child.queue_free()
-	for i in value.size():
-		var role_name = value[i]["role"]
-		var display_name = role_name
-		if HUD_data.has(role_name):
-			display_name = HUD_data[role_name]
-		var label := Label.new()
-		label.text = display_name
-		roles.add_child(label)
-
 func _on_spin_start():
 	for i in range(3):
 		reel_result_image[i].texture = null
-
-func _on_bonus_est(bonus):
-	if HUD_data.has(bonus):
-		var display_name = HUD_data[bonus]
-		est_bonus.text = display_name
-	else:
-		est_bonus.text = bonus if bonus else "ー"
-
-func _on_bonus_prized(bonus):
-	if HUD_data.has(bonus):
-		var display_name = HUD_data[bonus]
-		now_bonus.text = display_name
-	else:
-		if bonus == "None":
-			now_bonus.text = "ー"
-		else:
-			now_bonus.text = bonus if bonus else "ー"
-
-func _on_now_RT(RT):
-	if RT == "None" or RT == "":
-		RT_name.text = "RT0"
-	else:
-		RT_name.text = RT
-
-func _on_last_RT(game):
-	if game == 0:
-		RT_count.text = str(0)
-	elif game < 0:
-		RT_count.text = "ー"
-	else:
-		RT_count.text = str(game)
-	
