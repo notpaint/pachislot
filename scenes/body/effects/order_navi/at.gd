@@ -7,7 +7,7 @@ var mode_data: Dictionary = {}
 var flag_trigger: Dictionary = {}
 var premonition_data: Dictionary = {}
 
-var current_game: int = 0:
+var current_game: int = 70:
 	set(value):
 		if current_game == value:
 			return
@@ -16,10 +16,8 @@ var current_game: int = 0:
 
 var result_flag: String
 
-var current_mode: String = "Heaven": #A, B, C, Heaven
+var current_mode: String = "": #A, B, C, Heaven
 	set(value):
-		if current_mode == value:
-			return
 		current_mode = value
 		mode_update.emit(value)
 
@@ -34,17 +32,20 @@ var pre_left: int = -1:
 		pre_left = value
 		left_pre.emit(value)
 
-var release_game: int = -1
-var pre_bonus: String = "redBB" #None, RB, redBB
+var release_game: int = -1:
+	set(value):
+		release_game = value
+		release_game_update.emit(value)
+var pre_bonus: String = "None" #None, RB, redBB
 
-var base_state: String = "AT":#normal, AT
+var base_state: String = "normal":#normal, AT
 	set(value):
 		if base_state == value:
 			return
 		base_state = value
 		base_state_update.emit(value)
 
-var play_state: String = "bonus_waiting": #normal, AT, bonus_waiting, in_bonus
+var play_state: String = "normal": #normal, AT, bonus_waiting, in_bonus
 	set(value):
 		if play_state == value:
 			return
@@ -62,7 +63,7 @@ var bonus_condi: String = "normal":
 var condi_game: int = 0
 var current_bonus: String = "None" #RB, redBB
 
-var bonus_game: int = 1:
+var bonus_game: int = 0:
 	set(value):
 		if bonus_game == value:
 			return
@@ -77,7 +78,7 @@ var bonus_get: int = 0:
 		bonus_payout.emit(value)
 		
 
-var AT_game: int = 100:
+var AT_game: int = 0:
 	set(value):
 		if AT_game == value:
 			return
@@ -85,7 +86,7 @@ var AT_game: int = 100:
 		AT_left.emit(value)
 
 
-var total_get: int = 300:
+var total_get: int = 0:
 	set(value):
 		if total_get == value:
 			return
@@ -95,7 +96,13 @@ var total_get: int = 300:
 
 var game_condi: String = "normal" #normal, extra
 
-var morning_mode = {"A": 102, "B": 102, "C": 26, "Heaven": 26}
+var morning_mode = {
+	"Heaven": 256,
+	"A": 102,
+	"B": 102,
+	"C": 26,
+	# "Heaven": 26
+	}
 
 var BB_game = {
 	5: 256,
@@ -115,6 +122,7 @@ signal base_state_update(value)
 signal play_state_update(value)
 
 signal mode_update(value)
+signal release_game_update(value)
 
 signal bonus_wait()
 

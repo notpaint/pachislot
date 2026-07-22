@@ -68,6 +68,7 @@ func _ready():
 		var scene = order_scene.instantiate()
 		order_navi.add_child(scene)
 		order_node = scene
+		sub.order_node = scene
 		connect_to_order(order_node)
 
 	if display_scene_path:
@@ -75,6 +76,7 @@ func _ready():
 		var scene = display_scene.instantiate()
 		display.add_child(scene)
 		display_node = scene
+		sub.display_node = scene
 		connect_to_display(display_node)
 
 func connect_to_mainROM():

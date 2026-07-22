@@ -13,6 +13,9 @@ var current_version: String
 var display_scene_path: String
 var order_scene_path: String
 
+var order_node: Node
+var display_node: Node
+
 var SE_dict: Dictionary = {}
 var bonus_music: Dictionary = {}
 var back_music:Dictionary = {}

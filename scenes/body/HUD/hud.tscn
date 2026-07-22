@@ -3,9 +3,9 @@
 [ext_resource type="Script" uid="uid://ckasi0h2d33su" path="res://scenes/body/HUD/HUD.gd" id="1_c0cnr"]
 [ext_resource type="FontFile" uid="uid://dfywurfh0ra2a" path="res://assets/fonts/CP_Revenge.otf" id="2_g07l2"]
 [ext_resource type="Script" uid="uid://7gk4p7f4a8ll" path="res://scenes/body/HUD/detail_header.gd" id="3_5301k"]
-[ext_resource type="PackedScene" uid="uid://c0mdijyni82bw" path="res://scenes/body/HUD/order_info/HUD_AT.tscn" id="3_g07l2"]
 [ext_resource type="Script" uid="uid://duym6prukx80e" path="res://scenes/body/HUD/flag_header.gd" id="4_qxo3e"]
 [ext_resource type="Script" uid="uid://rj0fajkm0jo1" path="res://scenes/body/HUD/role_header.gd" id="5_vbh7n"]
+[ext_resource type="Script" uid="uid://c8yokgboibcdn" path="res://scenes/body/HUD/order_header_AT.gd" id="6_5301k"]
 
 [sub_resource type="Theme" id="Theme_sxkco"]
 default_font = ExtResource("2_g07l2")
@@ -54,6 +54,13 @@ border_width_right = 4
 border_width_bottom = 4
 border_color = Color(1, 1, 1, 1)
 
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_2r3x5"]
+color = Color(1, 1, 1, 1)
+thickness = 4
+
+[sub_resource type="Theme" id="Theme_5301k"]
+default_font_size = 33
+
 [node name="HUD" type="CanvasLayer" unique_id=636280993]
 offset = Vector2(1520, 0)
 transform = Transform2D(1, 0, 0, 1, 1520, 0)
@@ -93,7 +100,7 @@ horizontal_alignment = 1
 
 [node name="status" type="Label" parent="HUD/detail_header/detail/est" unique_id=1456996462]
 layout_mode = 2
-text = "ー"
+text = "超番長"
 horizontal_alignment = 1
 
 [node name="now" type="VBoxContainer" parent="HUD/detail_header/detail" unique_id=1473324546]
@@ -144,7 +151,7 @@ script = ExtResource("4_qxo3e")
 layout_mode = 2
 theme = SubResource("Theme_2r3x5")
 bbcode_enabled = true
-text = "強チェリー+赤BB"
+text = "最強スイカ1A+青BB"
 vertical_alignment = 1
 
 [node name="role_header" type="PanelContainer" parent="HUD" unique_id=1427497963]
@@ -155,13 +162,46 @@ offset_bottom = 525.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_2r3x5")
 script = ExtResource("5_vbh7n")
 
-[node name="result_roles" type="HBoxContainer" parent="HUD/role_header" unique_id=1413038289]
+[node name="spacer" type="MarginContainer" parent="HUD/role_header" unique_id=193309664]
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="result_roles" type="HBoxContainer" parent="HUD/role_header/spacer" unique_id=1413038289]
+custom_minimum_size = Vector2(331, 0)
 layout_mode = 2
 theme = SubResource("Theme_p54iv")
 
-[node name="roles" type="VBoxContainer" parent="HUD/role_header/result_roles" unique_id=369957832]
+[node name="roles" type="VBoxContainer" parent="HUD/role_header/spacer/result_roles" unique_id=369957832]
+custom_minimum_size = Vector2(332.5, 0)
 layout_mode = 2
-theme_override_constants/separation = 12
+theme_override_constants/separation = 16
+
+[node name="Label" type="Label" parent="HUD/role_header/spacer/result_roles/roles" unique_id=1237009724]
+layout_mode = 2
+text = "魑魅魍魎"
+
+[node name="Label2" type="Label" parent="HUD/role_header/spacer/result_roles/roles" unique_id=1734947762]
+layout_mode = 2
+text = "これはテストです"
+
+[node name="Label3" type="Label" parent="HUD/role_header/spacer/result_roles/roles" unique_id=2015675748]
+layout_mode = 2
+text = "this is test"
+
+[node name="Label4" type="Label" parent="HUD/role_header/spacer/result_roles/roles" unique_id=475697282]
+layout_mode = 2
+text = "押忍！番長２"
+
+[node name="Label5" type="Label" parent="HUD/role_header/spacer/result_roles/roles" unique_id=1866658376]
+layout_mode = 2
+text = "最強チェリーA1B"
+
+[node name="Label6" type="Label" parent="HUD/role_header/spacer/result_roles/roles" unique_id=944129790]
+layout_mode = 2
+text = "大都技研大好き"
 
 [node name="order_header" type="PanelContainer" parent="HUD" unique_id=223272872]
 layout_mode = 0
@@ -169,9 +209,157 @@ offset_top = 525.0
 offset_right = 660.0
 offset_bottom = 855.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_5301k")
+script = ExtResource("6_5301k")
 
-[node name="HUD_AT" parent="HUD/order_header" unique_id=1524333454 instance=ExtResource("3_g07l2")]
+[node name="spacer" type="MarginContainer" parent="HUD/order_header" unique_id=1262650909]
 layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="contents" type="VBoxContainer" parent="HUD/order_header/spacer" unique_id=267829867]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HUD/order_header/spacer/contents" unique_id=1726736388]
+custom_minimum_size = Vector2(0, 228)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HUD/order_header/spacer/contents/VBoxContainer" unique_id=757367550]
+layout_mode = 2
+text = "最強チェリー"
+
+[node name="VSeparator" type="HSeparator" parent="HUD/order_header/spacer/contents" unique_id=1790684388]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_2r3x5")
+
+[node name="mode_data" type="HBoxContainer" parent="HUD/order_header/spacer/contents" unique_id=775119068]
+layout_mode = 2
+theme = SubResource("Theme_5301k")
+
+[node name="current" type="HBoxContainer" parent="HUD/order_header/spacer/contents/mode_data" unique_id=92894571]
+layout_mode = 2
+
+[node name="arrow" type="Label" parent="HUD/order_header/spacer/contents/mode_data/current" unique_id=1098282349]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 38
+text = "→"
+
+[node name="data" type="VBoxContainer" parent="HUD/order_header/spacer/contents/mode_data/current" unique_id=1628035592]
+layout_mode = 2
+
+[node name="mode" type="HBoxContainer" parent="HUD/order_header/spacer/contents/mode_data/current/data" unique_id=1139376216]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="head" type="Label" parent="HUD/order_header/spacer/contents/mode_data/current/data/mode" unique_id=559338802]
+custom_minimum_size = Vector2(198, 0)
+layout_mode = 2
+text = "モード"
+horizontal_alignment = 1
+
+[node name="status" type="Label" parent="HUD/order_header/spacer/contents/mode_data/current/data/mode" unique_id=925102997]
+custom_minimum_size = Vector2(89, 0)
+layout_mode = 2
+text = "ー"
+horizontal_alignment = 1
+
+[node name="game" type="HBoxContainer" parent="HUD/order_header/spacer/contents/mode_data/current/data" unique_id=428118866]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="head" type="Label" parent="HUD/order_header/spacer/contents/mode_data/current/data/game" unique_id=1733047221]
+layout_mode = 2
+text = "規定ゲーム数"
+
+[node name="status" type="Label" parent="HUD/order_header/spacer/contents/mode_data/current/data/game" unique_id=1940763706]
+custom_minimum_size = Vector2(89, 0)
+layout_mode = 2
+text = "ー"
+horizontal_alignment = 1
+
+[node name="next" type="HBoxContainer" parent="HUD/order_header/spacer/contents/mode_data" unique_id=166722465]
+layout_mode = 2
+
+[node name="arrow" type="Label" parent="HUD/order_header/spacer/contents/mode_data/next" unique_id=1116421078]
+layout_mode = 2
+theme_override_font_sizes/font_size = 42
+text = "→"
+
+[node name="data" type="VBoxContainer" parent="HUD/order_header/spacer/contents/mode_data/next" unique_id=1813882496]
+layout_mode = 2
+
+[node name="mode" type="HBoxContainer" parent="HUD/order_header/spacer/contents/mode_data/next/data" unique_id=1356543663]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="head" type="Label" parent="HUD/order_header/spacer/contents/mode_data/next/data/mode" unique_id=2136612772]
+custom_minimum_size = Vector2(198, 0)
+layout_mode = 2
+text = "モード"
+horizontal_alignment = 1
+
+[node name="status" type="Label" parent="HUD/order_header/spacer/contents/mode_data/next/data/mode" unique_id=1583080671]
+custom_minimum_size = Vector2(89, 0)
+layout_mode = 2
+text = "ー"
+horizontal_alignment = 1
+
+[node name="game" type="HBoxContainer" parent="HUD/order_header/spacer/contents/mode_data/next/data" unique_id=1580967998]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="head" type="Label" parent="HUD/order_header/spacer/contents/mode_data/next/data/game" unique_id=2064218027]
+layout_mode = 2
+text = "規定ゲーム数"
+
+[node name="status" type="Label" parent="HUD/order_header/spacer/contents/mode_data/next/data/game" unique_id=2084689637]
+custom_minimum_size = Vector2(89, 0)
+layout_mode = 2
+text = "ー"
+horizontal_alignment = 1
+
+[node name="template" type="HBoxContainer" parent="HUD/order_header/spacer/contents/mode_data" unique_id=1077949076]
+layout_mode = 2
+
+[node name="arrow" type="Label" parent="HUD/order_header/spacer/contents/mode_data/template" unique_id=48471437]
+layout_mode = 2
+theme_override_font_sizes/font_size = 42
+text = "→"
+
+[node name="data" type="VBoxContainer" parent="HUD/order_header/spacer/contents/mode_data/template" unique_id=750966823]
+layout_mode = 2
+
+[node name="mode" type="HBoxContainer" parent="HUD/order_header/spacer/contents/mode_data/template/data" unique_id=187916032]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="head" type="Label" parent="HUD/order_header/spacer/contents/mode_data/template/data/mode" unique_id=1247002153]
+custom_minimum_size = Vector2(198, 0)
+layout_mode = 2
+text = "モード"
+horizontal_alignment = 1
+
+[node name="status" type="Label" parent="HUD/order_header/spacer/contents/mode_data/template/data/mode" unique_id=744964696]
+custom_minimum_size = Vector2(89, 0)
+layout_mode = 2
+text = "ー"
+horizontal_alignment = 1
+
+[node name="game" type="HBoxContainer" parent="HUD/order_header/spacer/contents/mode_data/template/data" unique_id=665318624]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="head" type="Label" parent="HUD/order_header/spacer/contents/mode_data/template/data/game" unique_id=1187268382]
+layout_mode = 2
+text = "規定ゲーム数"
+
+[node name="status" type="Label" parent="HUD/order_header/spacer/contents/mode_data/template/data/game" unique_id=590240301]
+custom_minimum_size = Vector2(89, 0)
+layout_mode = 2
+text = "ー"
+horizontal_alignment = 1
 
 [node name="reel_result_UI" type="HBoxContainer" parent="HUD" unique_id=845910839]
 visible = false

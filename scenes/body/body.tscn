@@ -16,12 +16,12 @@ size = Vector2i(800, 600)
 [node name="mainROM" parent="." unique_id=1739790333 instance=ExtResource("2_lsmun")]
 metadata/_edit_lock_ = true
 
+[node name="effects" parent="." unique_id=1805229761 instance=ExtResource("6_is24f")]
+
+[node name="UI" parent="." unique_id=122271127 instance=ExtResource("5_8yn5v")]
+
 [node name="HUD" parent="." unique_id=636280993 instance=ExtResource("3_a17gy")]
 offset = Vector2(1260, 0)
 transform = Transform2D(1, 0, 0, 1, 1260, 0)
 
 [node name="analysis" parent="." unique_id=1302851162 instance=ExtResource("4_k5gax")]
-
-[node name="UI" parent="." unique_id=122271127 instance=ExtResource("5_8yn5v")]
-
-[node name="effects" parent="." unique_id=1805229761 instance=ExtResource("6_is24f")]

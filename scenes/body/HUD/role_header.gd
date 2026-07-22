@@ -1,6 +1,6 @@
 extends PanelContainer
 
-@onready var roles = $"result_roles/roles"
+@onready var roles = $"spacer/result_roles/roles"
 
 var HUD_data: Dictionary
 

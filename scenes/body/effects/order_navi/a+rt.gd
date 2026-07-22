@@ -107,7 +107,7 @@ func handle_bonus(value):
 				end_bonus()
 
 		"RB":
-			JAC_counter = mainROM.JAC_conter.duplicate(true)
+			JAC_counter = mainROM.JAC_counter.duplicate(true)
 			if value:
 				var payout = value["payout"]
 				get_bonus_payout += payout
