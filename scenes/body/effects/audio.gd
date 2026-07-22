@@ -88,7 +88,9 @@ func play_prized(_value):
 
 func play_bonus(value, variant: String = "default"):
 	if value != "None":
-		var current_bonus_music = bonus_music[value]
+		var current_bonus_music = bonus_music.get(value, null)
+		if not current_bonus_music:
+			return
 
 		var bonus_rules = current_bonus_music["rule"]
 		var bonus_track = weight.get_track(bonus_rules, value, variant)
@@ -127,7 +129,9 @@ func update_bonus_music(value):
 
 func end_bonus(value):
 	if value != "None":
-		var current_bonus_music = bonus_music[value]
+		var current_bonus_music = bonus_music.get(value, null)
+		if not current_bonus_music:
+			return
 		var end_path = current_bonus_music["tracks"][current_bonus_track]["end"]
 
 		if end_path:

@@ -3,6 +3,9 @@ extends Node2D
 @onready var effects = $"../.."
 @onready var mainROM = $"../../../mainROM"
 
+@onready var BB_back = $"BB_back"
+@onready var RB_back = $"RB_back"
+
 @onready var parrot = $"parrot"
 @onready var reverseparrot = $"reverseparrot"
 
@@ -32,9 +35,8 @@ var bonus_variety:Array = []
 var count_tween: Tween
 
 func _ready():
-	bb_data_node.visible = false
-	rb_data_node.visible = false
-	total_data_node.visible = false
+
+	initialize_display()
 
 	if effects and effects.order_node:
 		order_node = effects.order_node
@@ -44,6 +46,8 @@ func _ready():
 
 
 func connect_to_order_node(node):
+	if node.has_signal("maxbet"):
+		node.maxbet.connect(_on_maxbet)
 	if node.has_signal("active_bonus_up"):
 		node.active_bonus_up.connect(_on_active_bonus)
 	if node.has_signal("BB_data"):
@@ -53,6 +57,13 @@ func connect_to_order_node(node):
 	if node.has_signal("parrot_animation"):
 		node.parrot_animation.connect(_on_parrot_animation)
 
+func initialize_display():
+	BB_back.visible = true
+	RB_back.visible = false
+
+	bb_data_node.visible = false
+	rb_data_node.visible = false
+	total_data_node.visible = false
 
 func _on_active_bonus(type):
 
@@ -72,6 +83,8 @@ func _on_active_bonus(type):
 			bb_data_node.get_node("LAST_PAY").text = str(order_node.last_bonus_payout)
 		"RB":
 			rb_data_node.visible = true
+			BB_back.visible = false
+			RB_back.visible = true
 			active_data_node = rb_data_node
 			var counter = order_node.JAC_counter
 			rb_data_node.get_node("LAST_PRIZE").text = "%2d" % counter[0]
@@ -83,10 +96,17 @@ func _on_active_bonus(type):
 
 			await mainROM.medal_bet
 
+			BB_back.visible = true
+			RB_back.visible = false
 			total_data_node.visible = false
 			parrot.visible = true
 			active_data_node = null
 			total_payout = 0
+
+func _on_maxbet():
+	pass
+
+
 
 
 func _on_BB_data(get_pay, last_pay):

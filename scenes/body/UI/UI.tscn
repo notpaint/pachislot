@@ -77,7 +77,7 @@ offset_bottom = 215.0
 
 [node name="head" type="Label" parent="UI/medal_sum" unique_id=788052417]
 layout_mode = 2
-text = "MEDAL"
+text = "CREDIT"
 horizontal_alignment = 1
 
 [node name="status" type="Label" parent="UI/medal_sum" unique_id=439335713]

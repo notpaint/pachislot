@@ -9,6 +9,30 @@
 [ext_resource type="Texture2D" uid="uid://d0otc5qa0nrnp" path="res://assets/images/display/shatter.png" id="6_28emo"]
 [ext_resource type="Shader" uid="uid://buwgbedofsm8r" path="res://scenes/body/effects/display/shader_script/shatter.gdshader" id="7_j4y43"]
 
+[sub_resource type="Gradient" id="Gradient_4kndm"]
+offsets = PackedFloat32Array(0, 0.65, 1)
+colors = PackedColorArray(0.4117647, 0.56078434, 0.85490197, 1, 0.13725491, 0.35686275, 0.78431374, 1, 0, 0, 0.5019608, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_j4y43"]
+gradient = SubResource("Gradient_4kndm")
+fill_from = Vector2(1, 1)
+
+[sub_resource type="Gradient" id="Gradient_j4y43"]
+offsets = PackedFloat32Array(0, 0.795, 1)
+colors = PackedColorArray(0.99215686, 0.8745098, 0.68235296, 1, 0.9843137, 0.6901961, 0.20392157, 1, 0.7372549, 0.5176471, 0.15294118, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_57rp4"]
+gradient = SubResource("Gradient_j4y43")
+fill_from = Vector2(1, 1)
+
+[sub_resource type="Gradient" id="Gradient_57rp4"]
+offsets = PackedFloat32Array(0, 0.6, 1)
+colors = PackedColorArray(0.9882353, 0.47843137, 0.3254902, 1, 0.9843137, 0.23529412, 0.007843138, 1, 0.5803922, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_g0vy5"]
+gradient = SubResource("Gradient_57rp4")
+fill_from = Vector2(1, 1)
+
 [sub_resource type="Theme" id="Theme_yqyk0"]
 default_font = ExtResource("2_yqyk0")
 default_font_size = 100
@@ -41,8 +65,31 @@ script = ExtResource("1_eqxh7")
 [node name="layers" type="Control" parent="." unique_id=1744314770]
 layout_mode = 3
 anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+
+[node name="normal" type="Control" parent="layers" unique_id=1609693897]
+anchors_preset = 0
+offset_right = 1260.0
+offset_bottom = 211.0
+
+[node name="morning_back" type="TextureRect" parent="layers/normal" unique_id=1307422649]
+layout_mode = 0
+offset_right = 1260.0
+offset_bottom = 211.0
+texture = SubResource("GradientTexture2D_j4y43")
+
+[node name="day_back" type="TextureRect" parent="layers/normal" unique_id=2103375650]
+visible = false
+layout_mode = 0
+offset_right = 1260.0
+offset_bottom = 211.0
+texture = SubResource("GradientTexture2D_57rp4")
+
+[node name="evening_back" type="TextureRect" parent="layers/normal" unique_id=2086590862]
+visible = false
+layout_mode = 0
+offset_right = 1260.0
+offset_bottom = 211.0
+texture = SubResource("GradientTexture2D_g0vy5")
 
 [node name="char_select" type="Control" parent="layers" unique_id=1825266970]
 visible = false
