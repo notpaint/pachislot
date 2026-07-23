@@ -61,6 +61,11 @@ func push_navi(reel_pos):
 	if reel_array[reel_pos].text != "":
 		var navi_number = int(reel_array[reel_pos].text)
 		if navi_number != stopped_count:
+			L_reel.text = ""
+			C_reel.text = ""
+			R_reel.text = ""
+			for i in range(3):
+				frame_light_off(i)
 			navi_miss = true
 
 	if not navi_miss:

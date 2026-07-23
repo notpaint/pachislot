@@ -37,9 +37,9 @@ var bonus_get: int = 0:
 		if bonus_get == value:
 			return
 		bonus_get = value
-		bonus_get_update()
+		# bonus_get_update()
 
-var bonus_get_target: int = 0
+# var bonus_get_target: int = 0
 
 var AT_game: int = 200
 var total_get_target: int = 0
@@ -48,7 +48,7 @@ var total_get: int = 0:
 		if total_get == value:
 			return
 		total_get = value
-		total_get_update()
+		# total_get_update()
 
 var order_bell: Dictionary = {
 	"213Bell": [2, 1, 3],
@@ -105,12 +105,12 @@ func _on_flaged(value):
 
 	result_flag = value
 
-	order_navi.clear_navi()
+	# order_navi.clear_navi()
 	navi_game = false
 
 	if first_bet:
 		first_bet = false
-		force_music_start()
+		force_switch_layer()
 
 	
 	match play_state:
@@ -124,6 +124,8 @@ func _on_flaged(value):
 		"in_bonus":
 			navi_game = true
 			bell_navi()
+			if showing_layer and showing_layer.name == "in_bonus":
+				showing_layer._on_flaged(value)
 
 		"AT":
 			navi_game = true
@@ -227,28 +229,14 @@ func _on_bonus_pre(value):
 func _on_bonus_left(value):
 	bonus_game = value
 
-	if not showing_layer or showing_layer.name == "in_bonus":
-		showing_layer.update_bonus_game(value)
-
-
 func _on_bonus_payout(value):
-	bonus_get_target = value
-	bonus_count_up()
-
+	bonus_get = value
+	if showing_layer and showing_layer.name == "in_bonus":
+		showing_layer.update_bonus_get(bonus_get)
 
 func _on_total_pay(value):
 	total_get_target = value
 	total_count_up()
-
-
-func bonus_count_up():
-	if bonus_tween:
-		bonus_tween.kill()
-	if bonus_get_target <= bonus_get:
-		bonus_get = bonus_get_target
-		return
-	bonus_tween = create_tween()
-	bonus_tween.tween_property(self, "bonus_get", bonus_get_target, 0.3)
 
 
 func total_count_up():
@@ -261,34 +249,36 @@ func total_count_up():
 	total_tween.tween_property(self, "total_get", total_get_target, 0.3)
 
 
-func bonus_get_update():
-	if not showing_layer or showing_layer.name != "in_bonus":
-		return
+# func bonus_get_update():
+# 	if not showing_layer or showing_layer.name != "in_bonus":
+# 		return
 
-	var playing = showing_layer.get_node_or_null("playing")
-	if not playing or not playing.visible:
-		return
+# 	var playing = showing_layer.get_node_or_null("playing")
+# 	if not playing or not playing.visible:
+# 		return
 	
-	playing.get_node("GET_PAY").text = "%d" % bonus_get
+# 	playing.get_node("GET_PAY").text = "%d" % bonus_get
 
-func total_get_update():
-	if not showing_layer:
-		return
+# func total_get_update():
+# 	if not showing_layer:
+# 		return
 
-	var playing = showing_layer.get_node_or_null("playing")
-	if not playing or not playing.visible:
-		return
+# 	var playing = showing_layer.get_node_or_null("playing")
+# 	if not playing or not playing.visible:
+# 		return
 	
-	playing.get_node("TOTAL_PAY").text = "%d" % total_get
+# 	playing.get_node("TOTAL_PAY").text = "%d" % total_get
 
 func _on_character(char_name: String):
 	selected_char = char_name
 
-func force_music_start():
+func force_switch_layer():
 	match play_state:
+
 		"bonus_waiting":
 			switch_layers("bonus_waiting")
 			audio.back_music("bonus_waiting")
+			
 		"in_bonus":
 			audio.back_music("silent")
 			switch_layers("in_bonus")

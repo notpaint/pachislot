@@ -99,8 +99,14 @@ func count_up(target: Label, tween: Tween, start: int, goal: int) -> Tween:
 	if goal <= start:
 		target.text = str(goal)
 		return null
+		
 	tween = create_tween()
-	tween.tween_method(func(val: int): target.text = str(val), start, goal, 0.3)
+	tween.tween_method(
+		func(val: int): target.text = str(val),
+		start,
+		goal,
+		0.3
+		)
 
 	return tween
 
