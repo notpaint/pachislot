@@ -2,12 +2,17 @@
 
 [ext_resource type="Script" uid="uid://m4gc3t8qgl0d" path="res://scenes/body/effects/display/display_AT.gd" id="1_eqxh7"]
 [ext_resource type="FontFile" uid="uid://dn83hpd1vj6w4" path="res://assets/fonts/x12y16pxSolidLinker.ttf" id="2_3i1b0"]
+[ext_resource type="Texture2D" uid="uid://ccnbexah2xly2" path="res://assets/images/UI/sprite_sheet.png" id="2_j4y43"]
 [ext_resource type="FontFile" uid="uid://b3h8o2i0f08ma" path="res://assets/fonts/x8y12pxDenkiChip.ttf" id="2_yqyk0"]
+[ext_resource type="Script" uid="uid://bkx8pat605p8u" path="res://scenes/body/effects/display/AT/bonus_waiting.gd" id="3_0a54d"]
 [ext_resource type="Script" uid="uid://drjo4wbpm61t6" path="res://scenes/body/effects/display/misc/char_select.gd" id="3_28emo"]
 [ext_resource type="FontFile" uid="uid://b08ucvepng0wf" path="res://assets/fonts/x14y20pxScoreDozer.ttf" id="4_28emo"]
 [ext_resource type="Script" uid="uid://bbe4jfct41a8m" path="res://scenes/body/effects/display/shatter.gd" id="6_4kndm"]
 [ext_resource type="Texture2D" uid="uid://d0otc5qa0nrnp" path="res://assets/images/display/shatter.png" id="6_28emo"]
+[ext_resource type="Texture2D" uid="uid://bv2fudwpvt6bg" path="res://assets/images/UI/turtle.png" id="7_57rp4"]
 [ext_resource type="Shader" uid="uid://buwgbedofsm8r" path="res://scenes/body/effects/display/shader_script/shatter.gdshader" id="7_j4y43"]
+[ext_resource type="Script" uid="uid://c42y40pg0wjco" path="res://scenes/body/effects/display/AT/in_bonus.gd" id="7_wvno2"]
+[ext_resource type="FontFile" uid="uid://b576183gbjamx" path="res://assets/fonts/cp_period.otf" id="11_g0vy5"]
 
 [sub_resource type="Gradient" id="Gradient_4kndm"]
 offsets = PackedFloat32Array(0, 0.65, 1)
@@ -33,6 +38,18 @@ colors = PackedColorArray(0.9882353, 0.47843137, 0.3254902, 1, 0.9843137, 0.2352
 gradient = SubResource("Gradient_57rp4")
 fill_from = Vector2(1, 1)
 
+[sub_resource type="Gradient" id="Gradient_g0vy5"]
+offsets = PackedFloat32Array(0, 0.585)
+colors = PackedColorArray(0.49803922, 0.49803922, 0.49803922, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_0a54d"]
+gradient = SubResource("Gradient_g0vy5")
+fill_from = Vector2(1, 1)
+
+[sub_resource type="Theme" id="Theme_g0vy5"]
+default_font = ExtResource("11_g0vy5")
+default_font_size = 150
+
 [sub_resource type="Theme" id="Theme_yqyk0"]
 default_font = ExtResource("2_yqyk0")
 default_font_size = 100
@@ -45,6 +62,158 @@ default_font_size = 64
 default_font = ExtResource("2_3i1b0")
 default_font_size = 64
 
+[sub_resource type="LabelSettings" id="LabelSettings_7bvsb"]
+font = ExtResource("2_3i1b0")
+font_size = 80
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_s5gi4"]
+atlas = ExtResource("2_j4y43")
+region = Rect2(0, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_twd8f"]
+atlas = ExtResource("2_j4y43")
+region = Rect2(128, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_54lw0"]
+atlas = ExtResource("2_j4y43")
+region = Rect2(256, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_c63yl"]
+atlas = ExtResource("2_j4y43")
+region = Rect2(384, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_aejdh"]
+atlas = ExtResource("2_j4y43")
+region = Rect2(512, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_iei6l"]
+atlas = ExtResource("2_j4y43")
+region = Rect2(0, 128, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ab1c7"]
+atlas = ExtResource("2_j4y43")
+region = Rect2(128, 128, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_deule"]
+atlas = ExtResource("2_j4y43")
+region = Rect2(256, 128, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_anmhe"]
+atlas = ExtResource("2_j4y43")
+region = Rect2(384, 128, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rys0b"]
+atlas = ExtResource("2_j4y43")
+region = Rect2(512, 128, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_05e4b"]
+atlas = ExtResource("2_j4y43")
+region = Rect2(0, 256, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qwxni"]
+atlas = ExtResource("2_j4y43")
+region = Rect2(128, 256, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pekir"]
+atlas = ExtResource("2_j4y43")
+region = Rect2(256, 256, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6jdn6"]
+atlas = ExtResource("2_j4y43")
+region = Rect2(384, 256, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cjfuv"]
+atlas = ExtResource("2_j4y43")
+region = Rect2(512, 256, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hobo8"]
+atlas = ExtResource("2_j4y43")
+region = Rect2(0, 384, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uj82w"]
+atlas = ExtResource("2_j4y43")
+region = Rect2(128, 384, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yg8wv"]
+atlas = ExtResource("2_j4y43")
+region = Rect2(256, 384, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qyqg8"]
+atlas = ExtResource("2_j4y43")
+region = Rect2(384, 384, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6gurt"]
+atlas = ExtResource("2_j4y43")
+region = Rect2(512, 384, 128, 128)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_wvno2"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_s5gi4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_twd8f")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_54lw0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_c63yl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_aejdh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_iei6l")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ab1c7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_deule")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_anmhe")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rys0b")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_05e4b")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qwxni")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pekir")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6jdn6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cjfuv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hobo8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uj82w")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yg8wv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qyqg8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6gurt")
+}],
+"loop": true,
+"name": &"parrot",
+"speed": 5.0
+}]
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_57rp4"]
 shader = ExtResource("7_j4y43")
 shader_parameter/alpha_toggle = 1.0
@@ -52,15 +221,44 @@ shader_parameter/fill_color = Color(0, 0, 0, 1)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_j4y43"]
 shader = ExtResource("7_j4y43")
-shader_parameter/alpha_toggle = 0.0
+shader_parameter/alpha_toggle = 1.0
 shader_parameter/fill_color = Color(0, 0, 0, 1)
-
-[sub_resource type="LabelSettings" id="LabelSettings_7bvsb"]
-font = ExtResource("2_3i1b0")
-font_size = 80
 
 [node name="AT" type="Node2D" unique_id=2090441174]
 script = ExtResource("1_eqxh7")
+
+[node name="background" type="Control" parent="." unique_id=1730131774]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="morning" type="TextureRect" parent="background" unique_id=1307422649]
+layout_mode = 0
+offset_right = 1260.0
+offset_bottom = 211.0
+texture = SubResource("GradientTexture2D_j4y43")
+
+[node name="day" type="TextureRect" parent="background" unique_id=2103375650]
+visible = false
+layout_mode = 0
+offset_right = 1260.0
+offset_bottom = 211.0
+texture = SubResource("GradientTexture2D_57rp4")
+
+[node name="evening" type="TextureRect" parent="background" unique_id=2086590862]
+visible = false
+layout_mode = 0
+offset_right = 1260.0
+offset_bottom = 211.0
+texture = SubResource("GradientTexture2D_g0vy5")
+
+[node name="black" type="TextureRect" parent="background" unique_id=1573909679]
+visible = false
+layout_mode = 0
+offset_right = 1260.0
+offset_bottom = 211.0
+texture = SubResource("GradientTexture2D_0a54d")
 
 [node name="layers" type="Control" parent="." unique_id=1744314770]
 layout_mode = 3
@@ -71,25 +269,59 @@ anchors_preset = 0
 offset_right = 1260.0
 offset_bottom = 211.0
 
-[node name="morning_back" type="TextureRect" parent="layers/normal" unique_id=1307422649]
-layout_mode = 0
-offset_right = 1260.0
-offset_bottom = 211.0
-texture = SubResource("GradientTexture2D_j4y43")
-
-[node name="day_back" type="TextureRect" parent="layers/normal" unique_id=2103375650]
+[node name="bonus_waiting" type="Control" parent="layers" unique_id=678126581]
 visible = false
-layout_mode = 0
-offset_right = 1260.0
-offset_bottom = 211.0
-texture = SubResource("GradientTexture2D_57rp4")
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+theme = SubResource("Theme_g0vy5")
+script = ExtResource("3_0a54d")
 
-[node name="evening_back" type="TextureRect" parent="layers/normal" unique_id=2086590862]
-visible = false
+[node name="bonus" type="Label" parent="layers/bonus_waiting" unique_id=1310741168]
 layout_mode = 0
-offset_right = 1260.0
-offset_bottom = 211.0
-texture = SubResource("GradientTexture2D_g0vy5")
+offset_left = 132.0
+offset_top = 32.0
+offset_right = 695.0
+offset_bottom = 183.0
+scale = Vector2(1e-05, 1e-05)
+pivot_offset = Vector2(281, 75)
+text = "BONUS"
+
+[node name="kaku" type="Label" parent="layers/bonus_waiting" unique_id=524355723]
+layout_mode = 0
+offset_left = -150.0
+offset_top = 32.0
+offset_bottom = 183.0
+text = "確"
+
+[node name="tei" type="Label" parent="layers/bonus_waiting" unique_id=2050788551]
+layout_mode = 0
+offset_left = 1260.0
+offset_top = 31.5
+offset_right = 1410.0
+offset_bottom = 182.5
+text = "定"
+
+[node name="preparing" type="Control" parent="layers/bonus_waiting" unique_id=947297489]
+anchors_preset = 0
+offset_left = -1312.0
+offset_right = 1312.0
+offset_bottom = 76.0
+
+[node name="wait1" type="Label" parent="layers/bonus_waiting/preparing" unique_id=1154965166]
+layout_mode = 0
+offset_right = 1312.0
+offset_bottom = 76.0
+theme_override_font_sizes/font_size = 75
+text = "BONUS準備中　　BONUS準備中　　"
+
+[node name="wait2" type="Label" parent="layers/bonus_waiting/preparing" unique_id=913214964]
+layout_mode = 0
+offset_left = 1312.0
+offset_right = 2624.0
+offset_bottom = 76.0
+theme_override_font_sizes/font_size = 75
+text = "BONUS準備中　　BONUS準備中　　"
 
 [node name="char_select" type="Control" parent="layers" unique_id=1825266970]
 visible = false
@@ -123,66 +355,87 @@ text = "最終告知"
 horizontal_alignment = 1
 
 [node name="in_bonus" type="Control" parent="layers" unique_id=1879864853]
-visible = false
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 theme = SubResource("Theme_0hfuy")
+script = ExtResource("7_wvno2")
 
 [node name="playing" type="Control" parent="layers/in_bonus" unique_id=1076145002]
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="GAME" type="Label" parent="layers/in_bonus/playing" unique_id=1840283884]
+[node name="Panel" type="Panel" parent="layers/in_bonus/playing" unique_id=1773760380]
 layout_mode = 0
+offset_right = 448.0
+offset_bottom = 211.0
+
+[node name="GAME" type="Control" parent="layers/in_bonus/playing" unique_id=839253139]
+anchors_preset = 0
 offset_left = 10.0
 offset_top = 10.0
-offset_right = 207.0
-offset_bottom = 74.0
+offset_right = 10.0
+offset_bottom = 10.0
+
+[node name="head" type="Label" parent="layers/in_bonus/playing/GAME" unique_id=1840283884]
+layout_mode = 0
+offset_right = 184.0
+offset_bottom = 64.0
 text = "GAME"
 
-[node name="LAST_GAME" type="Label" parent="layers/in_bonus/playing" unique_id=417056863]
+[node name="status" type="Label" parent="layers/in_bonus/playing/GAME" unique_id=417056863]
+custom_minimum_size = Vector2(208, 64)
 layout_mode = 0
-offset_left = 230.0
-offset_top = 10.0
-offset_right = 438.0
-offset_bottom = 80.0
+offset_left = 220.0
+offset_right = 428.0
+offset_bottom = 64.0
+text = "999G"
 
-[node name="GET" type="Label" parent="layers/in_bonus/playing" unique_id=1446709603]
-layout_mode = 0
+[node name="GET" type="Control" parent="layers/in_bonus/playing" unique_id=177811071]
+anchors_preset = 0
 offset_left = 30.0
 offset_top = 90.0
-offset_right = 176.0
-offset_bottom = 159.0
+offset_right = 70.0
+offset_bottom = 130.0
+
+[node name="head" type="Label" parent="layers/in_bonus/playing/GET" unique_id=1446709603]
+layout_mode = 0
+offset_right = 146.0
+offset_bottom = 69.0
 text = "GET"
 
-[node name="GET_PAY" type="Label" parent="layers/in_bonus/playing" unique_id=1185558277]
+[node name="status" type="Label" parent="layers/in_bonus/playing/GET" unique_id=1185558277]
+custom_minimum_size = Vector2(203, 64)
 layout_mode = 0
-offset_left = 230.0
-offset_top = 91.0
-offset_right = 433.0
-offset_bottom = 163.0
-text = "0"
+offset_left = 200.0
+offset_right = 403.0
+offset_bottom = 64.0
+text = "999"
 
-[node name="TOTAL" type="Label" parent="layers/in_bonus/playing" unique_id=1104059702]
-layout_mode = 0
+[node name="TOTAL" type="Control" parent="layers/in_bonus/playing" unique_id=2007388865]
+anchors_preset = 0
 offset_left = 18.0
 offset_top = 162.0
-offset_right = 193.0
-offset_bottom = 212.0
+offset_right = 58.0
+offset_bottom = 202.0
+
+[node name="head" type="Label" parent="layers/in_bonus/playing/TOTAL" unique_id=1104059702]
+layout_mode = 0
+offset_right = 175.0
+offset_bottom = 50.0
 theme_override_fonts/font = ExtResource("4_28emo")
 theme_override_font_sizes/font_size = 50
 text = "TOTAL"
 
-[node name="TOTAL_PAY" type="Label" parent="layers/in_bonus/playing" unique_id=411934744]
+[node name="status" type="Label" parent="layers/in_bonus/playing/TOTAL" unique_id=411934744]
 layout_mode = 0
-offset_left = 242.0
-offset_top = 162.0
-offset_right = 417.0
-offset_bottom = 212.0
+offset_left = 211.0
+offset_right = 386.0
+offset_bottom = 50.0
 theme_override_fonts/font = ExtResource("4_28emo")
 theme_override_font_sizes/font_size = 50
+text = "99999"
 
 [node name="result" type="Control" parent="layers/in_bonus" unique_id=668986227]
 anchors_preset = 0
@@ -190,16 +443,21 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="AT" type="Control" parent="layers" unique_id=318852365]
+visible = false
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 theme = SubResource("Theme_28emo")
 
 [node name="playing" type="Control" parent="layers/AT" unique_id=2095989021]
-visible = false
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
+
+[node name="Panel" type="Panel" parent="layers/AT/playing" unique_id=2138469403]
+layout_mode = 0
+offset_right = 513.0
+offset_bottom = 211.0
 
 [node name="LEFT" type="Label" parent="layers/AT/playing" unique_id=1830338279]
 layout_mode = 0
@@ -213,8 +471,9 @@ text = "LEFT"
 layout_mode = 0
 offset_left = 230.0
 offset_top = 10.0
-offset_right = 438.0
+offset_right = 477.0
 offset_bottom = 80.0
+text = "9999"
 
 [node name="TOTAL" type="Label" parent="layers/AT/playing" unique_id=71360764]
 layout_mode = 0
@@ -230,28 +489,12 @@ offset_left = 230.0
 offset_top = 91.0
 offset_right = 431.0
 offset_bottom = 169.0
+text = "99999"
 
 [node name="result" type="Control" parent="layers/AT" unique_id=314888421]
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
-
-[node name="shatter" type="Control" parent="." unique_id=2027273629]
-layout_mode = 3
-anchors_preset = 0
-script = ExtResource("6_4kndm")
-
-[node name="shatter_l" type="Sprite2D" parent="shatter" unique_id=827959467]
-material = SubResource("ShaderMaterial_57rp4")
-position = Vector2(-807, 0)
-texture = ExtResource("6_28emo")
-centered = false
-
-[node name="shatter_r" type="Sprite2D" parent="shatter" unique_id=1534282084]
-material = SubResource("ShaderMaterial_j4y43")
-position = Vector2(1260, 0)
-texture = ExtResource("6_28emo")
-centered = false
 
 [node name="test" type="Control" parent="." unique_id=428275691]
 visible = false
@@ -291,3 +534,53 @@ offset_top = 118.0
 offset_right = 547.0
 offset_bottom = 203.0
 label_settings = SubResource("LabelSettings_7bvsb")
+
+[node name="portrit" type="Control" parent="." unique_id=1871905443]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="parrot" type="AnimatedSprite2D" parent="portrit" unique_id=699929761]
+visible = false
+position = Vector2(950, -44)
+scale = Vector2(2, 2)
+sprite_frames = SubResource("SpriteFrames_wvno2")
+animation = &"parrot"
+speed_scale = 8.0
+centered = false
+flip_h = true
+
+[node name="reverseparrot" type="AnimatedSprite2D" parent="portrit" unique_id=345750171]
+visible = false
+position = Vector2(73, -44)
+scale = Vector2(2, 2)
+sprite_frames = SubResource("SpriteFrames_wvno2")
+animation = &"parrot"
+speed_scale = 8.0
+centered = false
+
+[node name="turtle" type="Sprite2D" parent="portrit" unique_id=1792114050]
+visible = false
+position = Vector2(73, 18)
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("7_57rp4")
+centered = false
+flip_h = true
+
+[node name="shatter" type="Control" parent="." unique_id=2027273629]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("6_4kndm")
+
+[node name="shatter_l" type="Sprite2D" parent="shatter" unique_id=827959467]
+material = SubResource("ShaderMaterial_57rp4")
+position = Vector2(-807, 0)
+texture = ExtResource("6_28emo")
+centered = false
+
+[node name="shatter_r" type="Sprite2D" parent="shatter" unique_id=1534282084]
+material = SubResource("ShaderMaterial_j4y43")
+position = Vector2(1260, 0)
+texture = ExtResource("6_28emo")
+centered = false

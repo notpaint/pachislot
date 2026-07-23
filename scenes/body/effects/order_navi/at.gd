@@ -25,7 +25,7 @@ var premonition_map: Dictionary = {}
 var premonition_pool: Array = []
 
 var fake_pre_left: int
-var pre_left: int = -1:
+var pre_left: int = 2:
 	set(value):
 		if pre_left == value:
 			return
@@ -36,7 +36,7 @@ var release_game: int = -1:
 	set(value):
 		release_game = value
 		release_game_update.emit(value)
-var pre_bonus: String = "None" #None, RB, redBB
+var pre_bonus: String = "redBB" #None, RB, redBB
 
 var base_state: String = "normal":#normal, AT
 	set(value):

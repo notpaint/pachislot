@@ -20,9 +20,12 @@ func _ready() -> void:
 	# shatter_l.position.x = l_pos_x[0]
 	shatter_r.position.x = r_pos_x[0]
 
+
 func in_bonus_shatter():
 
 	await move_shatter("both", 0, 3, 0.2)
+
+	shatter_closed.emit()
 
 	await move_shatter("both", 3, 2, 0.5, Tween.TRANS_CUBIC, Tween.EASE_IN)
 
@@ -35,6 +38,7 @@ func close_shatter():
 	for n in [l_tween, r_tween]: if n: n.kill()
 
 	await move_shatter("both", 0, 3, 0.2)
+
 
 func move_shatter(
 	side: String,

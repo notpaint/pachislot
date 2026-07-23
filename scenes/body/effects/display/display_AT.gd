@@ -8,6 +8,8 @@ extends Node2D
 @onready var layer_root = $"layers"
 @onready var char_select = $"layers/char_select"
 @onready var shatter = $"shatter"
+@onready var background = $"background"
+@onready var portrit = $"portrit"
 
 var mainROM: Node
 var order_node: Node
@@ -64,6 +66,8 @@ func _ready():
 		connect_to_order_node(order_node)
 	if char_select:
 		char_select.character.connect(_on_character)
+	if shatter:
+		pass
 
 
 func connect_to_order_node(node):
@@ -186,6 +190,10 @@ func _on_maxbet():
 
 	match play_state:
 
+		"normal":
+			if first_bet:
+				switch_layers("normal")
+
 		"bonus_waiting":
 			if first_bet:
 				first_bet = false
@@ -219,14 +227,8 @@ func _on_bonus_pre(value):
 func _on_bonus_left(value):
 	bonus_game = value
 
-	if not showing_layer or showing_layer.name != "in_bonus":
-		return
-
-	var playing = showing_layer.get_node_or_null("playing")
-	if not playing or not playing.visible:
-		return
-	
-	playing.get_node("LAST_GAME").text = "%dG" % bonus_game
+	if not showing_layer or showing_layer.name == "in_bonus":
+		showing_layer.update_bonus_game(value)
 
 
 func _on_bonus_payout(value):
@@ -285,6 +287,7 @@ func _on_character(char_name: String):
 func force_music_start():
 	match play_state:
 		"bonus_waiting":
+			switch_layers("bonus_waiting")
 			audio.back_music("bonus_waiting")
 		"in_bonus":
 			audio.back_music("silent")
@@ -314,26 +317,26 @@ func switch_layers(layer: String) -> void:
 
 	match layer:
 
+		"normal":
+			switch_background("morning")
+
 		"bonus_waiting":
 			shatter.in_bonus_shatter()
+			await shatter.shatter_closed
+			switch_background("black")
+			for image in portrit.get_children():
+				image.visible = false
+
+			await get_tree().create_timer(1.5).timeout
+
+			showing_layer.first_part()
 
 		"char_select":
 			pass
 
 		"in_bonus":
-			showing_layer.get_node("playing").visible = true
-			showing_layer.get_node("result").visible = false
-
-			showing_layer.get_node("playing/LAST_GAME").text = "%dG" % bonus_game
-			showing_layer.get_node("playing/GET_PAY").text = str(0)
-			if total_get_target <= 250:
-				showing_layer.get_node("playing/TOTAL").visible = false
-				showing_layer.get_node("playing/TOTAL_PAY").visible = false
-			else:
-				showing_layer.get_node("playing/TOTAL").visible = true
-				showing_layer.get_node("playing/TOTAL_PAY").visible = true
-				showing_layer.get_node("playing/TOTAL_PAY").text = str(total_get_target)
-
+			switch_background("morning")
+			showing_layer.start_bonus(bonus_game)
 
 		"AT":
 			showing_layer.get_node("playing").visible = true
@@ -342,6 +345,10 @@ func switch_layers(layer: String) -> void:
 			showing_layer.get_node("playing/LEFT_GAME").text = "%dG" % AT_game
 			showing_layer.get_node("playing/TOTAL_PAY").text = str(total_get_target)
 
+
+func switch_background(back: String) -> void:
+	for child in background.get_children():
+		child.visible = (child.name == back)
 
 func in_bonus_layer():
 	pass
