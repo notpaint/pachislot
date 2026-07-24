@@ -22,14 +22,6 @@ CREATE TABLE back_music(
     path TEXT
 );
 
-CREATE TABLE RT_music(
-    RT TEXT,
-    rule TEXT,
-    track_name TEXT,
-    start TEXT,
-    end TEXT
-);
-
 CREATE TABLE flag_trigger(
     flag TEXT,
     type TEXT,
@@ -73,4 +65,13 @@ CREATE TABLE premonition_map(
     is_win INT,
     game INT,
     weight INT
-)
+);
+
+CREATE TABLE stage_map(
+    type TEXT,
+    route INT,
+    is_win INT,
+    game INT,
+    effect TEXT,
+    weight INT
+);

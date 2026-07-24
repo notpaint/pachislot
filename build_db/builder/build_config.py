@@ -64,3 +64,4 @@ class SubBuildConfig:
     flag_trigger: dict = field(default_factory=dict)
     pseudo_bonus_mode:dict = field(default_factory=dict)
     premonition_map: dict = field(default_factory=dict)
+    stage_map: dict = field(default_factory=dict)

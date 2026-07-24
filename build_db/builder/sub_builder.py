@@ -81,6 +81,21 @@ def generate_premonition_map(cursor_main, cursor_sub, config):
                                            VALUES
                                            (?, ?, ?, ?, ?, ?)""", (type, trigger, flag, is_win, game, weight))
 
+def generate_stage_map(cursor_sub, config):
+    for type, route_data in config.stage_map.items():
+        for route_key, win_data in route_data.items():
+            if isinstance(route_key, str) and route_key.startswith("route"):
+                route = int(route_key.replace("route", ""))
+            else:
+                route = int(route_key)
+            for win_key, game_data in win_data.items():
+                is_win = 1 if win_key == True else 0
+                for game, effect_data in game_data.items():
+                    for effect, weight in effect_data.items():
+                        cursor_sub.execute("""INSERT OR IGNORE INTO stage_map(type, route, is_win, game, effect, weight)
+                                VALUES(?, ?, ?, ?, ?, ?)""", (type, route, is_win, game, effect, weight))
+
+
 
             
 def generate_env(cursor_sub, config):
@@ -113,6 +128,7 @@ def build_sub(config):
     generate_flag_trigger(cursor_main, cursor_sub, config)
     generate_pseudo_bonus_mode(cursor_sub, config)
     generate_premonition_map(cursor_main, cursor_sub, config)
+    generate_stage_map(cursor_sub, config)
 
     conn_sub.commit()
     conn_sub.close()

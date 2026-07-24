@@ -25,27 +25,27 @@ var premonition_map: Dictionary = {}
 var premonition_pool: Array = []
 
 var fake_pre_left: int
-var pre_left: int = 2:
+var pre_left: int = -1: #-1
 	set(value):
 		if pre_left == value:
 			return
 		pre_left = value
 		left_pre.emit(value)
 
-var release_game: int = -1:
+var release_game: int = -1: #-1
 	set(value):
 		release_game = value
 		release_game_update.emit(value)
-var pre_bonus: String = "redBB" #None, RB, redBB
+var pre_bonus: String = "None" #None, RB, redBB
 
-var base_state: String = "normal":#normal, AT
+var base_state: String = "AT":#normal, AT
 	set(value):
 		if base_state == value:
 			return
 		base_state = value
 		base_state_update.emit(value)
 
-var play_state: String = "normal": #normal, AT, bonus_waiting, in_bonus
+var play_state: String = "AT": #normal, AT, bonus_waiting, in_bonus
 	set(value):
 		if play_state == value:
 			return
@@ -78,7 +78,7 @@ var bonus_get: int = 0:
 		bonus_payout.emit(value)
 		
 
-var AT_game: int = 0:
+var AT_game: int = 300:
 	set(value):
 		if AT_game == value:
 			return
@@ -482,6 +482,7 @@ func flag_condi(flag_data):
 	if condi_rand < weight:
 		if bonus_condi == "high":
 			condi_game = 0
+		print("MODE UP")
 		bonus_condi = "high"
 
 

@@ -41,7 +41,7 @@ var bonus_get: int = 0:
 		bonus_get = value
 		# bonus_get_update()
 
-var stage_game: int = 0
+var stage_game: int = -1
 
 # var bonus_get_target: int = 0
 
@@ -134,6 +134,8 @@ func _on_flaged(value):
 
 		"AT":
 			navi_game = true
+			if stage_game > 0:
+				stage_game -= 1
 			bell_navi()
 
 
@@ -169,7 +171,8 @@ func _on_bonus_wait():
 	first_bet = true
 
 func _on_bonus_condi(condi):
-	pass
+	current_bonus_condi = condi
+	stage_game = 3
 
 
 func _on_bonus_start(bonus, game):
@@ -185,9 +188,7 @@ func _on_bonus_start(bonus, game):
 
 func _on_bonus_ended(bonus):
 	if showing_layer and showing_layer.name == "in_bonus":
-		print("1st")
 		if showing_layer.bonus_updating == true:
-			print("2nd")
 			mainROM.bet_block += 1
 			await showing_layer.bonus_updated
 			mainROM.bet_block -= 1
@@ -227,6 +228,10 @@ func _on_maxbet():
 				first_bet = false
 				audio.back_music("itadaki_start")
 				switch_layers("AT")
+			
+			if stage_game == 0:
+				stage_game = -1
+				switch_background("day")
 
 
 
