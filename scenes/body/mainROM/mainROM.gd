@@ -49,6 +49,7 @@ var bet_block: int = 0:
 		if bet_block == 0:
 			bet_release.emit()
 
+var stopped_count: int = 0
 var is_spinning = [false, false, false]
 var can_stop_reel : Array = [false, false, false]
 
@@ -184,12 +185,15 @@ func _unhandled_input(event):
 		maxbet()
 	if event.is_action_pressed("stop_left"):
 		if not result_flag == "None":
+			print("左")
 			try_stop_reel(0)
 	if event.is_action_pressed("stop_center"):
-		if not result_flag == "None":	
+		if not result_flag == "None":
+			print("中")	
 			try_stop_reel(1)
 	if event.is_action_pressed("stop_right"):
-		if not result_flag == "None":	
+		if not result_flag == "None":
+			print("右")	
 			try_stop_reel(2)
 
 	if event.is_action_pressed("debug"):
@@ -355,6 +359,8 @@ func try_stop_reel(reel_pos):
 
 	stop_button.emit(reel_pos)
 
+	stopped_count += 1
+
 	var reel = reels[reel_pos]
 	var current_pixel = reel.position.y
 	var raw_ID = get_raw_ID(current_pixel)
@@ -362,7 +368,7 @@ func try_stop_reel(reel_pos):
 	var slide = 0
 	var supposed_symbols : Array = get_supposed_symbols(base_ID, reel_pos)
 	
-	if is_spinning[0] and is_spinning[1] and is_spinning[2]:
+	if stopped_count <= 1:
 		if result_roles.is_empty():
 			slide = current_control_table[0]["slide"][reel_pos][base_ID]
 			var target_ID = posmod(raw_ID + slide, pattern_sum)
@@ -868,6 +874,7 @@ func stop_reels(slide, current_pixel, raw_ID, reel_pos):
 func check_prize():
 
 	bet_medals = 0
+	stopped_count = 0
 
 	if JAC_game:
 		JAC_counter[1] -= 1

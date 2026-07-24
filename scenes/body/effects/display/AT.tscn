@@ -58,6 +58,10 @@ default_font_size = 100
 default_font = ExtResource("2_3i1b0")
 default_font_size = 64
 
+[sub_resource type="LabelSettings" id="LabelSettings_wvno2"]
+font = ExtResource("2_3i1b0")
+font_size = 120
+
 [sub_resource type="Theme" id="Theme_28emo"]
 default_font = ExtResource("2_3i1b0")
 default_font_size = 64
@@ -443,6 +447,29 @@ anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
+[node name="Panel" type="Panel" parent="layers/in_bonus/result" unique_id=1847832834]
+layout_mode = 0
+offset_right = 772.0
+offset_bottom = 211.0
+
+[node name="head" type="Label" parent="layers/in_bonus/result" unique_id=1487012634]
+layout_mode = 0
+offset_left = 93.0
+offset_top = 43.0
+offset_right = 367.0
+offset_bottom = 163.0
+text = "GET"
+label_settings = SubResource("LabelSettings_wvno2")
+
+[node name="status" type="Label" parent="layers/in_bonus/result" unique_id=1467769004]
+layout_mode = 0
+offset_left = 423.0
+offset_top = 43.0
+offset_right = 697.0
+offset_bottom = 163.0
+text = "300"
+label_settings = SubResource("LabelSettings_wvno2")
+
 [node name="AT" type="Control" parent="layers" unique_id=318852365]
 visible = false
 anchors_preset = 0
@@ -496,6 +523,29 @@ text = "99999"
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
+
+[node name="Panel" type="Panel" parent="layers/AT/result" unique_id=1428023306]
+layout_mode = 0
+offset_right = 772.0
+offset_bottom = 211.0
+
+[node name="head" type="Label" parent="layers/AT/result" unique_id=167607716]
+layout_mode = 0
+offset_left = 93.0
+offset_top = 43.0
+offset_right = 367.0
+offset_bottom = 163.0
+text = "GET"
+label_settings = SubResource("LabelSettings_wvno2")
+
+[node name="status" type="Label" parent="layers/AT/result" unique_id=1691215538]
+layout_mode = 0
+offset_left = 423.0
+offset_top = 43.0
+offset_right = 697.0
+offset_bottom = 163.0
+text = "300"
+label_settings = SubResource("LabelSettings_wvno2")
 
 [node name="test" type="Control" parent="." unique_id=428275691]
 visible = false

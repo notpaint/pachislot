@@ -11,7 +11,7 @@ extends Node2D
 @onready var background = $"background"
 @onready var portrit = $"portrit"
 
-var mainROM: Node
+@onready var mainROM = $"../../../mainROM"
 var order_node: Node
 
 var first_bet: bool = true
@@ -31,6 +31,8 @@ var play_state: String:
 
 var showing_layer: Node
 
+
+var current_bonus_condi: String
 var bonus_game: int = 0
 var bonus_get: int = 0:
 	set(value):
@@ -38,6 +40,8 @@ var bonus_get: int = 0:
 			return
 		bonus_get = value
 		# bonus_get_update()
+
+var stage_game: int = 0
 
 # var bonus_get_target: int = 0
 
@@ -79,6 +83,7 @@ func connect_to_order_node(node):
 	_connect_signal(node, "mode_update", _on_mode_update)
 	_connect_signal(node, "bonus_wait", _on_bonus_wait)
 	#bonus
+	_connect_signal(node, "bonus_condi_update", _on_bonus_condi)
 	_connect_signal(node, "bonus_start", _on_bonus_start)
 	_connect_signal(node, "bonu_pre", _on_bonus_pre)
 	_connect_signal(node, "bonus_left", _on_bonus_left)
@@ -163,6 +168,10 @@ func _on_play_state_update(value):
 func _on_bonus_wait():
 	first_bet = true
 
+func _on_bonus_condi(condi):
+	pass
+
+
 func _on_bonus_start(bonus, game):
 	audio.back_music("silent")
 	current_bonus = bonus
@@ -175,6 +184,14 @@ func _on_bonus_start(bonus, game):
 		switch_layers("char_select")
 
 func _on_bonus_ended(bonus):
+	if showing_layer and showing_layer.name == "in_bonus":
+		print("1st")
+		if showing_layer.bonus_updating == true:
+			print("2nd")
+			mainROM.bet_block += 1
+			await showing_layer.bonus_updated
+			mainROM.bet_block -= 1
+	showing_layer.end_bonus(total_get)
 	audio.end_bonus(bonus)
 
 func _on_AT_start():

@@ -482,7 +482,6 @@ func flag_condi(flag_data):
 	if condi_rand < weight:
 		if bonus_condi == "high":
 			condi_game = 0
-		print("MODE UP")
 		bonus_condi = "high"
 
 
@@ -613,7 +612,6 @@ func end_bonus():
 
 	current_bonus = "None"
 
-	bonus_get = 0
 	current_game = 0
 	premonition_map.clear()
 
@@ -623,6 +621,11 @@ func end_bonus():
 		play_state = "AT"
 	else:
 		play_state = "normal"
+
+	await flaged
+
+	bonus_get = 0
+
 	
 
 func _on_maxbet_pushed():
