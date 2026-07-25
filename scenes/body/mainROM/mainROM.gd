@@ -185,15 +185,12 @@ func _unhandled_input(event):
 		maxbet()
 	if event.is_action_pressed("stop_left"):
 		if not result_flag == "None":
-			print("左")
 			try_stop_reel(0)
 	if event.is_action_pressed("stop_center"):
 		if not result_flag == "None":
-			print("中")	
 			try_stop_reel(1)
 	if event.is_action_pressed("stop_right"):
 		if not result_flag == "None":
-			print("右")	
 			try_stop_reel(2)
 
 	if event.is_action_pressed("debug"):

@@ -17,7 +17,7 @@ signal shatter_closed()
 
 
 func _ready() -> void:
-	# shatter_l.position.x = l_pos_x[0]
+	shatter_l.position.x = l_pos_x[0]
 	shatter_r.position.x = r_pos_x[0]
 
 

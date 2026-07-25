@@ -13,6 +13,7 @@
 [ext_resource type="Shader" uid="uid://buwgbedofsm8r" path="res://scenes/body/effects/display/shader_script/shatter.gdshader" id="7_j4y43"]
 [ext_resource type="Script" uid="uid://c42y40pg0wjco" path="res://scenes/body/effects/display/AT/in_bonus.gd" id="7_wvno2"]
 [ext_resource type="FontFile" uid="uid://b576183gbjamx" path="res://assets/fonts/cp_period.otf" id="11_g0vy5"]
+[ext_resource type="Script" uid="uid://cy7d45oxu7ktq" path="res://scenes/body/effects/display/roulette.gd" id="14_pdki1"]
 
 [sub_resource type="Gradient" id="Gradient_4kndm"]
 offsets = PackedFloat32Array(0, 0.65, 1)
@@ -64,11 +65,7 @@ font_size = 120
 
 [sub_resource type="Theme" id="Theme_28emo"]
 default_font = ExtResource("2_3i1b0")
-default_font_size = 64
-
-[sub_resource type="LabelSettings" id="LabelSettings_7bvsb"]
-font = ExtResource("2_3i1b0")
-font_size = 80
+default_font_size = 55
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_s5gi4"]
 atlas = ExtResource("2_j4y43")
@@ -228,6 +225,10 @@ shader = ExtResource("7_j4y43")
 shader_parameter/alpha_toggle = 1.0
 shader_parameter/fill_color = Color(0, 0, 0, 1)
 
+[sub_resource type="Theme" id="Theme_wvno2"]
+default_font = ExtResource("11_g0vy5")
+default_font_size = 135
+
 [node name="AT" type="Node2D" unique_id=2090441174]
 script = ExtResource("1_eqxh7")
 
@@ -272,6 +273,7 @@ anchors_preset = 0
 anchors_preset = 0
 offset_right = 1260.0
 offset_bottom = 211.0
+localize_numeral_system = false
 
 [node name="bonus_waiting" type="Control" parent="layers" unique_id=678126581]
 visible = false
@@ -471,7 +473,6 @@ text = "300"
 label_settings = SubResource("LabelSettings_wvno2")
 
 [node name="AT" type="Control" parent="layers" unique_id=318852365]
-visible = false
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
@@ -484,42 +485,43 @@ offset_bottom = 40.0
 
 [node name="Panel" type="Panel" parent="layers/AT/playing" unique_id=2138469403]
 layout_mode = 0
-offset_right = 513.0
+offset_right = 423.0
 offset_bottom = 211.0
 
 [node name="LEFT" type="Label" parent="layers/AT/playing" unique_id=1830338279]
 layout_mode = 0
 offset_left = 15.0
 offset_top = 10.0
-offset_right = 200.0
-offset_bottom = 74.0
+offset_right = 159.0
+offset_bottom = 65.0
 text = "LEFT"
 
 [node name="LEFT_GAME" type="Label" parent="layers/AT/playing" unique_id=1558541198]
 layout_mode = 0
-offset_left = 230.0
+offset_left = 183.0
 offset_top = 10.0
-offset_right = 477.0
-offset_bottom = 80.0
+offset_right = 348.0
+offset_bottom = 65.0
 text = "9999"
 
 [node name="TOTAL" type="Label" parent="layers/AT/playing" unique_id=71360764]
 layout_mode = 0
 offset_left = 27.5
-offset_top = 90.0
-offset_right = 173.5
-offset_bottom = 159.0
+offset_top = 81.0
+offset_right = 144.5
+offset_bottom = 136.0
 text = "GET"
 
 [node name="TOTAL_PAY" type="Label" parent="layers/AT/playing" unique_id=125268645]
 layout_mode = 0
-offset_left = 230.0
-offset_top = 91.0
-offset_right = 431.0
-offset_bottom = 169.0
+offset_left = 183.0
+offset_top = 81.0
+offset_right = 389.0
+offset_bottom = 136.0
 text = "99999"
 
 [node name="result" type="Control" parent="layers/AT" unique_id=314888421]
+visible = false
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
@@ -547,45 +549,6 @@ offset_bottom = 163.0
 text = "300"
 label_settings = SubResource("LabelSettings_wvno2")
 
-[node name="test" type="Control" parent="." unique_id=428275691]
-visible = false
-layout_mode = 3
-anchors_preset = 0
-
-[node name="LEFT" type="Label" parent="test" unique_id=871947013]
-layout_mode = 0
-offset_left = 10.0
-offset_top = 10.0
-offset_right = 315.0
-offset_bottom = 95.0
-text = "left  "
-label_settings = SubResource("LabelSettings_7bvsb")
-
-[node name="left" type="Label" parent="test" unique_id=661973069]
-layout_mode = 0
-offset_left = 266.0
-offset_top = 10.0
-offset_right = 466.0
-offset_bottom = 95.0
-label_settings = SubResource("LabelSettings_7bvsb")
-
-[node name="BONUS" type="Label" parent="test" unique_id=483434534]
-layout_mode = 0
-offset_left = 10.0
-offset_top = 120.0
-offset_right = 311.0
-offset_bottom = 200.0
-text = "bonus"
-label_settings = SubResource("LabelSettings_7bvsb")
-
-[node name="bonus" type="Label" parent="test" unique_id=756035692]
-layout_mode = 0
-offset_left = 347.0
-offset_top = 118.0
-offset_right = 547.0
-offset_bottom = 203.0
-label_settings = SubResource("LabelSettings_7bvsb")
-
 [node name="portrit" type="Control" parent="." unique_id=1871905443]
 layout_mode = 3
 anchors_preset = 0
@@ -593,7 +556,6 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="parrot" type="AnimatedSprite2D" parent="portrit" unique_id=699929761]
-visible = false
 position = Vector2(950, -44)
 scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_wvno2")
@@ -635,3 +597,141 @@ material = SubResource("ShaderMaterial_j4y43")
 position = Vector2(1260, 0)
 texture = ExtResource("6_28emo")
 centered = false
+
+[node name="roulette" type="Control" parent="." unique_id=1119036630]
+clip_contents = true
+layout_mode = 3
+anchors_preset = 0
+offset_left = 470.0
+offset_right = 895.0
+offset_bottom = 211.0
+theme = SubResource("Theme_wvno2")
+script = ExtResource("14_pdki1")
+
+[node name="first" type="VBoxContainer" parent="roulette" unique_id=382702920]
+layout_mode = 0
+offset_top = -669.0
+offset_right = 425.0
+offset_bottom = -60.0
+theme_override_constants/separation = 100
+
+[node name="gekiatu" type="Label" parent="roulette/first" unique_id=1107341202]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 50
+text = "激熱"
+horizontal_alignment = 1
+
+[node name="add" type="Label" parent="roulette/first" unique_id=633038174]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 50
+text = "上乗せ"
+horizontal_alignment = 1
+
+[node name="chance" type="Label" parent="roulette/first" unique_id=246498516]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 50
+text = "好機"
+horizontal_alignment = 1
+
+[node name="loop" type="Control" parent="roulette" unique_id=1900154466]
+anchors_preset = 0
+offset_top = 39.0
+offset_bottom = 39.0
+
+[node name="second" type="VBoxContainer" parent="roulette/loop" unique_id=1126212953]
+layout_mode = 0
+offset_right = 425.0
+offset_bottom = 608.0
+theme_override_constants/separation = 100
+
+[node name="gekiatu" type="Label" parent="roulette/loop/second" unique_id=1865006313]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 50
+text = "激熱"
+horizontal_alignment = 1
+
+[node name="add" type="Label" parent="roulette/loop/second" unique_id=509683454]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 50
+text = "上乗せ"
+horizontal_alignment = 1
+
+[node name="chance" type="Label" parent="roulette/loop/second" unique_id=933814068]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 50
+text = "好機"
+horizontal_alignment = 1
+
+[node name="third" type="VBoxContainer" parent="roulette/loop" unique_id=1859376973]
+layout_mode = 0
+offset_top = -708.0
+offset_right = 425.0
+offset_bottom = -100.0
+theme_override_constants/separation = 100
+
+[node name="gekiatu" type="Label" parent="roulette/loop/third" unique_id=829304567]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 50
+text = "激熱"
+horizontal_alignment = 1
+
+[node name="add" type="Label" parent="roulette/loop/third" unique_id=1865953583]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 50
+text = "上乗せ"
+horizontal_alignment = 1
+
+[node name="chance" type="Label" parent="roulette/loop/third" unique_id=791069421]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 50
+text = "好機"
+horizontal_alignment = 1
+
+[node name="forth" type="VBoxContainer" parent="roulette/loop" unique_id=1970551351]
+layout_mode = 0
+offset_top = -1416.0
+offset_right = 425.0
+offset_bottom = -808.0
+theme_override_constants/separation = 100
+
+[node name="gekiatu" type="Label" parent="roulette/loop/forth" unique_id=951646094]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 50
+text = "激熱"
+horizontal_alignment = 1
+
+[node name="add" type="Label" parent="roulette/loop/forth" unique_id=121239152]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 50
+text = "上乗せ"
+horizontal_alignment = 1
+
+[node name="chance" type="Label" parent="roulette/loop/forth" unique_id=1476212696]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 50
+text = "好機"
+horizontal_alignment = 1

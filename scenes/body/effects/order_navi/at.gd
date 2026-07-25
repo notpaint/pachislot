@@ -7,7 +7,7 @@ var mode_data: Dictionary = {}
 var flag_trigger: Dictionary = {}
 var premonition_data: Dictionary = {}
 
-var current_game: int = 70:
+var current_game: int = 0:
 	set(value):
 		if current_game == value:
 			return
@@ -208,8 +208,10 @@ func _on_flag(value):
 		"penalty":
 			pass
 
-	print("ゲーム数", current_game)
-	print("規定ゲーム数", release_game)
+	if premonition_pool.size() > 0:
+		print(premonition_pool)
+
+	print("残り前兆", pre_left)
 
 	flaged.emit(value)
 
@@ -282,6 +284,7 @@ func start_premonition(length: int, type: String):
 		print("前兆開始 type:", type, "length:", length)
 		if type != "None":
 			drawing_mode(current_mode)
+			print("本前兆")
 		return
 
 	if type == "None":
