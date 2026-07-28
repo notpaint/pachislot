@@ -1,6 +1,7 @@
 extends Node
 
 @onready var effects = $"../.."
+@onready var audio = $"../../audio"
 @onready var mainROM = $"../../../mainROM"
 
 var bonus_variety:Array = []
@@ -16,6 +17,8 @@ var get_bonus_payout: int = 0:
 var JAC_counter: Array = []
 
 var bet_medals: int = 0
+
+var bonus: String = ""
 
 var active_bonus: String = "":
 	set(value):
@@ -38,7 +41,9 @@ func _ready() -> void:
 func _on_prized(value):
 	if value:
 		if value["name"] in bonus_variety:
+			bonus = value["name"]
 			await get_tree().process_frame
+			audio.play_bonus(bonus)
 			switch_bonus(value)
 
 	if active_bonus == "BB":
@@ -71,6 +76,7 @@ func end_bonus():
 	last_bonus_payout = 0
 	get_bonus_payout = 0
 	JAC_counter = []
+	audio.end_bonus(bonus)
 	effects.reset_game_count()
 
 func _on_medal_bet(_value):

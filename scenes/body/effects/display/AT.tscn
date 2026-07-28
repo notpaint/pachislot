@@ -15,12 +15,12 @@
 [ext_resource type="FontFile" uid="uid://b576183gbjamx" path="res://assets/fonts/cp_period.otf" id="11_g0vy5"]
 [ext_resource type="Script" uid="uid://cy7d45oxu7ktq" path="res://scenes/body/effects/display/roulette.gd" id="14_pdki1"]
 
-[sub_resource type="Gradient" id="Gradient_4kndm"]
+[sub_resource type="Gradient" id="Gradient_pdki1"]
 offsets = PackedFloat32Array(0, 0.65, 1)
 colors = PackedColorArray(0.4117647, 0.56078434, 0.85490197, 1, 0.13725491, 0.35686275, 0.78431374, 1, 0, 0, 0.5019608, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_j4y43"]
-gradient = SubResource("Gradient_4kndm")
+gradient = SubResource("Gradient_pdki1")
 fill_from = Vector2(1, 1)
 
 [sub_resource type="Gradient" id="Gradient_j4y43"]
@@ -237,6 +237,7 @@ layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
+metadata/_edit_lock_ = true
 
 [node name="morning" type="TextureRect" parent="background" unique_id=1307422649]
 layout_mode = 0
@@ -245,14 +246,12 @@ offset_bottom = 211.0
 texture = SubResource("GradientTexture2D_j4y43")
 
 [node name="day" type="TextureRect" parent="background" unique_id=2103375650]
-visible = false
 layout_mode = 0
 offset_right = 1260.0
 offset_bottom = 211.0
 texture = SubResource("GradientTexture2D_57rp4")
 
 [node name="evening" type="TextureRect" parent="background" unique_id=2086590862]
-visible = false
 layout_mode = 0
 offset_right = 1260.0
 offset_bottom = 211.0
@@ -266,6 +265,7 @@ offset_bottom = 211.0
 texture = SubResource("GradientTexture2D_0a54d")
 
 [node name="layers" type="Control" parent="." unique_id=1744314770]
+visible = false
 layout_mode = 3
 anchors_preset = 0
 
@@ -565,7 +565,6 @@ centered = false
 flip_h = true
 
 [node name="reverseparrot" type="AnimatedSprite2D" parent="portrit" unique_id=345750171]
-visible = false
 position = Vector2(73, -44)
 scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_wvno2")
@@ -599,6 +598,7 @@ texture = ExtResource("6_28emo")
 centered = false
 
 [node name="roulette" type="Control" parent="." unique_id=1119036630]
+visible = false
 clip_contents = true
 layout_mode = 3
 anchors_preset = 0

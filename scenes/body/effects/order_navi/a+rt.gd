@@ -11,20 +11,41 @@ var RT_game: int:
 
 var bonus_variety: Array = []
 
+var bet_medals: int = 0
+
+var bonus: String = ""
+
 var get_bonus_payout: int = 0
 var last_bonus_payout:int = 0
 var JAC_counter: Array = []
 
 var current_RT: String = "RT0"
-var now_RT = false
+
+var now_RT: bool = false:
+	set(value):
+		if now_RT == value:
+			return
+		now_RT = value
+		on_now_RT.emit(value)
 
 var prized_role: String = ""
-var active_bonus: String = ""
+var active_bonus: String = "":
+	set(value):
+		if active_bonus == value:
+			return
+		active_bonus = value
+		active_bonus_up.emit(value)
+
+signal active_bonus_up(value)
+signal on_now_RT(value)
+signal BB_data(get_pay, last_pay)
+signal RB_data(jac)
 
 func _ready() -> void:
 	bonus_variety = main.bonus_variety
 
 func _on_medal_bet(_value):
+	bet_medals = min(3, bet_medals + 1)
 	if current_RT == "RT1":
 		audio.back_music("RT1")
 
@@ -32,8 +53,8 @@ func _on_now_RT(value):
 	current_RT = value
 	if value == "RT1" or value == "RT2":
 		now_RT = true
-	elif value == "RT0" and effects.current_bonus == "None":
-		if now_RT:
+	elif value == "RT0":
+		if now_RT and effects.current_bonus == "None":
 			audio.back_music("RT_end", true)
 		now_RT = false
 
@@ -45,6 +66,12 @@ func _on_flag(value):
 
 	if active_bonus == "":
 		effects.count_up_game()
+
+	if active_bonus != "":
+		get_bonus_payout = max(0, get_bonus_payout - bet_medals)
+	bet_medals = 0
+	if active_bonus == "BB":
+		BB_data.emit(get_bonus_payout, last_bonus_payout)
 
 	order_navi.clear_navi()
 
@@ -65,7 +92,9 @@ func _on_prized(value):
 	if value:
 		prized_role = value["name"]
 		if prized_role in bonus_variety:
+			bonus = value["name"]
 			await get_tree().process_frame
+			audio.play_bonus(bonus)
 			switch_bonus()
 
 	if active_bonus != "":
@@ -74,12 +103,14 @@ func _on_prized(value):
 	if now_RT:
 		handle_RT(value)
 
+
 func handle_RT(value):
 
 	if effects.bonus_state and value == null:
 		audio.back_music("silent")
 	if prized_role == "SReplay":
 		audio.back_music("silent")
+
 
 func switch_bonus():
 
@@ -92,6 +123,7 @@ func switch_bonus():
 		JAC_counter = mainROM.JAC_counter.duplicate(true)
 		active_bonus = "RB"
 
+
 func handle_bonus(value):
 	
 	match active_bonus:
@@ -103,6 +135,8 @@ func handle_bonus(value):
 			get_bonus_payout += int(payout)
 			last_bonus_payout = max(0, last_bonus_payout - payout)
 
+			BB_data.emit(get_bonus_payout, last_bonus_payout)
+
 			if last_bonus_payout <= 0:
 				end_bonus()
 
@@ -111,6 +145,8 @@ func handle_bonus(value):
 			if value:
 				var payout = value["payout"]
 				get_bonus_payout += payout
+
+			RB_data.emit(JAC_counter)
 
 			if not JAC_counter.is_empty():
 				if JAC_counter[0] <= 0 or JAC_counter[1] <= 0:
@@ -121,5 +157,6 @@ func end_bonus():
 	last_bonus_payout = 0
 	get_bonus_payout = 0
 	JAC_counter = []
+	audio.end_bonus(bonus)
 	effects.reset_game_count()
 		

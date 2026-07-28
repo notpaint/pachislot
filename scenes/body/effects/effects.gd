@@ -172,18 +172,18 @@ func _on_bonus_est(value):
 func _on_bonus_prized(value):
 	current_bonus = value
 	bonus_state = null
-	if display_node and display_node.has_method("_on_bonus_prized"):
-		display_node._on_bonus_prized(value)
-	if value != "None":
-		audio.play_bonus(value)
+	# if display_node and display_node.has_method("_on_bonus_prized"):
+	# 	display_node._on_bonus_prized(value)
+	# if value != "None":
+	# 	audio.play_bonus(value)
 	if value == "None":
 		print("bonus_end: effects")
 		jac_counter = 0
 
 
-func _on_bonus_end(value):
-	if value != "None":
-		audio.end_bonus(value)
+func _on_bonus_end(_value):
+	# if value != "None":
+	# 	audio.end_bonus(value)
 	current_bonus = "None"
 
 func _on_medal_bet(value):
