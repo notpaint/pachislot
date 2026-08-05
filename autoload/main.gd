@@ -6,7 +6,8 @@ var db_path = ""
 var db_path_dict = {
 	"A": "res://db/A/main.db",
 	"AT": "res://db/AT/main.db",
-	"A+RT": "res://db/A+RT/main.db"
+	"A+RT": "res://db/A+RT/main.db",
+	"A+ART": "res://db/A+ART/main.db"
 }
 
 const pattern_sum : int = 21

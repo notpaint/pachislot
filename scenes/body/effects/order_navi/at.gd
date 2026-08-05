@@ -1,6 +1,7 @@
 extends Node
 
 @onready var effects = $"../.."
+@onready var audio = $"../../audio"
 @onready var order_navi = $"../../order_navi"
 
 var mode_data: Dictionary = {}
@@ -38,14 +39,14 @@ var release_game: int = -1: #-1
 		release_game_update.emit(value)
 var pre_bonus: String = "None" #None, RB, redBB
 
-var base_state: String = "AT":#normal, AT
+var base_state: String = "normal":#normal, AT
 	set(value):
 		if base_state == value:
 			return
 		base_state = value
 		base_state_update.emit(value)
 
-var play_state: String = "AT": #normal, AT, bonus_waiting, in_bonus
+var play_state: String = "normal": #normal, AT, bonus_waiting, in_bonus
 	set(value):
 		if play_state == value:
 			return
@@ -97,7 +98,7 @@ var total_get: int = 0:
 var game_condi: String = "normal" #normal, extra
 
 var morning_mode = {
-	"Heaven": 256,
+	# "Heaven": 256,
 	"A": 102,
 	"B": 102,
 	"C": 26,
@@ -205,6 +206,12 @@ func _on_flag(value):
 
 			AT_game -= 1
 
+		"real":
+			current_game += 1
+
+
+
+		
 		"penalty":
 			pass
 
@@ -567,6 +574,9 @@ func _on_prized(value):
 	var payout: int
 	if value:
 		payout = int(value["payout"])
+		if value["name"] == "SBB":
+			await get_tree().process_frame
+			audio.play_bonus(value["name"])
 	match play_state:
 
 		"normal":
@@ -594,6 +604,7 @@ func _on_prized(value):
 				end_AT()
 			elif pre_left == 0:
 				check_premonition_pool()
+
 
 func check_premonition_pool() -> void:
 	pre_left = -1

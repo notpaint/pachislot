@@ -75,3 +75,12 @@ CREATE TABLE stage_map(
     effect TEXT,
     weight INT
 );
+
+CREATE TABLE target_box(
+    type TEXT,
+    status INT,
+    box TEXT,
+    score INT,
+    text INT,
+    weight INT
+);

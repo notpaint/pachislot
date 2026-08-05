@@ -4,6 +4,7 @@
 [ext_resource type="FontFile" uid="uid://b576183gbjamx" path="res://assets/fonts/cp_period.otf" id="2_j3mhr"]
 [ext_resource type="Texture2D" uid="uid://ccnbexah2xly2" path="res://assets/images/UI/sprite_sheet.png" id="3_t6x3d"]
 [ext_resource type="FontFile" uid="uid://dn83hpd1vj6w4" path="res://assets/fonts/x12y16pxSolidLinker.ttf" id="4_deg77"]
+[ext_resource type="FontFile" uid="uid://dfywurfh0ra2a" path="res://assets/fonts/CP_Revenge.otf" id="5_td4yf"]
 
 [sub_resource type="Gradient" id="Gradient_hd316"]
 offsets = PackedFloat32Array(0, 0.21, 0.7733333, 1)
@@ -13,8 +14,16 @@ colors = PackedColorArray(0, 0, 0.5019608, 1, 0.2, 0.2, 0.6, 1, 0.2, 0.2, 0.6, 1
 gradient = SubResource("Gradient_hd316")
 fill_from = Vector2(1, 1)
 
+[sub_resource type="Gradient" id="Gradient_deg77"]
+offsets = PackedFloat32Array(0, 0.21, 0.7733333, 1)
+colors = PackedColorArray(0.4392157, 0.4392157, 0.14509805, 1, 0.6, 0.6, 0.2, 1, 0.6, 0.6, 0.2, 1, 0.4392157, 0.4392157, 0.14509805, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_td4yf"]
+gradient = SubResource("Gradient_deg77")
+fill_from = Vector2(1, 1)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t6x3d"]
-bg_color = Color(0, 0, 0, 0.75686276)
+bg_color = Color(0, 0, 0, 0.73333335)
 
 [sub_resource type="Theme" id="Theme_deg77"]
 default_font = ExtResource("2_j3mhr")
@@ -332,21 +341,31 @@ default_font_size = 80
 font = ExtResource("4_deg77")
 font_size = 120
 
+[sub_resource type="Theme" id="Theme_1exqw"]
+default_font = ExtResource("5_td4yf")
+default_font_size = 100
+
 [node name="A+RT" type="Node2D" unique_id=1917747404]
 script = ExtResource("1_hd316")
 
-[node name="Control" type="Control" parent="." unique_id=270174960]
+[node name="display" type="Control" parent="." unique_id=270174960]
 layout_mode = 3
 anchors_preset = 0
 
-[node name="morning" type="TextureRect" parent="Control" unique_id=871013312]
+[node name="blue" type="TextureRect" parent="display" unique_id=871013312]
 layout_mode = 0
 offset_right = 1260.0
 offset_bottom = 211.0
 texture = SubResource("GradientTexture2D_j3mhr")
 
-[node name="back" type="Panel" parent="." unique_id=1978067987]
+[node name="yellow" type="TextureRect" parent="display" unique_id=379587809]
 visible = false
+layout_mode = 0
+offset_right = 1260.0
+offset_bottom = 211.0
+texture = SubResource("GradientTexture2D_td4yf")
+
+[node name="back" type="Panel" parent="." unique_id=1978067987]
 offset_top = 28.0
 offset_right = 1260.0
 offset_bottom = 185.0
@@ -426,15 +445,15 @@ text = "! WARNING !"
 
 [node name="warning2" type="Label" parent="." unique_id=919762960]
 visible = false
-offset_left = 485.0
-offset_top = 41.0
-offset_right = 800.0
-offset_bottom = 182.0
+offset_left = 416.0
+offset_top = 32.0
+offset_right = 866.0
+offset_bottom = 183.0
 theme = SubResource("Theme_t6x3d")
 theme_override_colors/font_color = Color(0.7137255, 0, 0, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 50
-text = "10%"
+text = "100%"
 
 [node name="portrit" type="Node2D" parent="." unique_id=1973424220]
 visible = false
@@ -566,3 +585,27 @@ offset_right = 697.0
 offset_bottom = 163.0
 text = "300"
 label_settings = SubResource("LabelSettings_1exqw")
+
+[node name="Label2" type="Label" parent="." unique_id=2126142629]
+visible = false
+offset_left = 938.0
+offset_top = 17.0
+offset_right = 975.0
+offset_bottom = 118.0
+rotation = -0.27052602
+theme = SubResource("Theme_1exqw")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 25
+text = "!"
+
+[node name="Label" type="Label" parent="." unique_id=700406338]
+visible = false
+offset_left = 307.99997
+offset_top = 7.0
+offset_right = 344.99997
+offset_bottom = 108.0
+rotation = 0.27052602
+theme = SubResource("Theme_1exqw")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 25
+text = "!"

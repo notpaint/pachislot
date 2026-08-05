@@ -125,6 +125,11 @@ SE = {
                 "cond": "order_node.play_state == 'normal' and prized_role == 'middleReplay'"
             },
             {
+                "priority": 1,
+                "track": "middleBell",
+                "cond": "prized_role == 'middleBell'"
+            },
+            {
                 "priority": 2,
                 "track": "RB",
                 "cond": "order_node.check_bonus_prized('RB')",
@@ -147,6 +152,7 @@ SE = {
             "main": None,
             "downBell": "res://assets/SE/otoko/role/downBell.ogg",
             "Replay": "res://assets/SE/otoko/role/Replay.ogg",
+            "middleBell": "res://assets/SE/otoko2/role/bell_AT.ogg",
             "RB": "res://assets/SE/otoko/REG_jingle.ogg",
             "redBB": "res://assets/SE/otoko/redBB_jingle.ogg",
             "SBB": "res://assets/SE/otoko2/SBB_jingle.ogg"

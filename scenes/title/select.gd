@@ -3,6 +3,7 @@ extends Control
 @onready var A = $"list/A"
 @onready var AT = $"list/AT"
 @onready var A_RT = $"list/A_RT"
+@onready var A_ART  = $"list/A_ART"
 
 @onready var highres = $"resolution/1080p"
 @onready var lowres = $"resolution/720p"
@@ -13,6 +14,7 @@ func _ready():
 	A.pressed.connect(_on_A_pressed)
 	AT.pressed.connect(_on_AT_pressed)
 	A_RT.pressed.connect(_on_A_RT_pressed)
+	A_ART.pressed.connect(_on_A_ART_pressed)
 	highres.pressed.connect(_on_highres_pressed)
 	lowres.pressed.connect(_on_lowres_pressed)
 
@@ -42,6 +44,13 @@ func _on_A_RT_pressed():
 		return
 	loading = true
 	main.load_db("A+RT")
+	get_tree().change_scene_to_file("res://scenes/body/body.tscn")
+
+func _on_A_ART_pressed():
+	if loading:
+		return
+	loading = true
+	main.load_db("A+ART")
 	get_tree().change_scene_to_file("res://scenes/body/body.tscn")
 
 func _on_highres_pressed():

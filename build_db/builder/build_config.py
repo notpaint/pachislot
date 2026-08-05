@@ -65,3 +65,4 @@ class SubBuildConfig:
     pseudo_bonus_mode:dict = field(default_factory=dict)
     premonition_map: dict = field(default_factory=dict)
     stage_map: dict = field(default_factory=dict)
+    target_box: dict = field(default_factory=dict)

@@ -6,7 +6,8 @@ var db_path = ""
 var db_path_dict = {
 	"A": "res://db/A/sub.db",
 	"AT": "res://db/AT/sub.db",
-	"A+RT": "res://db/A+RT/sub.db"
+	"A+RT": "res://db/A+RT/sub.db",
+	"A+ART": "res://db/A+ART/sub.db"
 }
 
 var current_version: String

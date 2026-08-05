@@ -50,32 +50,34 @@ func _on_medal_bet(_value):
 		audio.back_music("RT1")
 
 func _on_now_RT(value):
-	current_RT = value
-	if value == "RT1" or value == "RT2":
-		now_RT = true
-	elif value == "RT0":
-		if now_RT and effects.current_bonus == "None":
-			audio.back_music("RT_end", true)
-		now_RT = false
 
-	if value == "RT2":
-		audio.back_music("RT2")
+	current_RT = value
+	
+	match value:
+		"RT0":
+			if effects.current_bonus == "None":
+				now_RT = false
+		"RT1":
+			now_RT = true
+		"RT2":
+			now_RT = true
+			audio.back_music("RT2")
 
 
 func _on_flag(value):
 
-	if active_bonus == "":
+	if active_bonus.is_empty():
 		effects.count_up_game()
-
-	if active_bonus != "":
+	else:
 		get_bonus_payout = max(0, get_bonus_payout - bet_medals)
+		if active_bonus == "BB":
+			BB_data.emit(get_bonus_payout, last_bonus_payout)
+	
 	bet_medals = 0
-	if active_bonus == "BB":
-		BB_data.emit(get_bonus_payout, last_bonus_payout)
 
 	order_navi.clear_navi()
 
-	if value == "TReplay1":
+	if now_RT and value == "TReplay1":
 		if RT_game <= 8:
 			order_navi.set_navi([null, null, 1])
 		else:
@@ -110,6 +112,8 @@ func handle_RT(value):
 		audio.back_music("silent")
 	if prized_role == "SReplay":
 		audio.back_music("silent")
+	if RT_game == 0:
+		audio.back_music("RT_end", true)
 
 
 func switch_bonus():

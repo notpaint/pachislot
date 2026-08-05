@@ -489,9 +489,34 @@ func table_logic(supposed_symbols, control_data, reel_pos, base_ID):
 		)
 		return(supposed_symbols[0]["slide"])
 	
+	for row in control_data:
+
+		var ghost_patterns = row["miss_pattern"]
+		if ghost_patterns == null:
+			continue
+
+		var ghost_slide = row["slide"][reel_pos][base_ID]
+		if ghost_slide == null:
+			continue
+		
+		var ghost_symbol = supposed_symbols[ghost_slide]["symbol"]
+		var ghost_match = false
+	
+		for miss_pattern in ghost_patterns:
+			if miss_pattern[reel_pos] == ghost_symbol:
+				miss_patterns.append(miss_pattern)
+				ghost_match = true
+			
+		if ghost_match:
+			return ghost_slide
+
 	var miss_slides : Array = []
+	
 	for row in control_data:
 		var ghost_patterns = row["miss_pattern"]
+		if ghost_patterns == null:
+			continue
+			
 		for miss_pattern in ghost_patterns:
 			for i in (supposed_symbols.size()):
 				var supposed_data = supposed_symbols[i]

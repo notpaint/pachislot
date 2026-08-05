@@ -343,10 +343,10 @@ base_path = Path(__file__).resolve().parent
 sub_config = SubBuildConfig(
     base_path = base_path,
 
-    main_db_path = base_path.parent.parent/ "db" / "A+RT" / "main.db",
+    main_db_path = base_path.parent.parent/ "db" / "A+ART" / "main.db",
     
     sub_sql_path = base_path.parent / "sql" / "sub.sql",
-    sub_db_path = base_path.parent.parent / "db" / "A+RT" / "sub.db",
+    sub_db_path = base_path.parent.parent / "db" / "A+ART" / "sub.db",
 
     SE = SE,
     bonus_music = bonus_music,

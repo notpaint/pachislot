@@ -95,6 +95,14 @@ def generate_stage_map(cursor_sub, config):
                         cursor_sub.execute("""INSERT OR IGNORE INTO stage_map(type, route, is_win, game, effect, weight)
                                 VALUES(?, ?, ?, ?, ?, ?)""", (type, route, is_win, game, effect, weight))
 
+def generate_target_box(cursor_sub, config):
+    for type, status_data in config.target_box.items():
+        for status, box_data in status_data.items():
+            for box, score_data in box_data.items():
+                for score, text_data in score_data.items():
+                    for text, weight in text_data.items():
+                        cursor_sub.execute("""INSERT OR IGNORE INTO target_box(type, status, box, score, text, weight)
+                                VALUES(?, ?, ?, ?, ?, ?)""", (type, status, box, score, text, weight))
 
 
             
@@ -128,8 +136,8 @@ def build_sub(config):
     generate_flag_trigger(cursor_main, cursor_sub, config)
     generate_pseudo_bonus_mode(cursor_sub, config)
     generate_premonition_map(cursor_main, cursor_sub, config)
-    generate_stage_map(cursor_sub, config)
-
+    # generate_stage_map(cursor_sub, config)
+    generate_target_box(cursor_sub, config)
     conn_sub.commit()
     conn_sub.close()
     conn_main.close()

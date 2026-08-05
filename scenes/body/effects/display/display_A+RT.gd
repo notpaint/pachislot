@@ -120,9 +120,7 @@ func _on_now_RT(value):
 
 	match value:
 		true:
-			if active_data_node != null:
-				await active_data_node_clear
-			back.visible = true
+			pass
 
 		false:
 			initialize_display()
